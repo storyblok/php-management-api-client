@@ -22,7 +22,8 @@
     "require-dev": {
         "phpstan/phpstan" : "^2.0",
         "rector/rector": "^2",
-        "phpunit/phpunit": "^11.5"
+        "phpunit/phpunit": "^11.5",
+        "friendsofphp/php-cs-fixer": "^3.65"
     },
     "scripts": {
         "static-code": "vendor/bin/phpstan analyse"
