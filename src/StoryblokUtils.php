@@ -2,8 +2,8 @@
 
 namespace Roberto\Storyblok\Mapi;
 
-class StoryblokUtils {
-
+class StoryblokUtils
+{
     public static function getRegionFromSpaceId($spaceId): string
     {
         return ($spaceId > 1_000_000) ? "US" : "EU";

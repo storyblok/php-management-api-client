@@ -1,15 +1,17 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 use Roberto\Storyblok\Mapi\StoryblokUtils;
 
-final class StoryblokUtilsTests extends TestCase
+final class StoryblokUtilsTest extends TestCase
 {
     public function testGetRegionFromSpaceId(): void
     {
         $region = StoryblokUtils::getRegionFromSpaceId(32000);
 
         $this->assertIsString($region);
-        $this->assertSame("EU",$region, "The region is EU");
+        $this->assertSame("EU", $region, "The region is EU");
 
 
     }

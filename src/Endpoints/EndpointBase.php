@@ -1,10 +1,13 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Roberto\Storyblok\Mapi\Endpoints;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class EndpointBase {
+class EndpointBase
+{
     public function __construct(protected ?HttpClientInterface $clientMapi) {}
 
 
@@ -12,7 +15,7 @@ class EndpointBase {
         string $method = "GET",
         string $path = "/spaces",
         array $options = [],
-    ){
+    ) {
         return $this->clientMapi->request(
             $method,
             $path,
@@ -20,4 +23,3 @@ class EndpointBase {
         );
     }
 }
-

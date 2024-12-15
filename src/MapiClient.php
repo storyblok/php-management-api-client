@@ -6,8 +6,8 @@ use Roberto\Storyblok\Mapi\Endpoints\SpaceApi;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class MapiClient {
-
+class MapiClient
+{
     private ?HttpClientInterface $clientMapi = null;
 
     private ?string $personalAccessToken = null;
@@ -17,8 +17,7 @@ class MapiClient {
         string $personalAccessToken,
         string $region = "EU",
         ?string $baseUri = null,
-    ): void
-    {
+    ): void {
 
 
         $baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region);
@@ -38,7 +37,8 @@ class MapiClient {
 
     }
 
-    public function spaceApi(): SpaceApi {
+    public function spaceApi(): SpaceApi
+    {
         return new SpaceApi($this->clientMapi);
     }
 }
