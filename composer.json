@@ -1,0 +1,30 @@
+{
+    "name": "roberto/sb-php-mapi-client-poc",
+    "description": "Storyblok CPHP Client for Management API",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Roberto\\Storyblok\\Mapi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Roberto Butti",
+            "email": "roberto.butti@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=8.3",
+        "symfony/http-client": "^7.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan" : "^2.0",
+        "rector/rector": "^2",
+        "phpunit/phpunit": "^11.5"
+    },
+    "scripts": {
+        "static-code": "vendor/bin/phpstan analyse"
+    }
+}
