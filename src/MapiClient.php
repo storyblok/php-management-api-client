@@ -10,30 +10,67 @@ class MapiClient
 {
     private ?HttpClientInterface $clientMapi = null;
 
-    private ?string $personalAccessToken = null;
+
+    public static function initEU(string $personalAccessToken): self
+    {
+        return self::init(
+            $personalAccessToken,
+            "EU",
+        );
+    }
+    public static function initUS(string $personalAccessToken): self
+    {
+        return self::init(
+            $personalAccessToken,
+            "US",
+        );
+    }
+    public static function initAP(string $personalAccessToken): self
+    {
+        return self::init(
+            $personalAccessToken,
+            "AP",
+        );
+    }
+    public static function initCA(string $personalAccessToken): self
+    {
+        return self::init(
+            $personalAccessToken,
+            "CA",
+        );
+    }
+
+    public static function initCN(string $personalAccessToken): self
+    {
+        return self::init(
+            $personalAccessToken,
+            "CN",
+        );
+    }
 
 
-    public function init(
+    public static function init(
         string $personalAccessToken,
         string $region = "EU",
         ?string $baseUri = null,
-    ): void {
+    ): self {
 
-
+        $client = new self();
         $baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region);
 
-
-        $this->clientMapi = HttpClient::create()
+        $client->clientMapi = HttpClient::create()
             ->withOptions([
                 'base_uri' => $baseUriMapi,
                 'headers' =>
                     [
                         'Accept' => 'application/json',
                         'Content-Type' => 'application/json',
-                        'Authorization' => $this->personalAccessToken,
+                        'Authorization' => $personalAccessToken,
                     ],
             ]);
 
+
+        return $client;
 
     }
 
