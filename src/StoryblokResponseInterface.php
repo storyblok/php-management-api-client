@@ -2,6 +2,7 @@
 
 namespace Roberto\Storyblok\Mapi;
 
+use Roberto\Storyblok\Mapi\Data\StoryblokData;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 interface StoryblokResponseInterface
@@ -14,5 +15,6 @@ interface StoryblokResponseInterface
     public function getResponseStatusCode();
     public function asJson();
     public function toArray();
+    public function data(): StoryblokData;
 
 }

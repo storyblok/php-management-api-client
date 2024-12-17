@@ -20,7 +20,7 @@ class StoryblokResponse implements StoryblokResponseInterface
     }
 
 
-    public function data(): \Roberto\Storyblok\Mapi\Data\StoryblokData
+    public function data(): StoryblokData
     {
         return StoryblokData::makeFromResponse($this);
     }
