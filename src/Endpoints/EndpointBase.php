@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Roberto\Storyblok\Mapi\Endpoints;
 
+use Roberto\Storyblok\Mapi\StoryblokResponse;
+use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class EndpointBase
@@ -18,7 +20,7 @@ class EndpointBase
         string $method = "GET",
         string $path = "/v1/spaces",
         array $options = [],
-    ) {
+    ): StoryblokResponseInterface {
 
         $response = $this->clientMapi->request(
             $method,
@@ -27,7 +29,8 @@ class EndpointBase
         );
         $this->lastResponseInfo = $response->getInfo();
 
-        return $response;
+        return StoryblokResponse::make($response);
+
     }
 
     public function getLastCalledUrl(): string
