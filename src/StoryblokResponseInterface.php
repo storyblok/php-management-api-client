@@ -16,5 +16,6 @@ interface StoryblokResponseInterface
     public function asJson();
     public function toArray();
     public function data(): StoryblokData;
+    public function getLastCalledUrl(): mixed;
 
 }

@@ -18,6 +18,11 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
         return new StoryblokData($data);
     }
 
+    public function toArray(): array
+    {
+        return $this->data;
+    }
+
     public static function makeFromResponse(StoryblokResponse $response): StoryblokData
     {
         return new StoryblokData($response->toArray());
@@ -46,7 +51,38 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     }
 
 
-    private function returnData(mixed $value): null|int|float|string|bool|\Roberto\Storyblok\Mapi\Data\StoryblokData
+    /**
+     * Set a value to a specific $key
+     * You can use the dot notation for setting a nested value.
+     * @param non-empty-string $charNestedKey
+     */
+    public function set(int|string $key, mixed $value, string $charNestedKey = "."): self
+    {
+        if (is_string($key)) {
+            $array = &$this->data;
+            $keys = explode($charNestedKey, $key);
+            foreach ($keys as $i => $key) {
+                if (count($keys) === 1) {
+                    break;
+                }
+                unset($keys[$i]);
+
+                if (!isset($array[$key]) || !is_array($array[$key])) {
+                    $array[$key] = [];
+                }
+
+                $array = &$array[$key];
+            }
+
+            $array[array_shift($keys)] = $value;
+            return $this;
+        }
+        $this->data[$key] = $value;
+        return $this;
+    }
+
+
+    private function returnData(mixed $value): null|int|float|string|bool|StoryblokData
     {
         if (is_null($value)) {
 
