@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Roberto\Storyblok\Mapi\Endpoints;
 
 use Roberto\Storyblok\Mapi\Data\StoryblokData;

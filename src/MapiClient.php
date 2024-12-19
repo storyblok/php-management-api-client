@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Roberto\Storyblok\Mapi;
 
 use Roberto\Storyblok\Mapi\Endpoints\SpaceApi;
