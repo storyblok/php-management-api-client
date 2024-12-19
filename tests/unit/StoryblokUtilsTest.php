@@ -13,12 +13,12 @@ final class StoryblokUtilsTest extends TestCase
     {
         $region = StoryblokUtils::getRegionFromSpaceId(32000);
 
-        $this->assertIsString($region);
+
         $this->assertSame("EU", $region, "The region is EU");
 
         $region = StoryblokUtils::getRegionFromSpaceId(1_000_000);
 
-        $this->assertIsString($region);
+
         $this->assertSame("US", $region, "The region is US");
 
     }

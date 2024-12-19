@@ -39,10 +39,29 @@ class StoryblokResponse implements StoryblokResponseInterface
     {
         return $this->response->getStatusCode();
     }
+
     public function getLastCalledUrl(): mixed
     {
         return $this->response->getInfo('url');
     }
+
+    public function isOk(): bool
+    {
+        return $this->getResponseStatusCode() >= 200 && $this->getResponseStatusCode() < 300;
+    }
+
+    public function getErrorMessage(): string
+    {
+        if ($this->isOk()) {
+            return "No error detected, HTTP Status Code: " . $this->getResponseStatusCode();
+        }
+
+        $data = $this->data();
+        $message = $data->get("error");
+        return $message ?? "Unknown error, " . $this->getResponseStatusCode();
+    }
+
+
 
     public function asJson(): void
     {
@@ -52,7 +71,8 @@ class StoryblokResponse implements StoryblokResponseInterface
 
     public function toArray(): array
     {
-        return $this->response->toArray();
+
+        return $this->response->toArray(false);
     }
 
 

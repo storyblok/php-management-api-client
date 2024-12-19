@@ -10,6 +10,7 @@ class SpaceData extends StoryblokData
     {
         parent::__construct([]);
     }
+
     public function setName($name): void
     {
         $this->set('name', $name);

@@ -11,6 +11,7 @@ trait IterableDataTrait
         if (is_array($current)) {
             return self::make($current);
         }
+
         return $current;
     }
 
@@ -75,6 +76,7 @@ trait IterableDataTrait
         foreach ($this as $key => $item) {
             $result[$key] = $callback($item);
         }
+
         return self::make($result);
     }
 

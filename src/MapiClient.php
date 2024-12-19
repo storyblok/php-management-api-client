@@ -18,6 +18,7 @@ class MapiClient
             "EU",
         );
     }
+
     public static function initUS(string $personalAccessToken): self
     {
         return self::init(
@@ -25,6 +26,7 @@ class MapiClient
             "US",
         );
     }
+
     public static function initAP(string $personalAccessToken): self
     {
         return self::init(
@@ -32,6 +34,7 @@ class MapiClient
             "AP",
         );
     }
+
     public static function initCA(string $personalAccessToken): self
     {
         return self::init(

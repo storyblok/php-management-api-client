@@ -10,8 +10,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class EndpointBase
 {
-    public $lastResponseInfo;
-
     public function __construct(protected ?HttpClientInterface $clientMapi) {}
 
 
@@ -21,26 +19,14 @@ class EndpointBase
         string $path = "/v1/spaces",
         array $options = [],
     ): StoryblokResponseInterface {
-
         $response = $this->clientMapi->request(
             $method,
             $path,
             $options,
         );
-        $this->lastResponseInfo = $response->getInfo();
 
         return StoryblokResponse::make($response);
 
     }
 
-    public function getLastCalledUrl(): string
-    {
-        if (! is_array($this->lastResponseInfo)) {
-            return "";
-        }
-        if (array_key_exists("url", $this->lastResponseInfo)) {
-            return $this->lastResponseInfo["url"];
-        }
-        return "";
-    }
 }

@@ -43,9 +43,11 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
                         return $defaultValue;
                     }
                 }
+
                 return $this->returnData($nestedValue);
             }
         }
+
         return $this->returnData($this->data[$key]) ?? $defaultValue;
 
     }
@@ -65,6 +67,7 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
                 if (count($keys) === 1) {
                     break;
                 }
+
                 unset($keys[$i]);
 
                 if (!isset($array[$key]) || !is_array($array[$key])) {
@@ -77,6 +80,7 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
             $array[array_shift($keys)] = $value;
             return $this;
         }
+
         $this->data[$key] = $value;
         return $this;
     }
@@ -88,18 +92,22 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
 
             return null;
         }
+
         if (is_scalar($value)) {
             return $value;
             //return self::make([$value]);
         }
+
         if (is_array($value)) {
 
 
             return self::make($value);
         }
+
         if ($value instanceof StoryblokData) {
             return $value;
         }
+
         return StoryblokData::make([]);
     }
 
@@ -110,6 +118,7 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
         return $this->returnData($value);
 
     }
+
     public function count(): int
     {
         return count($this->data);

@@ -6,6 +6,9 @@ use Roberto\Storyblok\Mapi\Data\StoryblokData;
 use Roberto\Storyblok\Mapi\Endpoints\EndpointBase;
 use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
 
+/**
+ *
+ */
 class SpaceApi extends EndpointBase
 {
     public function all(): StoryblokResponseInterface
@@ -16,22 +19,18 @@ class SpaceApi extends EndpointBase
         );
     }
 
-    public function allArray()
-    {
-        return $this->all()->toArray();
-    }
 
-    public function get($spaceId): StoryblokResponseInterface
+    /**
+     * @param $spaceId
+     */
+    public function get(string $spaceId): StoryblokResponseInterface
     {
         return $this->makeRequest(
             "GET",
-            "/v1/spaces/{$spaceId}",
+            '/v1/spaces/' . $spaceId,
         );
     }
-    public function getArray($spaceId): array
-    {
-        return $this->get($spaceId)->toArray();
-    }
+
 
     public function create(StoryblokData $payload): StoryblokResponseInterface
     {
@@ -62,19 +61,25 @@ class SpaceApi extends EndpointBase
         );
     }
 
-    public function delete($spaceId): StoryblokResponseInterface
+    /**
+     * @param $spaceId
+     */
+    public function delete(string $spaceId): StoryblokResponseInterface
     {
         return $this->makeRequest(
             "DELETE",
-            "/v1/spaces/{$spaceId}",
+            '/v1/spaces/' . $spaceId,
         );
     }
 
+    /**
+     * @param $spaceId
+     */
     public function backup($spaceId): StoryblokResponseInterface
     {
         return $this->makeRequest(
             "POST",
-            "/v1/spaces/{$spaceId}/backups",
+            sprintf('/v1/spaces/%s/backups', $spaceId),
             [
                 "body" => [
                 ],
