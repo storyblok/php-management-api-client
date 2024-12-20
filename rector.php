@@ -17,10 +17,13 @@ return RectorConfig::configure()
         codingStyle: true,
         typeDeclarations: true,
         naming: true,
-
+        instanceOf: true,
         earlyReturn: true,
+        strictBooleans: true,
+        carbon: true,
+        rectorPreset: true,
+        phpunitCodeQuality: true,
         //privatization: true,
-    // naming: true
     );
     //->withTypeCoverageLevel(100)
     //->withDeadCodeLevel(100)
