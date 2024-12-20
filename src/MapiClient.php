@@ -10,7 +10,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class MapiClient
 {
-    private ?HttpClientInterface $clientMapi = null;
+    private ?HttpClientInterface $httpClient = null;
 
 
     public static function initEU(string $personalAccessToken): self
@@ -63,7 +63,7 @@ class MapiClient
         $client = new self();
         $baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region);
 
-        $client->clientMapi = HttpClient::create()
+        $client->httpClient = HttpClient::create()
             ->withOptions([
                 'base_uri' => $baseUriMapi,
                 'headers' =>
@@ -81,6 +81,6 @@ class MapiClient
 
     public function spaceApi(): SpaceApi
     {
-        return new SpaceApi($this->clientMapi);
+        return new SpaceApi($this->httpClient);
     }
 }

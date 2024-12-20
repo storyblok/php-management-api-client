@@ -25,9 +25,9 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
         return $this->data;
     }
 
-    public static function makeFromResponse(StoryblokResponse $response): StoryblokData
+    public static function makeFromResponse(StoryblokResponse $storyblokResponse): StoryblokData
     {
-        return new StoryblokData($response->toArray());
+        return new StoryblokData($storyblokResponse->toArray());
     }
 
     public function get(mixed $key, mixed $defaultValue = null, string $charNestedKey = "."): mixed

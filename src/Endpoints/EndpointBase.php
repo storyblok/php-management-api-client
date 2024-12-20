@@ -10,7 +10,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class EndpointBase
 {
-    public function __construct(protected ?HttpClientInterface $clientMapi) {}
+    public function __construct(protected ?HttpClientInterface $httpClient) {}
 
 
 
@@ -19,7 +19,7 @@ class EndpointBase
         string $path = "/v1/spaces",
         array $options = [],
     ): StoryblokResponseInterface {
-        $response = $this->clientMapi->request(
+        $response = $this->httpClient->request(
             $method,
             $path,
             $options,

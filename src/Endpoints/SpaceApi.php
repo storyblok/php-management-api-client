@@ -34,14 +34,14 @@ class SpaceApi extends EndpointBase
     }
 
 
-    public function create(StoryblokData $payload): StoryblokResponseInterface
+    public function create(StoryblokData $storyblokData): StoryblokResponseInterface
     {
         return $this->makeRequest(
             "POST",
             "/v1/spaces",
             [
                 "body" => [
-                    "space" => $payload->toArray(),
+                    "space" => $storyblokData->toArray(),
                 ],
             ],
         );
