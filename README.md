@@ -2,7 +2,7 @@
 
 The *Storyblok Management API PHP Client* library simplifies the integration with Storyblok's Management API in PHP applications. With easy-to-use methods, you can interact with your Storyblok space effectively.
 
-> ⚠️ This is just a Proof of Concept, so it is a Work In Progess. We are adding more endpoint coverage, specific Response Data etc...
+> ⚠️ This is just a Proof of Concept, so it is a Work In Progress. We are adding more endpoint coverage, specific Response Data, etc.
 
 ## Installation
 
@@ -31,7 +31,9 @@ $c = MapiClient::initEU($storyblokPersonalAccessToken);
 $spaceApi = $c->spaceApi();
 ```
 
-You can use the methods, `initEU` for accessing to Europe region, `initUS` for US region.
+You can use the methods `initEU` for accessing the Europe region and `initUS` for the US region.
+
+Once you have `$spaceApi` you can retrieve and handle spaces via `all()` method, `get()`, `delete()` `create()` etc.
 
 ### 2. Retrieve all all the spaces
 
@@ -90,7 +92,7 @@ try {
 
 - **Region-Specific Initialization**: Easily configure the SDK for different Storyblok regions.
 - **Space Management**: Retrieve details, list spaces, and perform actions like backups.
-- **Easy Response Handling**: Access status codes, error messages, and parsed data conveniently.
+- **Easy Response Handling**: Access status codes and error messages and parsed data conveniently.
 
 ## Documentation
 
