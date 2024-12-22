@@ -12,11 +12,12 @@ Install the package via Composer:
 composer require storyblok/storyblok-management-api-client
 ```
 
-## Usage Example
+> Installing the package via Composer will be available after this PoC will be accepted as package.
+
 
 Below is an example showcasing how to use the library to interact with the Management API.
 
-### 1. Initializing the MapiClient
+## Initializing the MapiClient
 
 Initialize the `MapiClient` with your personal access token to interact with the API:
 
@@ -35,7 +36,10 @@ You can use the methods `initEU` for accessing the Europe region and `initUS` fo
 
 Once you have `$spaceApi` you can retrieve and handle spaces via `all()` method, `get()`, `delete()` `create()` etc.
 
-### 2. Retrieve all all the spaces
+
+## Handling Spaces
+
+### Retrieve all the spaces
 
 Fetch a list of all spaces associated with your account in the current region (the region is initialized in the `MapiClient`):
 
@@ -47,19 +51,19 @@ echo "LAST URL    : " . $response->getLastCalledUrl() . PHP_EOL;
 $data = $response->data();
 ```
 
-### 3. Loop through the spaces
+### Loop through the spaces
 
 Iterate through the list of spaces to access their details:
 
 ```php
-foreach ($data->get("spaces") as $key => $space) {
+foreach ($data as $key => $space) {
     echo $space->get("region") . " " . $space->get("id") . " " . $space->get("name") . PHP_EOL;
 }
-echo "SPACE NAME  : " . $data->get("spaces.0.name") . PHP_EOL;
-echo "SPACEs      : " . $data->get("spaces")->count() . PHP_EOL;
+echo "SPACE NAME  : " . $data->get("0.name") . PHP_EOL;
+echo "SPACES      : " . $data->count() . PHP_EOL;
 ```
 
-### 4. Get one specific Space
+### Get one specific Space
 
 Retrieve detailed information about a specific space using its ID:
 
@@ -67,10 +71,11 @@ Retrieve detailed information about a specific space using its ID:
 // Get details of a specific space
 $response = $spaceApi->get($spaceID);
 $space = $response->data();
-echo $space->get("space.name") . PHP_EOL;
+echo $space->get("name") . PHP_EOL;
+echo $space->get("plan") . " " . $space->get("plan_level") . PHP_EOL;
 ```
 
-### 5. Triggering the backup
+### Triggering the backup
 
 Create a backup of a specific space by triggering the backup API:
 
@@ -85,6 +90,27 @@ try {
     }
 } catch (Exception $e) {
     echo "Error, " . $e;
+}
+```
+
+## Handling Stories
+
+### Getting a page of stories
+
+
+```php
+$response = $clientEU->storyApi($spaceId)->page();
+
+echo "STATUS CODE : " . $response->getResponseStatusCode() . PHP_EOL;
+echo "LAST URL    : " . $response->getLastCalledUrl() . PHP_EOL;
+echo "TOTAL       : " . $response->total() . PHP_EOL;
+echo "PAR PAGE    : " . $response->perPage() . PHP_EOL;
+
+$data = $response->data();
+echo "Stories found with the page: " . $data->howManyStories() . PHP_EOL;
+foreach ($data as $key => $story) {
+    echo $story->get("id") . "  " .
+    $story->getName() . PHP_EOL;
 }
 ```
 
