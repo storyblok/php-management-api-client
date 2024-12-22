@@ -34,8 +34,12 @@ class StoryblokResponse implements StoryblokResponseInterface
 
     public function data(): StoryblokData
     {
-        echo "---" . $this->dataClass . "---";
-        return ($this->dataClass)::make($this->toArray());
+
+        if (method_exists($this->dataClass, "makeFromResponse")) {
+            return ($this->dataClass)::makeFromResponse($this->toArray());
+        }
+
+        return new ($this->dataClass)($this->toArray());
 
     }
 
@@ -48,6 +52,26 @@ class StoryblokResponse implements StoryblokResponseInterface
     public function getResponseHeaders(): void
     {
         $this->response->getHeaders();
+    }
+
+    public function getHeader($headerName): mixed
+    {
+        $headers = $this->response->getHeaders();
+        if (array_key_exists($headerName, $headers) && array_key_exists(0, $headers[$headerName])) {
+            return $headers[$headerName][0];
+        }
+
+        return null;
+    }
+
+    public function total(): mixed
+    {
+        return $this->getHeader("total");
+    }
+
+    public function perPage(): mixed
+    {
+        return $this->getHeader("per-page");
     }
 
     public function getResponseStatusCode(): int

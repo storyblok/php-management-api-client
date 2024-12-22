@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace Roberto\Storyblok\Mapi\Data;
 
-use Roberto\Storyblok\Mapi\Data\StoryblokData;
-
-class StoriesData extends StoryblokData
+class SpacesData extends StoryblokData
 {
     #[\Override]
     public function getDataClass(): string
     {
-        return StoryData::class;
+        return SpaceData::class;
     }
 
 
     public static function makeFromResponse(array $data = []): self
     {
-        return new self($data["stories"] ?? []);
+        return new self($data["spaces"] ?? []);
     }
 
 

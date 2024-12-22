@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Roberto\Storyblok\Mapi\Endpoints;
 
+use Roberto\Storyblok\Mapi\Data\SpacesData;
 use Roberto\Storyblok\Mapi\Data\StoryblokData;
-use Roberto\Storyblok\Mapi\Endpoints\EndpointBase;
 use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
 
 /**
@@ -18,6 +18,7 @@ class SpaceApi extends EndpointBase
         return $this->makeRequest(
             "GET",
             '/v1/spaces',
+            dataClass: SpacesData::class,
         );
     }
 

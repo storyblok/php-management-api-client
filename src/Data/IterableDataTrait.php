@@ -12,7 +12,7 @@ trait IterableDataTrait
     {
         $current = current($this->data);
         if (is_array($current)) {
-            return ($this->getDataClass())::make($current);
+            return new ($this->getDataClass())($current);
         }
 
         return $current;
@@ -81,7 +81,8 @@ trait IterableDataTrait
             $result[$key] = $callback($item);
         }
 
-        return self::make($result);
+        return new StoryblokData($result);
+
     }
 
 }

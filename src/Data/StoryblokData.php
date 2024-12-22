@@ -25,6 +25,7 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     public function __construct(protected array $data) {}
 
     /**
+     * @deprecated
      * Factory method to create a new instance of StoryblokData.
      *
      * @param array $data The data to initialize the object with.
@@ -73,6 +74,11 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
 
                 return $this->returnData($nestedValue, $raw);
             }
+
+        }
+
+        if (! array_key_exists($key, $this->data)) {
+            return $defaultValue;
         }
 
         return $this->returnData($this->data[$key], $raw) ?? $defaultValue;
@@ -140,14 +146,14 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
         }
 
         if (is_array($value)) {
-            return self::make($value);
+            return new StoryblokData($value);
         }
 
         if ($value instanceof StoryblokData) {
             return $value;
         }
 
-        return self::make([]);
+        return new StoryblokData([]);
     }
 
 
