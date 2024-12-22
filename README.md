@@ -113,6 +113,17 @@ foreach ($data as $key => $story) {
     $story->getName() . PHP_EOL;
 }
 ```
+## Handling all the other Endpoints
+If you need to handle an endpoint not yet supported by this package, you can use the `GenericApi` class, which is, in the end, a wrapper on top of the HTTP methods and returns data as StoryblokData. Thus,  you can easily access the structured and nested JSON you can retrieve in the response.
+For example for retrieving the assets:
+
+```php
+$response = $clientEU->genericApi()->get("spaces/{$spaceId}/assets/");
+foreach ($response->data()->get("assets") as $key => $asset) {
+    echo $asset->get("id") . "  " .
+    $asset->get("filename") . PHP_EOL;
+}
+```
 
 ## Features
 
