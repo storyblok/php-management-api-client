@@ -22,7 +22,7 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     /**
      * @param array $data The initial data to store in the object.
      */
-    public function __construct(protected array $data) {}
+    public function __construct(protected array $data = []) {}
 
     /**
      * @deprecated

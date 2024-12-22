@@ -23,6 +23,7 @@ class StoryblokResponse implements StoryblokResponseInterface
         ResponseInterface $response,
         string $dataClass = StoryblokData::class,
     ): StoryblokResponse {
+
         return new self($response, $dataClass);
     }
 
@@ -56,9 +57,14 @@ class StoryblokResponse implements StoryblokResponseInterface
 
     public function getHeader($headerName): mixed
     {
-        $headers = $this->response->getHeaders();
-        if (array_key_exists($headerName, $headers) && array_key_exists(0, $headers[$headerName])) {
-            return $headers[$headerName][0];
+        try {
+            $headers = $this->response->getHeaders();
+
+            if (array_key_exists($headerName, $headers) && array_key_exists(0, $headers[$headerName])) {
+                return $headers[$headerName][0];
+            }
+        } catch (ClientExceptionInterface) {
+
         }
 
         return null;
