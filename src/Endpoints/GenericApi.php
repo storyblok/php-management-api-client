@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Roberto\Storyblok\Mapi\Endpoints;
 
-
 use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
 
 /**
@@ -12,7 +11,7 @@ use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
  */
 class GenericApi extends EndpointBase
 {
-    public function get($path = "spaces"): StoryblokResponseInterface
+    public function get(string $path = "spaces"): StoryblokResponseInterface
     {
         return $this->makeRequest(
             "GET",
@@ -23,7 +22,7 @@ class GenericApi extends EndpointBase
 
 
 
-    public function post( string $path, array $payload = []): StoryblokResponseInterface
+    public function post(string $path, array $payload = []): StoryblokResponseInterface
     {
         return $this->makeRequest(
             "POST",
@@ -34,7 +33,7 @@ class GenericApi extends EndpointBase
         );
     }
 
-    public function delete($path): StoryblokResponseInterface
+    public function delete(string $path): StoryblokResponseInterface
     {
         return $this->makeRequest(
             "DELETE",

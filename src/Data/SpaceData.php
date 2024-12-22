@@ -12,6 +12,7 @@ class SpaceData extends StoryblokData
     {
         return new self($data["space"] ?? []);
     }
+
     public function setName($name): void
     {
         $this->set('name', $name);
