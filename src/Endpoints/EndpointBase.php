@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Roberto\Storyblok\Mapi\Endpoints;
 
+use Roberto\Storyblok\Mapi\Data\StoryblokData;
 use Roberto\Storyblok\Mapi\StoryblokResponse;
 use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -18,6 +19,7 @@ class EndpointBase
         string $method = "GET",
         string $path = "/v1/spaces",
         array $options = [],
+        string $dataClass = StoryblokData::class,
     ): StoryblokResponseInterface {
         $response = $this->httpClient->request(
             $method,
@@ -25,7 +27,7 @@ class EndpointBase
             $options,
         );
 
-        return StoryblokResponse::make($response);
+        return StoryblokResponse::make($response, $dataClass);
 
     }
 

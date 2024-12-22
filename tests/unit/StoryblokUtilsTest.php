@@ -16,6 +16,7 @@ final class StoryblokUtilsTest extends TestCase
         $region = StoryblokUtils::getRegionFromSpaceId(1_000_000);
         $this->assertSame("US", $region, "The region is US");
     }
+
     public function testBaseUriFromRegion(): void
     {
         $baseUri = StoryblokUtils::baseUriFromRegionForMapi("EU");

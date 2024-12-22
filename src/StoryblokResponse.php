@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Roberto\Storyblok\Mapi;
 
 use Roberto\Storyblok\Mapi\Data\StoryblokData;
+use Roberto\Storyblok\Mapi\Data\StoryData;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -13,11 +14,16 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class StoryblokResponse implements StoryblokResponseInterface
 {
-    public function __construct(private readonly ResponseInterface $response) {}
+    public function __construct(
+        private readonly ResponseInterface $response,
+        private readonly string $dataClass = StoryblokData::class,
+    ) {}
 
-    public static function make(ResponseInterface $response): StoryblokResponse
-    {
-        return new self($response);
+    public static function make(
+        ResponseInterface $response,
+        string $dataClass = StoryblokData::class,
+    ): StoryblokResponse {
+        return new self($response, $dataClass);
     }
 
     public function getResponse(): \Symfony\Contracts\HttpClient\ResponseInterface
@@ -28,7 +34,9 @@ class StoryblokResponse implements StoryblokResponseInterface
 
     public function data(): StoryblokData
     {
-        return StoryblokData::makeFromResponse($this);
+        echo "---" . $this->dataClass . "---";
+        return ($this->dataClass)::make($this->toArray());
+
     }
 
 

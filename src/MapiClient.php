@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Roberto\Storyblok\Mapi;
 
 use Roberto\Storyblok\Mapi\Endpoints\SpaceApi;
+use Roberto\Storyblok\Mapi\Endpoints\StoryApi;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -82,5 +83,10 @@ class MapiClient
     public function spaceApi(): SpaceApi
     {
         return new SpaceApi($this->httpClient);
+    }
+
+    public function storyApi($spaceId): StoryApi
+    {
+        return new StoryApi($this->httpClient, $spaceId);
     }
 }

@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Roberto\Storyblok\Mapi\Data;
 
+use PHPUnit\Event\Runtime\PHP;
+
 trait IterableDataTrait
 {
     public function current(): mixed
     {
         $current = current($this->data);
-
         if (is_array($current)) {
-            return self::make($current);
+            return ($this->getDataClass())::make($current);
         }
 
         return $current;
@@ -51,7 +52,8 @@ trait IterableDataTrait
 
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->getData($offset);
+        echo __METHOD__ . PHP_EOL;
+        return $this->get($offset);
     }
 
     public function offsetSet(mixed $offset, mixed $value): void

@@ -7,30 +7,55 @@ namespace Roberto\Storyblok\Mapi\Data;
 use ArrayAccess;
 use Countable;
 use Iterator;
-use Roberto\Storyblok\Mapi\StoryblokResponse;
 
+/**
+ * Class StoryblokData
+ * Represents a wrapper for handling and manipulating
+ * structured data.
+ * Implements Iterator, ArrayAccess, and Countable
+ * for seamless data traversal, access, and manipulation.
+ */
 class StoryblokData implements Iterator, ArrayAccess, Countable
 {
     use IterableDataTrait;
 
-    public function __construct(private array $data) {}
+    /**
+     * @param array $data The initial data to store in the object.
+     */
+    public function __construct(protected array $data) {}
 
+    /**
+     * Factory method to create a new instance of StoryblokData.
+     *
+     * @param array $data The data to initialize the object with.
+     * @return StoryblokData A new instance of StoryblokData.
+     */
     public static function make(array $data = []): StoryblokData
     {
         return new StoryblokData($data);
     }
 
+    /**
+     * Returns the internal data as an array.
+     *
+     * @return array The underlying data in array form.
+     */
     public function toArray(): array
     {
         return $this->data;
     }
 
-    public static function makeFromResponse(StoryblokResponse $storyblokResponse): StoryblokData
-    {
-        return new StoryblokData($storyblokResponse->toArray());
-    }
 
-    public function get(mixed $key, mixed $defaultValue = null, string $charNestedKey = "."): mixed
+    /**
+     * Retrieves a value from the data by key. Supports dot notation for nested keys.
+     *
+     * @param mixed $key The key to retrieve the value for. Can use dot notation for nested keys.
+     * @param mixed|null $defaultValue The default value to return if the key does not exist.
+     * @param string $charNestedKey The character used for separating nested keys (default: ".").
+     * @param bool $raw Whether to return raw data or cast it into StoryblokData if applicable.
+     * @return mixed The value associated with the key, or the default value if the key does not exist.
+     */
+    public function get(mixed $key, mixed $defaultValue = null, string $charNestedKey = ".", $raw = false): mixed
     {
         if (is_string($key)) {
             $keyString = strval($key);
@@ -46,19 +71,23 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
                     }
                 }
 
-                return $this->returnData($nestedValue);
+                return $this->returnData($nestedValue, $raw);
             }
         }
 
-        return $this->returnData($this->data[$key]) ?? $defaultValue;
+        return $this->returnData($this->data[$key], $raw) ?? $defaultValue;
 
     }
 
 
     /**
-     * Set a value to a specific $key
-     * You can use the dot notation for setting a nested value.
-     * @param non-empty-string $charNestedKey
+     * Sets a value for a specific key in the data.
+     * Supports dot notation for nested keys.
+     *
+     * @param int|string $key The key to set the value for. Can use dot notation for nested keys.
+     * @param mixed $value The value to set.
+     * @param string $charNestedKey The character used for separating nested keys (default: ".").
+     * @return $this The current instance for method chaining.
      */
     public function set(int|string $key, mixed $value, string $charNestedKey = "."): self
     {
@@ -88,21 +117,29 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     }
 
 
-    private function returnData(mixed $value): null|int|float|string|bool|StoryblokData
+    /**
+     * Returns data in the desired format.
+     * Can be raw or converted to StoryblokData.
+     *
+     * @param mixed $value The value to process.
+     * @param bool $raw Whether to return raw data or cast it into StoryblokData if applicable.
+     * @return int|float|string|bool|StoryblokData|array|null The processed value.
+     */
+    protected function returnData(mixed $value, $raw = false): null|int|float|string|bool|StoryblokData|array
     {
         if (is_null($value)) {
-
             return null;
         }
 
         if (is_scalar($value)) {
             return $value;
-            //return self::make([$value]);
+        }
+
+        if ($raw) {
+            return $value;
         }
 
         if (is_array($value)) {
-
-
             return self::make($value);
         }
 
@@ -110,10 +147,32 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
             return $value;
         }
 
-        return StoryblokData::make([]);
+        return self::make([]);
     }
 
 
+    /**
+     * Returns the class name of the current data class.
+     * This is useful when you extend the StoryblokData
+     * and you want to cast the items returned during
+     * the iteration (loops like foreach)
+     * @return string The fully qualified class name.
+     */
+    public function getDataClass(): string
+    {
+        return self::class;
+    }
+
+
+    /**
+     * @deprecated
+     * Retrieves a nested value from the data and casts it into StoryblokData if applicable.
+     *
+     * @param mixed $key The key to retrieve the value for. Can use dot notation for nested keys.
+     * @param mixed|null $defaultValue The default value to return if the key does not exist.
+     * @param string $charNestedKey The character used for separating nested keys (default: ".").
+     * @return self|string|null The processed value as StoryblokData, string, or null.
+     */
     public function getData(mixed $key, mixed $defaultValue = null, string $charNestedKey = "."): self|string|null
     {
         $value = $this->get($key, $defaultValue, $charNestedKey);
@@ -121,6 +180,11 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
 
     }
 
+    /**
+     * Counts the number of top-level elements in the data.
+     *
+     * @return int The number of elements in the data.
+     */
     public function count(): int
     {
         return count($this->data);
