@@ -27,7 +27,7 @@ class StoryblokResponse implements StoryblokResponseInterface
         return new self($response, $dataClass);
     }
 
-    public function getResponse(): \Symfony\Contracts\HttpClient\ResponseInterface
+    public function getResponse(): ResponseInterface
     {
         return $this->response;
     }
