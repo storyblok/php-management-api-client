@@ -7,7 +7,7 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
 
 
-test('Testing One space', function (): void {
+test('Testing One space, SpaceData', function (): void {
     $responses = [
         new MockResponse(json_encode([
                 "space" => [
@@ -39,5 +39,14 @@ expect($storyblokData->get("name"))->toBe("Example Space");
 expect($storyblokData->name())->toBe("Example Space");
 expect($storyblokData->createdAt())->toBe("2024-12-31");
 
+$storyblokData->setName("New Name");
+expect($storyblokData->get("name"))->toBe("New Name");
+expect($storyblokData->createdAt())->toBe("2024-12-31");
+expect($storyblokData->get("domain"))->toBe("https://example.storyblok.com");
+
+$storyblokData->setDomain("example.com");
+expect($storyblokData->get("name"))->toBe("New Name");
+expect($storyblokData->createdAt())->toBe("2024-12-31");
+expect($storyblokData->get("domain"))->toBe("example.com");
 
 });
