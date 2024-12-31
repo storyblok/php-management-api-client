@@ -31,22 +31,23 @@ test('Testing One space, SpaceData', function (): void {
     $mapiClient = MapiClient::initTest($client);
     $spaceApi = $mapiClient->spaceApi();
 
+    $storyblokResponse = $spaceApi->get("111");
+    /** @var \Roberto\Storyblok\Mapi\Data\SpaceData $storyblokData */
+    $storyblokData =  $storyblokResponse->data();
+    expect($storyblokData->get("name"))
+        ->toBe("Example Space")
+        ->and($storyblokData->name())->toBe("Example Space")
+        ->and($storyblokData->createdAt())->toBe("2024-12-31");
 
-$storyblokResponse = $spaceApi->get("111");
-/** @var \Roberto\Storyblok\Mapi\Data\SpaceData $storyblokData */
-$storyblokData =  $storyblokResponse->data();
-expect($storyblokData->get("name"))->toBe("Example Space");
-expect($storyblokData->name())->toBe("Example Space");
-expect($storyblokData->createdAt())->toBe("2024-12-31");
+    $storyblokData->setName("New Name");
+    expect($storyblokData->get("name"))
+        ->toBe("New Name")
+        ->and($storyblokData->createdAt())->toBe("2024-12-31")
+        ->and($storyblokData->get("domain"))->toBe("https://example.storyblok.com");
 
-$storyblokData->setName("New Name");
-expect($storyblokData->get("name"))->toBe("New Name");
-expect($storyblokData->createdAt())->toBe("2024-12-31");
-expect($storyblokData->get("domain"))->toBe("https://example.storyblok.com");
-
-$storyblokData->setDomain("example.com");
-expect($storyblokData->get("name"))->toBe("New Name");
-expect($storyblokData->createdAt())->toBe("2024-12-31");
-expect($storyblokData->get("domain"))->toBe("example.com");
-
+    $storyblokData->setDomain("example.com");
+    expect($storyblokData->get("name"))
+        ->toBe("New Name")
+        ->and($storyblokData->createdAt())->toBe("2024-12-31")
+        ->and($storyblokData->get("domain"))->toBe("example.com");
 });
