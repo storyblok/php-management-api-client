@@ -22,14 +22,14 @@
     "require-dev": {
         "phpstan/phpstan" : "^2.0",
         "rector/rector": "^2",
-        "phpunit/phpunit": "^11.5",
-        "friendsofphp/php-cs-fixer": "^3.65"
+        "friendsofphp/php-cs-fixer": "^3.65",
+        "pestphp/pest": "^3.7"
     },
     "scripts": {
         "static-code": "vendor/bin/phpstan analyse",
         "style-fix-code": "export PHP_CS_FIXER_IGNORE_ENV=1; vendor/bin/php-cs-fixer fix --rules=@PER-CS2.0 src/",
         "style-check-code": "export PHP_CS_FIXER_IGNORE_ENV=1; vendor/bin/php-cs-fixer fix --rules=@PER-CS2.0 src/",
-        "test-code": "vendor/bin/phpunit",
+        "test-code": "vendor/bin/pest",
         "refactor-check-code": "vendor/bin/rector --dry-run",
         "all-checks": [
             "@style-check-code",
@@ -37,5 +37,10 @@
             "@refactor-check-code",
             "@test-code"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
