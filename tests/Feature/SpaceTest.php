@@ -37,7 +37,8 @@ test('Testing One space, SpaceData', function (): void {
     expect($storyblokData->get("name"))
         ->toBe("Example Space")
         ->and($storyblokData->name())->toBe("Example Space")
-        ->and($storyblokData->createdAt())->toBe("2024-12-31");
+        ->and($storyblokData->createdAt())->toBe("2024-12-31")
+        ->and($storyblokData->planDescription())->toBe("Starter (Trial)");
 
     $storyblokData->setName("New Name");
     expect($storyblokData->get("name"))

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Roberto\Storyblok\Mapi\Data;
 
 use Roberto\Storyblok\Mapi\Data\StoryblokData;
+use Roberto\Storyblok\Mapi\StoryblokUtils;
 
 class SpaceData extends StoryblokData
 {
@@ -31,5 +32,10 @@ class SpaceData extends StoryblokData
     public function createdAt(): null|string
     {
         return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
+    }
+
+    public function planDescription(): null|string
+    {
+        return StoryblokUtils::getPlanDescription($this->get('plan_level', ""));
     }
 }
