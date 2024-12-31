@@ -17,6 +17,12 @@ interface StoryblokResponseInterface
 
     public function getResponseBody();
 
+    public function getErrorMessage(): string;
+
+    public function total(): mixed;
+
+    public function perPage(): mixed;
+
     public function getResponseHeaders();
 
     public function getResponseStatusCode();
@@ -28,5 +34,7 @@ interface StoryblokResponseInterface
     public function data(): StoryblokData;
 
     public function getLastCalledUrl(): mixed;
+
+    public function isOk(): bool;
 
 }
