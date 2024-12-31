@@ -85,6 +85,26 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
 
     }
 
+    public function getFormattedDateTime(
+        mixed $key,
+        mixed $defaultValue = null,
+        string $charNestedKey = ".",
+        string $format = "Y-m-d H:i:s",
+    ): string|null {
+        $value =  $this->get($key, $defaultValue, $charNestedKey);
+        if (is_null($value)) {
+            return null;
+        }
+
+        try {
+            $date = new \DateTimeImmutable($value);
+        } catch (\DateMalformedStringException) {
+            return $defaultValue;
+        }
+
+        return $date->format($format);
+    }
+
 
     /**
      * Sets a value for a specific key in the data.
