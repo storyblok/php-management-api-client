@@ -81,6 +81,20 @@ class MapiClient
 
     }
 
+    public static function initTest(
+        HttpClientInterface $httpClient,
+    ): self {
+
+        $client = new self();
+        //$baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region);
+
+        $client->httpClient = $httpClient;
+
+
+        return $client;
+
+    }
+
     public function spaceApi(): SpaceApi
     {
         return new SpaceApi($this->httpClient);
