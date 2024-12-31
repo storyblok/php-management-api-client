@@ -23,4 +23,13 @@ class SpaceData extends StoryblokData
         $this->set('domain', $domain);
     }
 
+    public function name(): null|string
+    {
+        return $this->get('name', "");
+    }
+
+    public function createdAt(): null|string
+    {
+        return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
+    }
 }
