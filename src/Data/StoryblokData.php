@@ -47,6 +47,12 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     }
 
 
+    public function toJson(): string
+    {
+        return json_encode($this->data, JSON_PRETTY_PRINT);
+    }
+
+
     /**
      * Retrieves a value from the data by key. Supports dot notation for nested keys.
      *
