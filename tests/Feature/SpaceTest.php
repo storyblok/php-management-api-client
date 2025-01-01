@@ -16,13 +16,13 @@ test('Testing One space, SpaceData', function (): void {
                     "uniq_domain" => null,
                     "plan" => "starter",
                     "plan_level" => 0,
-                    "limits" => []
+                    "limits" => [],
+                    "created_at" => "2018-11-10T15:33:18.402Z",
+                    "id" => 680,
+                    "role" => "admin",
+                    "owner_id" => 1114,
+                    "story_published_hook" => null,
                 ],
-                "created_at" => "2018-11-10T15:33:18.402Z",
-                "id" => 680,
-                "role" => "admin",
-                "owner_id" => 1114,
-                "story_published_hook" => null,
             ])
             , []),
     ];
@@ -37,18 +37,18 @@ test('Testing One space, SpaceData', function (): void {
     expect($storyblokData->get("name"))
         ->toBe("Example Space")
         ->and($storyblokData->name())->toBe("Example Space")
-        ->and($storyblokData->createdAt())->toBe("2024-12-31")
+        ->and($storyblokData->createdAt())->toBe("2018-11-10")
         ->and($storyblokData->planDescription())->toBe("Starter (Trial)");
 
     $storyblokData->setName("New Name");
     expect($storyblokData->get("name"))
         ->toBe("New Name")
-        ->and($storyblokData->createdAt())->toBe("2024-12-31")
+        ->and($storyblokData->createdAt())->toBe("2018-11-10")
         ->and($storyblokData->get("domain"))->toBe("https://example.storyblok.com");
 
     $storyblokData->setDomain("example.com");
     expect($storyblokData->get("name"))
         ->toBe("New Name")
-        ->and($storyblokData->createdAt())->toBe("2024-12-31")
+        ->and($storyblokData->createdAt())->toBe("2018-11-10")
         ->and($storyblokData->get("domain"))->toBe("example.com");
 });

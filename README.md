@@ -113,6 +113,33 @@ foreach ($data as $key => $story) {
     $story->getName() . PHP_EOL;
 }
 ```
+
+## Handling users
+
+### Getting the current user
+
+To get the current user, owner of the Personal access token used you can use the userApi and the UserData.
+
+```php
+
+$response = $c->userApi()->me();
+ /** @var UserData $currentUser */
+$currentUser = $response->data();
+// "User ID"
+echo $currentUser->id();
+// "User identifier"
+echo $currentUser->userid();
+// "User email"
+echo $currentUser->email());
+// "User has Organization"
+echo $currentUser->hasOrganization() ? " HAS ORG" : "NO ORG";
+// "User Organization"
+echo $currentUser->orgName();
+// "User has Partner"
+echo $currentUser->hasPartner() ? " HAS PARTNER" : "NO PARTNER";
+
+
+```
 ## Handling all the other Endpoints
 If you need to handle an endpoint not yet supported by this package, you can use the `GenericApi` class, which is, in the end, a wrapper on top of the HTTP methods and returns data as StoryblokData. Thus,  you can easily access the structured and nested JSON you can retrieve in the response.
 For example for retrieving the assets:

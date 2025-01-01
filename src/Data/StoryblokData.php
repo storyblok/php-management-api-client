@@ -102,6 +102,10 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
             return null;
         }
 
+        if ($value === "") {
+            return "";
+        }
+
         try {
             $date = new \DateTimeImmutable($value);
         } catch (\DateMalformedStringException) {
