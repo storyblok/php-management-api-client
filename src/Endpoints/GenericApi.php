@@ -20,8 +20,10 @@ class GenericApi extends EndpointBase
     }
 
 
-
-
+    /**
+     * @param array<mixed> $payload
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
     public function post(string $path, array $payload = []): StoryblokResponseInterface
     {
         return $this->makeRequest(

@@ -55,7 +55,7 @@ class StoryblokResponse implements StoryblokResponseInterface
         $this->response->getHeaders();
     }
 
-    public function getHeader($headerName): mixed
+    public function getHeader(string $headerName): mixed
     {
         try {
             $headers = $this->response->getHeaders();
@@ -108,12 +108,20 @@ class StoryblokResponse implements StoryblokResponseInterface
 
 
 
-    public function asJson(): void
+    public function asJson(): string
     {
-        // TODO: Implement asJson() method.
+        return json_encode($this->toArray());
     }
 
 
+    /**
+     * @return array<mixed>
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     */
     public function toArray(): array
     {
 

@@ -8,7 +8,7 @@ use Roberto\Storyblok\Mapi\Data\StoryblokData;
 
 class StoryData extends StoryblokData
 {
-    public function setName($name): void
+    public function setName(string $name): void
     {
         $this->set('name', $name);
     }

@@ -14,13 +14,15 @@ use Iterator;
  * structured data.
  * Implements Iterator, ArrayAccess, and Countable
  * for seamless data traversal, access, and manipulation.
+ * @implements ArrayAccess<int|string, mixed>
+ * @implements Iterator<int|string, mixed>
  */
 class StoryblokData implements Iterator, ArrayAccess, Countable
 {
     use IterableDataTrait;
 
     /**
-     * @param array $data The initial data to store in the object.
+     * @param array<mixed> $data The initial data to store in the object.
      */
     public function __construct(protected array $data = []) {}
 
@@ -28,7 +30,7 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
      * @deprecated
      * Factory method to create a new instance of StoryblokData.
      *
-     * @param array $data The data to initialize the object with.
+     * @param array<mixed> $data The data to initialize the object with.
      * @return StoryblokData A new instance of StoryblokData.
      */
     public static function make(array $data = []): StoryblokData
@@ -39,7 +41,7 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     /**
      * Returns the internal data as an array.
      *
-     * @return array The underlying data in array form.
+     * @return array<mixed> The underlying data in array form.
      */
     public function toArray(): array
     {
@@ -62,7 +64,7 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
      * @param bool $raw Whether to return raw data or cast it into StoryblokData if applicable.
      * @return mixed The value associated with the key, or the default value if the key does not exist.
      */
-    public function get(mixed $key, mixed $defaultValue = null, string $charNestedKey = ".", $raw = false): mixed
+    public function get(mixed $key, mixed $defaultValue = null, string $charNestedKey = ".", bool $raw = false): mixed
     {
         if (is_string($key)) {
             $keyString = strval($key);
@@ -159,9 +161,9 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
      *
      * @param mixed $value The value to process.
      * @param bool $raw Whether to return raw data or cast it into StoryblokData if applicable.
-     * @return int|float|string|bool|StoryblokData|array|null The processed value.
+     * @return int|float|string|bool|StoryblokData|array<mixed>|null The processed value.
      */
-    protected function returnData(mixed $value, $raw = false): null|int|float|string|bool|StoryblokData|array
+    protected function returnData(mixed $value, bool $raw = false): null|int|float|string|bool|StoryblokData|array
     {
         if (is_null($value)) {
             return null;

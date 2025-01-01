@@ -6,7 +6,7 @@ namespace Roberto\Storyblok\Mapi;
 
 class StoryblokUtils
 {
-    public static function getRegionFromSpaceId($spaceId): string
+    public static function getRegionFromSpaceId(string|int $spaceId): string
     {
         return ($spaceId >= 1_000_000) ? "US" : "EU";
     }
@@ -19,7 +19,7 @@ class StoryblokUtils
      * The function returns the formal description of the plan
      * related to the code.
      */
-    public static function getPlanDescription($planLevel): string
+    public static function getPlanDescription(int $planLevel): string
     {
         return match ($planLevel) {
             0 => 'Starter (Trial)',

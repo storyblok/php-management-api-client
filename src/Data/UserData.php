@@ -8,6 +8,9 @@ use Roberto\Storyblok\Mapi\StoryblokUtils;
 
 class UserData extends StoryblokData
 {
+    /**
+     * @param array<mixed> $data
+     */
     public static function makeFromResponse(array $data = []): self
     {
         return new self($data["user"] ?? []);

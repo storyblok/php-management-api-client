@@ -101,7 +101,7 @@ class MapiClient
         return new SpaceApi($this->httpClient);
     }
 
-    public function storyApi($spaceId): StoryApi
+    public function storyApi(string|int $spaceId): StoryApi
     {
         return new StoryApi($this->httpClient, $spaceId);
     }

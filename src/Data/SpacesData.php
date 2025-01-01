@@ -12,7 +12,9 @@ class SpacesData extends StoryblokData
         return SpaceData::class;
     }
 
-
+    /**
+     * @param array<mixed> $data
+     */
     public static function makeFromResponse(array $data = []): self
     {
         return new self($data["spaces"] ?? []);

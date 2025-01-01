@@ -14,7 +14,10 @@ class EndpointBase
     public function __construct(protected ?HttpClientInterface $httpClient) {}
 
 
-
+    /**
+     * @param array<mixed> $options
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
     public function makeRequest(
         string $method = "GET",
         string $path = "/v1/spaces",

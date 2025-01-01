@@ -11,11 +11,11 @@ interface StoryblokResponseInterface
 {
     public function __construct(ResponseInterface $response);
 
-    public static function make(ResponseInterface $response);
+    public static function make(ResponseInterface $response): StoryblokResponse;
 
-    public function getResponse();
+    public function getResponse(): ResponseInterface;
 
-    public function getResponseBody();
+    public function getResponseBody(): string;
 
     public function getErrorMessage(): string;
 
@@ -23,13 +23,16 @@ interface StoryblokResponseInterface
 
     public function perPage(): mixed;
 
-    public function getResponseHeaders();
+    public function getResponseHeaders(): void;
 
-    public function getResponseStatusCode();
+    public function getResponseStatusCode(): int;
 
-    public function asJson();
+    public function asJson(): string;
 
-    public function toArray();
+    /**
+     * @return array<mixed>
+     */
+    public function toArray(): array;
 
     public function data(): StoryblokData;
 

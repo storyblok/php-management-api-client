@@ -9,17 +9,20 @@ use Roberto\Storyblok\Mapi\StoryblokUtils;
 
 class SpaceData extends StoryblokData
 {
+    /**
+     * @param array<mixed> $data
+     */
     public static function makeFromResponse(array $data = []): self
     {
         return new self($data["space"] ?? []);
     }
 
-    public function setName($name): void
+    public function setName(string $name): void
     {
         $this->set('name', $name);
     }
 
-    public function setDomain($domain): void
+    public function setDomain(string $domain): void
     {
         $this->set('domain', $domain);
     }

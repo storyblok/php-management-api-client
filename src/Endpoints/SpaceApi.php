@@ -24,9 +24,6 @@ class SpaceApi extends EndpointBase
     }
 
 
-    /**
-     * @param $spaceId
-     */
     public function get(string $spaceId): StoryblokResponseInterface
     {
         return $this->makeRequest(
@@ -80,7 +77,7 @@ class SpaceApi extends EndpointBase
     /**
      * @param $spaceId
      */
-    public function backup($spaceId): StoryblokResponseInterface
+    public function backup(string $spaceId): StoryblokResponseInterface
     {
         return $this->makeRequest(
             "POST",
