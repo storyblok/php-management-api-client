@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Roberto\Storyblok\Mapi;
 
+use Roberto\Storyblok\Mapi\Endpoints\AssetApi;
 use Roberto\Storyblok\Mapi\Endpoints\GenericApi;
 use Roberto\Storyblok\Mapi\Endpoints\SpaceApi;
 use Roberto\Storyblok\Mapi\Endpoints\StoryApi;
@@ -109,6 +110,11 @@ class MapiClient
     public function userApi(): UserApi
     {
         return new UserApi($this->httpClient);
+    }
+
+    public function assetApi(string|int $spaceId): AssetApi
+    {
+        return new AssetApi($this->httpClient, $spaceId);
     }
 
     public function genericApi(): GenericApi

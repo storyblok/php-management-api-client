@@ -137,9 +137,27 @@ echo $currentUser->hasOrganization() ? " HAS ORG" : "NO ORG";
 echo $currentUser->orgName();
 // "User has Partner"
 echo $currentUser->hasPartner() ? " HAS PARTNER" : "NO PARTNER";
-
-
 ```
+
+## Handling assets
+
+### Getting the assets
+
+To get the assets you can use the assetApi and the AssetData.
+
+```php
+$response = $c->assetApi($spaceId)->page();
+/** @var AssetsData $assets */
+$assets = $response->data();
+
+foreach ($assets as $key => $asset) {
+    echo $asset->get("id");
+    echo $asset->get("content_type");
+    echo $asset->get("content_length");
+    echo $asset->filenameCDN();
+}
+```
+
 ## Handling all the other Endpoints
 If you need to handle an endpoint not yet supported by this package, you can use the `GenericApi` class, which is, in the end, a wrapper on top of the HTTP methods and returns data as StoryblokData. Thus,  you can easily access the structured and nested JSON you can retrieve in the response.
 For example for retrieving the assets:
