@@ -158,6 +158,17 @@ foreach ($assets as $key => $asset) {
 }
 ```
 
+### Uploading Assets
+
+To upload an asset, you can use the `upload()` method:
+
+```php
+echo "UPLOADING " . $filename . PHP_EOL;
+$response = $c->assetApi($spaceId)->upload($filename);
+$uploadedAsset = $response->data();
+echo "UPLOADED ASSET, ID : " . $uploadedAsset->get("id") . PHP_EOL;
+```
+
 ## Handling all the other Endpoints
 If you need to handle an endpoint not yet supported by this package, you can use the `GenericApi` class, which is, in the end, a wrapper on top of the HTTP methods and returns data as StoryblokData. Thus,  you can easily access the structured and nested JSON you can retrieve in the response.
 For example for retrieving the assets:
