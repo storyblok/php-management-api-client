@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Roberto\Storyblok\Mapi\MapiClient;
+use Storyblok\Mapi\MapiClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
 

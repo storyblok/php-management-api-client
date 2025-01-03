@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi\Data;
+namespace Storyblok\Mapi\Data;
 
-use Roberto\Storyblok\Mapi\Data\StoryblokData;
-use Roberto\Storyblok\Mapi\StoryblokUtils;
+use Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\Mapi\StoryblokUtils;
 
 class SpaceData extends StoryblokData
 {

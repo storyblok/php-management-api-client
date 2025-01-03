@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi\Endpoints;
+namespace Storyblok\Mapi\Endpoints;
 
-use Roberto\Storyblok\Mapi\Data\StoriesData;
-use Roberto\Storyblok\Mapi\Data\StoryblokData;
-use Roberto\Storyblok\Mapi\Endpoints\EndpointBase;
-use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
+use Storyblok\Mapi\Data\StoriesData;
+use Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\Mapi\Endpoints\EndpointBase;
+use Storyblok\Mapi\StoryblokResponseInterface;
 
 /**
  *

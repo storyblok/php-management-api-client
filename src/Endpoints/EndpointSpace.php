@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi\Endpoints;
+namespace Storyblok\Mapi\Endpoints;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

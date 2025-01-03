@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi\Data;
+namespace Storyblok\Mapi\Data;
 
-use Roberto\Storyblok\Mapi\StoryblokUtils;
+use Storyblok\Mapi\StoryblokUtils;
 
 class UserData extends StoryblokData
 {

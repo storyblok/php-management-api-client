@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi\Endpoints;
+namespace Storyblok\Mapi\Endpoints;
 
-use Roberto\Storyblok\Mapi\Data\StoryblokData;
-use Roberto\Storyblok\Mapi\StoryblokResponse;
-use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
+use Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\Mapi\StoryblokResponse;
+use Storyblok\Mapi\StoryblokResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class EndpointBase

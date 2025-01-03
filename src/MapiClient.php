@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi;
+namespace Storyblok\Mapi;
 
-use Roberto\Storyblok\Mapi\Endpoints\AssetApi;
-use Roberto\Storyblok\Mapi\Endpoints\GenericApi;
-use Roberto\Storyblok\Mapi\Endpoints\SpaceApi;
-use Roberto\Storyblok\Mapi\Endpoints\StoryApi;
-use Roberto\Storyblok\Mapi\Endpoints\UserApi;
+use Storyblok\Mapi\Endpoints\AssetApi;
+use Storyblok\Mapi\Endpoints\GenericApi;
+use Storyblok\Mapi\Endpoints\SpaceApi;
+use Storyblok\Mapi\Endpoints\StoryApi;
+use Storyblok\Mapi\Endpoints\UserApi;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

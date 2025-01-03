@@ -1,11 +1,11 @@
 {
-    "name": "roberto/sb-php-mapi-client-poc",
-    "description": "Storyblok CPHP Client for Management API",
+    "name": "storyblok/php-management-api-client",
+    "description": "Storyblok PHP Client for Management API",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Roberto\\Storyblok\\Mapi\\": "src/"
+            "Storyblok\\Mapi\\": "src/"
         }
     },
     "authors": [

@@ -3,7 +3,7 @@
 
 declare(strict_types=1);
 
-use Roberto\Storyblok\Mapi\StoryblokUtils;
+use Storyblok\Mapi\StoryblokUtils;
 
 test('Testing getRegionFromSpaceId', function ($spaceId, $region): void {
     expect(StoryblokUtils::getRegionFromSpaceId($spaceId))->toBe($region);

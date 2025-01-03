@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi;
+namespace Storyblok\Mapi;
 
-use Roberto\Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\Mapi\Data\StoryblokData;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 interface StoryblokResponseInterface

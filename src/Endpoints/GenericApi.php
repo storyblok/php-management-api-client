@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi\Endpoints;
+namespace Storyblok\Mapi\Endpoints;
 
-use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
+use Storyblok\Mapi\StoryblokResponseInterface;
 
 /**
  *

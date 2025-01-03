@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi\Data;
+namespace Storyblok\Mapi\Data;
 
 use PHPUnit\Event\Runtime\PHP;
 

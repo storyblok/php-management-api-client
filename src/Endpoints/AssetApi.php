@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Roberto\Storyblok\Mapi\Endpoints;
+namespace Storyblok\Mapi\Endpoints;
 
 use GuzzleHttp\Client;
-use Roberto\Storyblok\Mapi\Data\AssetData;
-use Roberto\Storyblok\Mapi\Data\AssetsData;
-use Roberto\Storyblok\Mapi\Data\SpaceData;
-use Roberto\Storyblok\Mapi\Data\SpacesData;
-use Roberto\Storyblok\Mapi\Data\StoryblokData;
-use Roberto\Storyblok\Mapi\Data\UserData;
-use Roberto\Storyblok\Mapi\StoryblokResponseInterface;
+use Storyblok\Mapi\Data\AssetData;
+use Storyblok\Mapi\Data\AssetsData;
+use Storyblok\Mapi\Data\SpaceData;
+use Storyblok\Mapi\Data\SpacesData;
+use Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\Mapi\Data\UserData;
+use Storyblok\Mapi\StoryblokResponseInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\Multipart\FormDataPart;
