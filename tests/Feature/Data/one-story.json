@@ -1,0 +1,52 @@
+{
+    "story": {
+        "name": "My third post",
+        "created_at": "2024-02-08T16:26:24.425Z",
+        "published_at": "2024-02-08T16:27:05.705Z",
+        "id": 440448565,
+        "uuid": "e656e146-f4ed-44a2-8017-013e5a9d9395",
+        "content": {
+            "_uid": "cfe0ff0b-3211-4bb7-8128-66e6ad262a56",
+            "component": "page"
+        },
+        "slug": "my-third-post",
+        "full_slug": "posts/my-third-post",
+        "sort_by_date": null,
+        "position": 0,
+        "tag_list": [],
+        "is_startpage": false,
+        "parent_id": 440448337,
+        "meta_data": null,
+        "group_id": "b913a671-f1e9-436a-bc5d-2795d2740198",
+        "first_published_at": "2024-02-08T16:27:05.705Z",
+        "release_id": null,
+        "lang": "default",
+        "path": null,
+        "alternates": [
+            {
+                "id": 440452827,
+                "name": "Mein dritter Beitrag",
+                "slug": "mein-dritter-beitrag",
+                "published": true,
+                "full_slug": "beitraege/mein-dritter-beitrag",
+                "is_folder": false,
+                "parent_id": 440452826
+            }
+        ],
+        "default_full_slug": "posts/my-third-post",
+        "translated_slugs": [
+            {
+                "path": "posts/my-third-post",
+                "name": null,
+                "lang": "fr",
+                "published": null
+            },
+            {
+                "path": "posts/mein-dritter-beitrag",
+                "name": "Mein dritter Beitrag",
+                "lang": "de",
+                "published": true
+            }
+        ]
+    }
+}

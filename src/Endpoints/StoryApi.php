@@ -6,6 +6,7 @@ namespace Storyblok\Mapi\Endpoints;
 
 use Storyblok\Mapi\Data\StoriesData;
 use Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\Mapi\Data\StoryData;
 use Storyblok\Mapi\Endpoints\EndpointBase;
 use Storyblok\Mapi\StoryblokResponseInterface;
 
@@ -32,6 +33,7 @@ class StoryApi extends EndpointSpace
         return $this->makeRequest(
             "GET",
             '/v1/spaces/' . $this->spaceId . '/stories/' . $storyId,
+            dataClass: StoryData::class,
         );
     }
 

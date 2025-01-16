@@ -43,3 +43,12 @@ function something(): void
 {
     // ..
 }
+
+use Symfony\Component\HttpClient\Response\MockResponse;
+
+function mockResponse($mockfile = 'test', $statsCode = 200): MockResponse
+{
+    $content = file_get_contents(sprintf('./tests/Feature/Data/%s.json', $mockfile));
+    return new MockResponse($content, ['http_code' => $statsCode]);
+
+}
