@@ -8,11 +8,11 @@ The *Storyblok Management API PHP Client* library simplifies the integration wit
 
 Install the package via Composer:
 
-```
-composer require storyblok/storyblok-management-api-client
+```shell
+composer require storyblok/php-management-api-client:dev-main
 ```
 
-> Installing the package via Composer will be available after this PoC will be accepted as package.
+> Since we are in the PoC phase, you need to install the package via Composer using `:dev-main` suffix within the package name.
 
 
 Below is an example showcasing how to use the library to interact with the Management API.
