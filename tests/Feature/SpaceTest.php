@@ -113,4 +113,11 @@ test('Testing multiple spaces, SpaceData', function (): void {
     expect($storyblokData->get("0.name"))
         ->toBe("Example Space")
         ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
+    foreach ($storyblokData as $spaceItem) {
+        expect($spaceItem->name())
+            ->toBeString();
+    }
+
+    expect($storyblokData->howManySpaces())->toBe(2);
+
 });

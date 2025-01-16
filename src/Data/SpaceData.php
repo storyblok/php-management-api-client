@@ -37,10 +37,6 @@ class SpaceData extends StoryblokData
         return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
     }
 
-    public function updatedAt(): null|string
-    {
-        return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
-    }
 
 
     public function planDescription(): null|string
