@@ -21,11 +21,11 @@ Below is an example showcasing how to use the library to interact with the Manag
 
 Initialize the `MapiClient` with your personal access token to interact with the API:
 
-```
+```php
 <?php
 require 'vendor/autoload.php';
 
-use YourNamespace\StoryblokManagement\MapiClient;
+use Storyblok\Mapi\MapiClient;
 
 // Initialize the client for the EU region with your personal access token
 $c = MapiClient::initEU($storyblokPersonalAccessToken);
@@ -36,6 +36,20 @@ You can use the methods `initEU` for accessing the Europe region and `initUS` fo
 
 Once you have `$spaceApi` you can retrieve and handle spaces via `all()` method, `get()`, `delete()` `create()` etc.
 
+## Handling the Personal Access Token
+Instead of handling the access token directly in the source code, you should consider to handle it via environment variables.
+For example, you can create (if not already exists), the `.env` file and set a parameter for storing the Personal Access Token.
+
+Then for loading the environment variable you can use the PHP dotenv package:
+
+```php
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+$storyblokPersonalAccessToken = $_ENV['SECRET_KEY'];
+$clientEU = MapiClient::initEU($storyblokPersonalAccessToken);
+```
+
+> The PHP dotenv package is here: <https://github.com/vlucas/phpdotenv>
 
 ## Handling Spaces
 
@@ -99,7 +113,13 @@ try {
 
 
 ```php
-$response = $clientEU->storyApi($spaceId)->page();
+
+use Storyblok\Mapi\MapiClient;
+
+$c = MapiClient::initEU($storyblokPersonalAccessToken);
+$storyApi = $c->storyApi();
+
+$response = $storyApi($spaceId)->page();
 
 echo "STATUS CODE : " . $response->getResponseStatusCode() . PHP_EOL;
 echo "LAST URL    : " . $response->getLastCalledUrl() . PHP_EOL;
