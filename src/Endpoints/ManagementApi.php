@@ -11,11 +11,19 @@ use Storyblok\Mapi\StoryblokResponseInterface;
  */
 class ManagementApi extends EndpointBase
 {
-    public function get(string $path = "spaces"): StoryblokResponseInterface
+    /**
+     * @param string $path the path of the API endpoint, for example spaces or spaces/1111/stories
+     * @param array<mixed> $queryParams
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function get(string $path = "spaces", array $queryParams = []): StoryblokResponseInterface
     {
         return $this->makeRequest(
             "GET",
             '/v1/' . $path,
+            [
+                "query" => $queryParams,
+            ],
         );
     }
 
