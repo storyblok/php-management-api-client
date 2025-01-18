@@ -161,9 +161,9 @@ echo $currentUser->hasPartner() ? " HAS PARTNER" : "NO PARTNER";
 
 ## Handling assets
 
-### Getting the assets
+### Getting the assets list
 
-To get the assets you can use the assetApi and the AssetData.
+To get the assets list you can use the `assetApi` and the `AssetsData`.
 
 ```php
 $assetApi = $c->assetApi($spaceId);
@@ -177,6 +177,18 @@ foreach ($assets as $key => $asset) {
     echo $asset->get("content_length");
     echo $asset->filenameCDN();
 }
+```
+
+### Getting one asset
+
+To get a specific asset you can use the assetApi and the AssetData.
+
+```php
+$assetApi = $c->assetApi($spaceId);
+$response = $assetApi->get($assetId);
+/** @var AssetData $asset */
+$asset = $response->data();
+echo $asset->filenameCDN();
 ```
 
 ### Uploading an Asset

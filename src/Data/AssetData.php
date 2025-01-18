@@ -8,13 +8,11 @@ use Storyblok\Mapi\StoryblokUtils;
 
 class AssetData extends StoryblokData
 {
-    /**
-     * @param array<mixed> $data
+    /*
+     * The Asset data response payload doesnt' have the typical
+     * "asset" attribute (like the story, the space etc)
+     * This is the reason why the makeFromResponse is not implemented here
      */
-    public static function makeFromResponse(array $data = []): self
-    {
-        return new self($data["asset"] ?? []);
-    }
 
 
     public function id(): int|string
