@@ -51,5 +51,24 @@ class ManagementApi extends EndpointBase
         );
     }
 
+    /**
+     * Function for updating a resource.
+     * Under the hood, is performed a PUT HTTP method
+     * @param string $path the path of the API endpoint,
+     *        for example: spaces/1111/stories/22222
+     * @param array<mixed> $payload the Request Body Properties
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function put(string $path, array $payload = []): StoryblokResponseInterface
+    {
+        return $this->makeRequest(
+            "PUT",
+            "/v1/" . $path,
+            [
+                "body" => $payload,
+            ],
+        );
+    }
+
 
 }
