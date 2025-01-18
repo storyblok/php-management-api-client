@@ -19,7 +19,7 @@ interface StoryblokResponseInterface
 
     public function getErrorMessage(): string;
 
-    public function total(): mixed;
+    public function total(): int|null;
 
     public function perPage(): mixed;
 
