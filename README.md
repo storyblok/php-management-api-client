@@ -166,7 +166,8 @@ echo $currentUser->hasPartner() ? " HAS PARTNER" : "NO PARTNER";
 To get the assets you can use the assetApi and the AssetData.
 
 ```php
-$response = $c->assetApi($spaceId)->page();
+$assetApi = $c->assetApi($spaceId);
+$response = $assetApi->page();
 /** @var AssetsData $assets */
 $assets = $response->data();
 
@@ -178,23 +179,36 @@ foreach ($assets as $key => $asset) {
 }
 ```
 
-### Uploading Assets
+### Uploading an Asset
 
 To upload an asset, you can use the `upload()` method:
 
 ```php
+$assetApi = $c->assetApi($spaceId);
 echo "UPLOADING " . $filename . PHP_EOL;
-$response = $c->assetApi($spaceId)->upload($filename);
+$response = $assetApi->upload($filename);
 $uploadedAsset = $response->data();
 echo "UPLOADED ASSET, ID : " . $uploadedAsset->get("id") . PHP_EOL;
 ```
 
+### Deleting an Asset
+
+To delete an asset, you can use the `delete()` method. The `delete()` method requires the asset ID (you want to delete) as parameter:
+
+```php
+$assetApi = $c->assetApi($spaceId);
+echo "DELETING " . $assetId . PHP_EOL;
+$response = $assetApi->delete($assetId);
+$deletedAsset = $response->data();
+echo "DELETED ASSET, ID : " . $deletedAsset->get("id") . PHP_EOL;
+```
+
 ## Handling all the other Endpoints
-If you need to handle an endpoint not yet supported by this package, you can use the `GenericApi` class, which is, in the end, a wrapper on top of the HTTP methods and returns data as StoryblokData. Thus,  you can easily access the structured and nested JSON you can retrieve in the response.
+If you need to handle an endpoint not yet supported by this package, you can use the `ManagementApi` class, which is, in the end, a wrapper on top of the HTTP methods and returns data as StoryblokData. Thus,  you can easily access the structured and nested JSON you can retrieve in the response.
 For example for retrieving the assets:
 
 ```php
-$response = $clientEU->genericApi()->get("spaces/{$spaceId}/assets/");
+$response = $clientEU->managementApi()->get("spaces/{$spaceId}/assets/");
 foreach ($response->data()->get("assets") as $key => $asset) {
     echo $asset->get("id") . "  " .
     $asset->get("filename") . PHP_EOL;

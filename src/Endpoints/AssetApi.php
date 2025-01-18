@@ -101,6 +101,17 @@ class AssetApi extends EndpointSpace
         );
     }
 
+    /**
+     * @param $assetId
+     */
+    public function delete(string $assetId): StoryblokResponseInterface
+    {
+        return $this->makeRequest(
+            "DELETE",
+            '/v1/spaces/' . $this->spaceId . '/assets/' . $assetId,
+        );
+    }
+
 
 
 }

@@ -9,7 +9,7 @@ use Storyblok\Mapi\StoryblokResponseInterface;
 /**
  *
  */
-class GenericApi extends EndpointBase
+class ManagementApi extends EndpointBase
 {
     public function get(string $path = "spaces"): StoryblokResponseInterface
     {

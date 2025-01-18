@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Storyblok\Mapi;
 
 use Storyblok\Mapi\Endpoints\AssetApi;
-use Storyblok\Mapi\Endpoints\GenericApi;
+use Storyblok\Mapi\Endpoints\ManagementApi;
 use Storyblok\Mapi\Endpoints\SpaceApi;
 use Storyblok\Mapi\Endpoints\StoryApi;
 use Storyblok\Mapi\Endpoints\UserApi;
@@ -117,8 +117,8 @@ class MapiClient
         return new AssetApi($this->httpClient, $spaceId);
     }
 
-    public function genericApi(): GenericApi
+    public function managementApi(): ManagementApi
     {
-        return new GenericApi($this->httpClient);
+        return new ManagementApi($this->httpClient);
     }
 }
