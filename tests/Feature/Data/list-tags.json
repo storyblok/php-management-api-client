@@ -1,0 +1,44 @@
+{
+    "internal_tags": [
+        {
+            "name": "some",
+            "id": 56932,
+            "object_type": "asset"
+        },
+        {
+            "name": "other",
+            "id": 56933,
+            "object_type": "asset"
+        },
+        {
+            "name": "new tag",
+            "id": 56942,
+            "object_type": "asset"
+        },
+        {
+            "name": "tag-158906",
+            "id": 56944,
+            "object_type": "asset"
+        },
+        {
+            "name": "tag-156868",
+            "id": 56945,
+            "object_type": "asset"
+        },
+        {
+            "name": "tag-926359",
+            "id": 56946,
+            "object_type": "asset"
+        },
+        {
+            "name": "tag-159569",
+            "id": 56947,
+            "object_type": "asset"
+        },
+        {
+            "name": "tag-693142",
+            "id": 56948,
+            "object_type": "asset"
+        }
+    ]
+}
