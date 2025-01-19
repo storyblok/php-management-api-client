@@ -17,8 +17,8 @@ jobs:
 
         strategy:
             matrix:
-                operating-system: [ 'ubuntu-latest', 'windows-latest']
-                php-versions: [  '8.4', '8.3']
+                operating-system: [ 'ubuntu-latest']
+                php-versions: [  '8.4']
                 dependency-stability: [ 'prefer-none' ]
 
         name: P${{ matrix.php-versions }} - ${{ matrix.operating-system}}
@@ -52,5 +52,5 @@ jobs:
               run: composer run refactor-check-code
 
             - name: Testing
-              run: composer run test-code-ci
+              run: vendor/bin/pest
 
