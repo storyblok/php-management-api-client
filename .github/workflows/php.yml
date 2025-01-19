@@ -51,5 +51,5 @@ jobs:
               run: composer run refactor-check-code
 
             - name: Testing
-              run: composer run test-code
+              run: composer run test-code-ci
 
