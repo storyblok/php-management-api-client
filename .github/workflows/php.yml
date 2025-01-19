@@ -29,9 +29,9 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php-versions }}
-                  extensions: curl, libxml, mbstring
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, bcmath, soap, intl, iconv, fileinfo
             - name: Install Dependencies
-              run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+              run: composer install -q --no-ansi --no-interaction --no-progress --prefer-dist
 
             - name: Show dir
               run: pwd
