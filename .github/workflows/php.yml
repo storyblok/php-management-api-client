@@ -38,6 +38,10 @@ jobs:
               run: pwd
             - name: PHP Version
               run: php --version
+            - name: Platform check
+              run: composer check-platform-reqs
+            - name: Security check
+              run: composer audit
 
             # Code quality
 
