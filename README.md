@@ -81,7 +81,7 @@ To illustrate how to use the `ManagementApi` class, we will demonstrate its usag
 
 > **Reference**: [Management API documentation for the Internal Tags endpoint](https://www.storyblok.com/docs/api/management/core-resources/internal-tags/)
 
-
+This approach can be adapted to create other resources by modifying the endpoint and payload, for example, for handling data sources, components, etc. To learn more about the endpoints, the parameters, and the structure of the response payload, you can use the [Storyblok Management API reference](https://www.storyblok.com/docs/api/management/getting-started).
 
 ### Retrieving content with ManagementApi class
 
@@ -89,7 +89,7 @@ To retrieve content using the `ManagementApi` class:
 
 1. Initialize the client.
 2. Obtain an instance of the `ManagementApi` class.
-3. Call the `get` method of the `ManagementApi` class with the appropriate parameters.
+3. Call the `get` method of the `ManagementApi` class using the appropriate parameters.
 
 For example, to retrieve multiple internal tags, use the Internal Tags endpoint with the GET HTTP method:
 [Retrieve Multiple Internal Tags](https://www.storyblok.com/docs/api/management/core-resources/internal-tags/retrieve-multiple-internal-tags).
@@ -177,6 +177,115 @@ To iterate through the items, you can use `foreach` because StoryblokData is ite
      $objectType = $tag->get("object_type");
  }
  ```
+
+
+
+### Creating a new resource with the Storyblok Management API
+
+This example demonstrates creating a new internal tag using the Storyblok Management API.
+
+First, define the tag details in an array, including attributes like `name` and `object_type`. Then, use the `post` method of the `ManagementApi` class to send a POST request to the `internal_tags` endpoint for the specified space.
+
+The response will indicate whether the operation was successful. If it succeeds, you can retrieve the created tag’s data using the `data()->get("internal_tag")` method. If the operation fails, the error message can be retrieved using the `getErrorMessage()` method.
+
+Here is the complete example:
+
+```php
+// Define the tag details
+$tag = [
+    "name" => "new tag",
+    "object_type" => "asset"
+];
+
+// Send the POST request to create the tag
+$response = $managementApi()->post(
+    "spaces/{$spaceId}/internal_tags",
+    ["internal_tag" => $tag]
+);
+
+// Show the URL of the response
+echo $response->getLastCalledUrl() . PHP_EOL;
+
+if ($response->isOk()) {
+    // Parse the created tag data
+    $createdTag = $response->data()->get("internal_tag");
+    echo "Tag created with id: " . $createdTag->get("id") . PHP_EOL;
+    echo $createdTag->toJson();
+} else {
+    // Handle errors
+    echo $response->getErrorMessage();
+}
+
+```
+
+### Editing a resource with the Storyblok Management API
+
+This example demonstrates how to update an existing resource, such as an internal tag, using the Storyblok Management API.
+
+To edit a resource, first retrieve or define the resource data you want to update. Modify the desired fields in the resource array, then use the `put` method of the `ManagementApi` class to send an update request to the appropriate endpoint, including the resource's ID.
+
+After sending the request, check if the operation was successful. If successful, you can log the updated response or any relevant details. If it fails, retrieve the error message for debugging.
+
+Here is the complete example:
+
+```php
+$tag["name"] = $tag["name"] . "-UPDATED";
+$response = $managementApi()->put(
+    "spaces/{$spaceId}/internal_tags/{$id}",
+    ["internal_tag" => $tag]
+);
+if ($response->isOk()) {
+    echo "Updated Response : <" . $response->getResponseBody() . ">" . PHP_EOL;
+    echo "Tag updated via id: " . $id . PHP_EOL;
+} else {
+
+    echo $response->getErrorMessage() . PHP_EOL;
+}
+```
+
+### Deleting a resource with the Storyblok Management API
+
+This example explains how to delete a resource, such as an internal tag, using the Storyblok Management API.
+
+To delete a resource, use the `delete` method of the `ManagementApi` class and specify the appropriate endpoint along with the resource's ID. The ID uniquely identifies the resource you want to remove.
+
+After sending the delete request, check the response to confirm whether the operation was successful. For a successful delete, the response body is typically empty. If the operation fails, retrieve and log the error message for further investigation.
+
+Here is the complete example:
+
+```php
+$response = $managementApi()->delete(
+    "spaces/{$spaceId}/internal_tags/{$id}"
+);
+if ($response->isOk()) {
+    echo "Response from a delete is empty: <" . $response->getResponseBody() . ">" . PHP_EOL;
+    echo "Tag deleted via id: " . $id . PHP_EOL;
+} else {
+    echo $response->getErrorMessage() . PHP_EOL;
+}
+
+```
+
+### Quick recap: using the `ManagementApi` Class
+
+The `ManagementApi` class is used for performing administrative tasks in Storyblok, including creating, updating, retrieving, and deleting resources like tags, components, and content entries. Here's when you would use it:
+
+- you need to add new resources to your space, such as tags, folders, or components. This is typically done when setting up new content structures or organizing assets.
+- you need to modify existing resources. For example, if you want to update a tag’s name, change a component’s structure, or modify content metadata.
+- you need to remove a resource that is no longer needed, such as deleting tags, components, or outdated content entries.
+- although the `ManagementApi` is focused on writing data, it’s also used for retrieving the details of resources that have been created or modified, helping you validate changes or access specific resource information.
+
+The `ManagementApi` class is best for scenarios where you need to manage the backend resources and automate workflows in Storyblok, such as integrating with third-party systems, synchronizing data, or implementing content versioning.
+
+### Note: `ManagementApi` vs Specialized Api Classes
+
+In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, and `AssetApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
+
+- **`SpaceApi`** focuses on managing space-level operations, such as retrieving space information, performing backup etc.
+- **`StoryApi`** specializes in handling stories and their content, including creating, updating, retrieving, and deleting stories. This class also provides methods that deal with the structure and fields specific to stories.
+- **`AssetApi`** designed to manage assets like images, files, and other media. It provides methods to upload, retrieve, and manage assets, offering features specific to media management.
+
+These specialized classes extend the functionality of the `ManagementApi` class, offering more precise control and optimized methods for interacting with specific resource types in your Storyblok space.
 
 
 
@@ -344,27 +453,9 @@ $deletedAsset = $response->data();
 echo "DELETED ASSET, ID : " . $deletedAsset->get("id") . PHP_EOL;
 ```
 
-## Handling all the other Endpoints
-If you need to handle an endpoint not yet supported by this package, you can use the `ManagementApi` class, which is, in the end, a wrapper on top of the HTTP methods and returns data as StoryblokData. Thus,  you can easily access the structured and nested JSON you can retrieve in the response.
-For example for retrieving the assets:
-
-```php
-$response = $clientEU->managementApi()->get("spaces/{$spaceId}/assets/");
-foreach ($response->data()->get("assets") as $key => $asset) {
-    echo $asset->get("id") . "  " .
-    $asset->get("filename") . PHP_EOL;
-}
-```
-
-## Features
-
-- **Region-Specific Initialization**: Easily configure the SDK for different Storyblok regions.
-- **Space Management**: Retrieve details, list spaces, and perform actions like backups.
-- **Easy Response Handling**: Access status codes and error messages and parsed data conveniently.
-
 ## Documentation
 
-Refer to the official documentation for detailed API descriptions and additional usage examples.
+Refer to the official documentation for detailed API descriptions and additional usage examples: https://www.storyblok.com/docs/api/management/getting-started
 
 ## Contributing
 
