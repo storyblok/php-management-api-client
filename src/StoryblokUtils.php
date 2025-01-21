@@ -21,7 +21,7 @@ class StoryblokUtils
      */
     public static function getPlanDescription(int $planLevel): string
     {
-        return match ($planLevel) {
+        return (string) match ($planLevel) {
             0 => 'Starter (Trial)',
             2 => 'Pro Space',
             1 => 'Standard Space',

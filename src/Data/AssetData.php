@@ -14,6 +14,11 @@ class AssetData extends StoryblokData
      * This is the reason why the makeFromResponse is not implemented here
      */
 
+    #[\Override]
+    public static function make(array $data = []): self
+    {
+        return new self($data);
+    }
 
     public function id(): int|string
     {

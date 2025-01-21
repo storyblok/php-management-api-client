@@ -10,7 +10,7 @@ class EndpointSpace extends EndpointBase
 {
     public function __construct(
         protected ?HttpClientInterface $httpClient,
-        protected string $spaceId,
+        protected string|int $spaceId,
     ) {
         parent::__construct($httpClient);
     }

@@ -17,6 +17,12 @@ class SpaceData extends StoryblokData
         return new self($data["space"] ?? []);
     }
 
+    #[\Override]
+    public static function make(array $data = []): self
+    {
+        return new self($data);
+    }
+
     public function setName(string $name): void
     {
         $this->set('name', $name);

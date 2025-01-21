@@ -17,7 +17,7 @@ use Iterator;
  * @implements ArrayAccess<int|string, mixed>
  * @implements Iterator<int|string, mixed>
  */
-class StoryblokData implements Iterator, ArrayAccess, Countable
+class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Countable
 {
     use IterableDataTrait;
 
@@ -27,7 +27,6 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     public function __construct(protected array $data = []) {}
 
     /**
-     * @deprecated
      * Factory method to create a new instance of StoryblokData.
      *
      * @param array<mixed> $data The data to initialize the object with.
@@ -49,7 +48,7 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     }
 
 
-    public function toJson(): string
+    public function toJson(): string|false
     {
         return json_encode($this->data, JSON_PRETTY_PRINT);
     }
@@ -67,6 +66,10 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     public function get(mixed $key, mixed $defaultValue = null, string $charNestedKey = ".", bool $raw = false): mixed
     {
         if (is_string($key)) {
+            if ($charNestedKey === "") {
+                $charNestedKey = ".";
+            }
+
             $keyString = strval($key);
             if (str_contains($keyString, $charNestedKey)) {
                 $nestedValue = $this->data;
@@ -131,6 +134,10 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
     {
         if (is_string($key)) {
             $array = &$this->data;
+            if ($charNestedKey === "") {
+                $charNestedKey = ".";
+            }
+
             $keys = explode($charNestedKey, $key);
             foreach ($keys as $i => $key) {
                 if (count($keys) === 1) {
@@ -211,12 +218,13 @@ class StoryblokData implements Iterator, ArrayAccess, Countable
      * @param string $charNestedKey The character used for separating nested keys (default: ".").
      * @return self|string|null The processed value as StoryblokData, string, or null.
      */
+    /*
     public function getData(mixed $key, mixed $defaultValue = null, string $charNestedKey = "."): self|string|null
     {
         $value = $this->get($key, $defaultValue, $charNestedKey);
         return $this->returnData($value);
 
-    }
+    }*/
 
     /**
      * Counts the number of top-level elements in the data.

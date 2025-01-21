@@ -16,6 +16,12 @@ class UserData extends StoryblokData
         return new self($data["user"] ?? []);
     }
 
+    #[\Override]
+    public static function make(array $data = []): self
+    {
+        return new self($data);
+    }
+
     public function orgName(): null|string
     {
         return $this->get('org.name', "");

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Storyblok\Mapi;
 
 use Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\Mapi\Data\StoryblokDataInterface;
 use Storyblok\Mapi\Data\StoryData;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -33,14 +34,15 @@ class StoryblokResponse implements StoryblokResponseInterface
     }
 
 
-    public function data(): StoryblokData
+    public function data(): StoryblokDataInterface
     {
 
         if (method_exists($this->dataClass, "makeFromResponse")) {
             return ($this->dataClass)::makeFromResponse($this->toArray());
         }
 
-        return new ($this->dataClass)($this->toArray());
+        return $this->dataClass::make($this->toArray());
+        //return new $dataClass($this->toArray());
 
     }
 
@@ -128,7 +130,7 @@ class StoryblokResponse implements StoryblokResponseInterface
 
 
 
-    public function asJson(): string
+    public function asJson(): string|false
     {
         return json_encode($this->toArray());
     }

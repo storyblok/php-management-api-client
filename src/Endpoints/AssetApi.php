@@ -49,15 +49,19 @@ class AssetApi extends EndpointSpace
     public function upload(string $filename, string|int|null $parent_id = null): StoryblokResponseInterface
     {
         // =========== CREATE A SIGNED REQUEST
-        $size = getimagesize($filename);
-        $width = $size[0];
-        $height = $size[1];
         $payload = [
             'filename' => $filename,
-            'size' => $width . 'x' . $height,
+            //'size' => $width . 'x' . $height,
             'validate_upload' => 1,
             'parent_id' => $parent_id,
         ];
+        $size = getimagesize($filename);
+        if ($size !== false) {
+            $width = $size[0];
+            $height = $size[1];
+            $payload['size'] = $width . 'x' . $height;
+        }
+
         $signedResponse = $this->makeRequest(
             "POST",
             '/v1/spaces/' . $this->spaceId . '/assets/',

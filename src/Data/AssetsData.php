@@ -14,6 +14,12 @@ class AssetsData extends StoryblokData
         return AssetData::class;
     }
 
+    #[\Override]
+    public static function make(array $data = []): self
+    {
+        return new self($data);
+    }
+
 
     /**
      * @param array<mixed> $data

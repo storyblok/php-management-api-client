@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Storyblok\Mapi;
 
 use Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\Mapi\Data\StoryblokDataInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 interface StoryblokResponseInterface
@@ -27,14 +28,14 @@ interface StoryblokResponseInterface
 
     public function getResponseStatusCode(): int;
 
-    public function asJson(): string;
+    public function asJson(): string|false;
 
     /**
      * @return array<mixed>
      */
     public function toArray(): array;
 
-    public function data(): StoryblokData;
+    public function data(): StoryblokDataInterface;
 
     public function getLastCalledUrl(): mixed;
 
