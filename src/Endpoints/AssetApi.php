@@ -78,9 +78,14 @@ class AssetApi extends EndpointSpace
         $signedResponseData = $signedResponse->data();
 
         // =========== UPLOAD FILE for the SIGNED REQUEST
-        $postFields = $signedResponseData->get("fields")->toArray();
+        $fields = $signedResponseData->get("fields");
+        $postFields = [];
+        if ($fields instanceof StoryblokData) {
+            $postFields = $fields->toArray();
+        }
+
         $postFields['file'] = fopen($filename, 'r');
-        $postUrl = $signedResponseData->get('post_url');
+        $postUrl = $signedResponseData->getString('post_url');
 
         $responseUpload = HttpClient::create()->request(
             "POST",
@@ -100,7 +105,7 @@ class AssetApi extends EndpointSpace
             '/v1/spaces/' .
                 $this->spaceId .
                 '/assets/' .
-                $signedResponseData->get('id') .
+                $signedResponseData->getString('id') .
                 '/finish_upload',
         );
     }

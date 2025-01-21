@@ -86,26 +86,47 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
                 return $this->returnData($nestedValue, $raw);
             }
 
+            if (! array_key_exists($key, $this->data)) {
+                return $defaultValue;
+            }
+
         }
 
-        if (! array_key_exists($key, $this->data)) {
-            return $defaultValue;
-        }
 
         return $this->returnData($this->data[$key], $raw) ?? $defaultValue;
 
     }
 
+    public function getString(mixed $key, string $defaultValue = "", string $charNestedKey = "."): string
+    {
+        $returnValue = $this->get($key, "", $charNestedKey);
+
+        if (is_scalar($returnValue)) {
+            return strval($returnValue);
+        }
+
+        return $defaultValue;
+    }
+
+    public function getBoolean(mixed $key, bool $defaultValue = false, string $charNestedKey = "."): bool
+    {
+        $returnValue = $this->get($key, false, $charNestedKey);
+
+        if (is_scalar($returnValue)) {
+            return boolval($returnValue);
+        }
+
+        return $defaultValue;
+    }
+
     public function getFormattedDateTime(
         mixed $key,
-        mixed $defaultValue = null,
+        string $defaultValue = "",
         string $charNestedKey = ".",
         string $format = "Y-m-d H:i:s",
     ): string|null {
-        $value =  $this->get($key, $defaultValue, $charNestedKey);
-        if (is_null($value)) {
-            return null;
-        }
+        $value =  $this->getString($key, "", $charNestedKey);
+
 
         if ($value === "") {
             return "";
@@ -168,9 +189,9 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
      *
      * @param mixed $value The value to process.
      * @param bool $raw Whether to return raw data or cast it into StoryblokData if applicable.
-     * @return int|float|string|bool|StoryblokData|array<mixed>|null The processed value.
+     * @return mixed The processed value.
      */
-    protected function returnData(mixed $value, bool $raw = false): null|int|float|string|bool|StoryblokData|array
+    protected function returnData(mixed $value, bool $raw = false): mixed
     {
         if (is_null($value)) {
             return null;
@@ -188,11 +209,14 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
             return new StoryblokData($value);
         }
 
+
+
         if ($value instanceof StoryblokData) {
             return $value;
         }
 
         return new StoryblokData([]);
+
     }
 
 

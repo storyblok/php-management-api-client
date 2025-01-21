@@ -22,9 +22,9 @@ class AssetsData extends StoryblokData
 
 
     /**
-     * @param array<mixed> $data
+     * @param array<string, array<mixed>> $data
      */
-    public static function makeFromResponse(array $data = []): self
+    public static function makeFromResponse(array $data): self
     {
         return new self($data["assets"] ?? []);
     }

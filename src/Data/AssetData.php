@@ -20,15 +20,15 @@ class AssetData extends StoryblokData
         return new self($data);
     }
 
-    public function id(): int|string
+    public function id(): string
     {
-        return $this->get('id', "");
+        return $this->getString('id', "");
     }
 
 
     public function filenameCDN(): int|string
     {
-        $filename = $this->get('filename', "");
+        $filename = $this->getString('filename', "");
         return str_replace(
             "https://s3.amazonaws.com/a.storyblok.com",
             "https://a.storyblok.com",

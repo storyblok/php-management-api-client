@@ -22,7 +22,7 @@ class StoriesData extends StoryblokData
 
 
     /**
-     * @param array<mixed> $data
+     * @param array<string, array<mixed>> $data
      */
     public static function makeFromResponse(array $data = []): self
     {

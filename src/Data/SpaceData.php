@@ -10,7 +10,7 @@ use Storyblok\Mapi\StoryblokUtils;
 class SpaceData extends StoryblokData
 {
     /**
-     * @param array<mixed> $data
+     * @param array<string, array<mixed>> $data
      */
     public static function makeFromResponse(array $data = []): self
     {
@@ -33,9 +33,9 @@ class SpaceData extends StoryblokData
         $this->set('domain', $domain);
     }
 
-    public function name(): null|string
+    public function name(): string
     {
-        return $this->get('name', "");
+        return $this->getString('name', "");
     }
 
     public function createdAt(): null|string
@@ -47,6 +47,6 @@ class SpaceData extends StoryblokData
 
     public function planDescription(): null|string
     {
-        return StoryblokUtils::getPlanDescription($this->get('plan_level', ""));
+        return StoryblokUtils::getPlanDescription($this->getString('plan_level'));
     }
 }

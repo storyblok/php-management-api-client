@@ -110,8 +110,8 @@ class StoryblokResponse implements StoryblokResponseInterface
         }
 
         $data = $this->data();
-        $message = $data->get("error");
-        if ($message) {
+        $message = $data->getString("error");
+        if ($message !== '' && $message !== '0') {
             return $message;
         }
 

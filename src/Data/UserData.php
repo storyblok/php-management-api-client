@@ -9,7 +9,7 @@ use Storyblok\Mapi\StoryblokUtils;
 class UserData extends StoryblokData
 {
     /**
-     * @param array<mixed> $data
+     * @param array<string, array<mixed>> $data
      */
     public static function makeFromResponse(array $data = []): self
     {
@@ -22,36 +22,36 @@ class UserData extends StoryblokData
         return new self($data);
     }
 
-    public function orgName(): null|string
+    public function orgName(): string
     {
-        return $this->get('org.name', "");
+        return $this->getString('org.name');
     }
 
-    public function id(): int|string
+    public function id(): string
     {
-        return $this->get('id', "");
+        return $this->getString('id');
     }
 
     public function userId(): string
     {
-        return $this->get('userid', "");
+        return $this->getString('userid');
     }
 
     public function email(): string
     {
-        return $this->get('email', "");
+        return $this->getString('email');
     }
 
 
 
     public function hasOrganization(): bool
     {
-        return $this->get('has_org', false);
+        return $this->getBoolean('has_org');
     }
 
     public function hasPartner(): bool
     {
-        return $this->get('has_partner', false);
+        return $this->getBoolean('has_partner');
     }
 
     public function lastSignInAt(): null|string

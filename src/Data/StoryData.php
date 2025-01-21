@@ -9,7 +9,7 @@ use Storyblok\Mapi\Data\StoryblokData;
 class StoryData extends StoryblokData
 {
     /**
-     * @param array<mixed> $data
+     * @param array<string, array<mixed>> $data
      */
     public static function makeFromResponse(array $data = []): self
     {
@@ -29,7 +29,7 @@ class StoryData extends StoryblokData
 
     public function name(): string
     {
-        return $this->get('name', "");
+        return $this->getString('name');
     }
 
     public function createdAt(): null|string
