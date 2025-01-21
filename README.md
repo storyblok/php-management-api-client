@@ -28,10 +28,14 @@ require 'vendor/autoload.php';
 use Storyblok\Mapi\MapiClient;
 
 /** @var MapiClient $client */
-$client = MapiClient::initEU($storyblokPersonalAccessToken);
+$client = new MapiClient($storyblokPersonalAccessToken);
 ```
-
-You can use the methods `initEU` to access the European region.
+The second parameter (a string) for setting the region. In this case, you can use the string "US" or "AP" or "CA" or "CN".
+For example:
+```php
+$client = new MapiClient($storyblokPersonalAccessToken, 'US');
+```
+Or if you prefer you can use the static methods `initEU` to access the European region.
 
 If you need access to other regions, you can use:
 
@@ -59,7 +63,7 @@ Then, for loading the environment variable, you can use the PHP "dotenv" package
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 $storyblokPersonalAccessToken = $_ENV['SECRET_KEY'];
-$client = MapiClient::init($storyblokPersonalAccessToken);
+$client = new MapiClient($storyblokPersonalAccessToken);
 ```
 
 > The PHP dotenv package is here: <https://github.com/vlucas/phpdotenv>
@@ -97,7 +101,7 @@ For example, to retrieve multiple internal tags, use the Internal Tags endpoint 
 Below is an example of initializing the client for the EU region (default) using a Personal Access Token:
 
 ```php
-$client = MapiClient::init($storyblokPersonalAccessToken);
+$client = new MapiClient($storyblokPersonalAccessToken);
 ```
 
 Getting the ManagementApi instance:
