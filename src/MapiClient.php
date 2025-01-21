@@ -14,7 +14,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class MapiClient
 {
-    private ?HttpClientInterface $httpClient = null;
+    private HttpClientInterface $httpClient;
 
 
     public static function initEU(string $personalAccessToken): self

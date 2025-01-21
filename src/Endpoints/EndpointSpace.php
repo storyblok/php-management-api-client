@@ -9,7 +9,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class EndpointSpace extends EndpointBase
 {
     public function __construct(
-        protected ?HttpClientInterface $httpClient,
+        protected HttpClientInterface $httpClient,
         protected string|int $spaceId,
     ) {
         parent::__construct($httpClient);

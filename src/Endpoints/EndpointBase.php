@@ -11,7 +11,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class EndpointBase
 {
-    public function __construct(protected ?HttpClientInterface $httpClient) {}
+    public function __construct(protected HttpClientInterface $httpClient) {}
 
 
     /**
