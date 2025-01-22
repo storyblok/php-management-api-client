@@ -56,5 +56,8 @@ jobs:
             - name: Rector rules
               run: composer run refactor-check-code
 
+            - name: running tests
+              run: vendor/bin/pest
+
 
 
