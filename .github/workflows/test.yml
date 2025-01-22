@@ -11,6 +11,8 @@ on:
             - main
             - develop
             - features/**
+env:
+    REQUIRED_PHP_EXTENSIONS: "ctype, filter, hash, iconv, json"
 
 jobs:
     checks:
@@ -31,7 +33,9 @@ jobs:
               with:
                   php-version: ${{ matrix.php-versions }}
                   extensions: dom, curl, libxml, mbstring, zip, pcntl, bcmath, soap, intl, iconv, fileinfo
-                  coverage: none
+                  coverage: "pcov"
+                  tools: "composer:v2"
+
             - name: Install Dependencies
               run: composer install --prefer-dist --no-interaction
 
@@ -44,7 +48,7 @@ jobs:
 
 
             - name: running tests
-              run: vendor/bin/pest --configuration=phpunit.xml.dist
+              run: vendor/bin/pest --coverage --configuration=phpunit.xml.dist
 
 
 
