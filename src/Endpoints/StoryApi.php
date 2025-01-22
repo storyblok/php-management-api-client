@@ -42,7 +42,7 @@ class StoryApi extends EndpointSpace
     {
         if (! $storyData->hasKey("content")) {
             $storyData->setContent([
-                "component" => $storyData->getContentType(),
+                "component" => $storyData->defaultContentType(),
             ]);
         }
 

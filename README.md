@@ -339,17 +339,24 @@ try {
 
 ## Handling Stories
 
+### Getting the StoryApi instance
+
+To handle the Stories, getting stories, getting a single story, creating a story, updating a story, deleting a story, you can start getting the instance of StoryApi that allows you to access the methods for handling stories.
+
+```php
+use Storyblok\Mapi\MapiClient;
+$spaceId= "1234";
+$client = new MapiClient($storyblokPersonalAccessToken);
+$storyApi = $client->storyApi($spaceId);
+```
+
+
+
 ### Getting a page of stories
 
 
 ```php
-
-use Storyblok\Mapi\MapiClient;
-
-$c = MapiClient::initEU($storyblokPersonalAccessToken);
-$storyApi = $c->storyApi();
-
-$response = $storyApi($spaceId)->page();
+$response = $storyApi->page();
 
 echo "STATUS CODE : " . $response->getResponseStatusCode() . PHP_EOL;
 echo "LAST URL    : " . $response->getLastCalledUrl() . PHP_EOL;
@@ -363,6 +370,45 @@ foreach ($data as $key => $story) {
     $story->getName() . PHP_EOL;
 }
 ```
+
+### Getting a Story by ID
+
+```php
+$storyId= "1234";
+$response = $storyApi->get($storyId);
+
+echo "STATUS CODE : " . $response->getResponseStatusCode() . PHP_EOL;
+echo "LAST URL    : " . $response->getLastCalledUrl() . PHP_EOL;
+
+$story = $response->data();
+echo $story->getName() . PHP_EOL;
+```
+
+### Creating a Story
+
+To create a story, you can call the `create()` method provided by `StoryApi` and use the `StoryData` class. The `StoryData` class is specific for storing and handling story information. It also provides some nice methods for accessing some relevant Story fields.
+
+```php
+$story = new StoryData();
+$story->setName("A Story");
+$story->setSlug("a-story");
+$story->setContentType("page");
+$response = $storyApi->create($story);
+
+echo $response->getLastCalledUrl() . PHP_EOL;
+echo $response->asJson() . PHP_EOL;
+echo $response->getResponseStatusCode() . PHP_EOL;
+if ($response->isOk()) {
+    $storyCreated = $response->data();
+    echo "Story created, ID: " . $storyCreated->id() . PHP_EOL;
+    echo "             UUID: " . $storyCreated->uuid() . PHP_EOL;
+    echo "             SLUG: " . $storyCreated->slug() . PHP_EOL;
+} else {
+    echo $response->getErrorMessage();
+}
+```
+
+
 
 ## Handling users
 
@@ -411,7 +457,7 @@ foreach ($assets as $key => $asset) {
 
 ### Getting one asset
 
-To get a specific asset you can use the assetApi and the AssetData.
+To get a specific asset, you can use the `AssetApi` and the `AssetData` classes.
 
 ```php
 $assetApi = $c->assetApi($spaceId);

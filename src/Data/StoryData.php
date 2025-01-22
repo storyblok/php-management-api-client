@@ -34,6 +34,11 @@ class StoryData extends StoryblokData
         $this->set('slug', $slug);
     }
 
+    public function slug(): string
+    {
+        return $this->getString('slug');
+    }
+
     public function setCreatedAt(string $createdAt): void
     {
         $this->set('created_at', $createdAt);
@@ -69,9 +74,19 @@ class StoryData extends StoryblokData
         return $this;
     }
 
-    public function getContentType(): string
+    public function defaultContentType(): string
     {
         return $this->defaultContentType;
+    }
+
+    public function id(): string
+    {
+        return $this->getString('id');
+    }
+
+    public function uuid(): string
+    {
+        return $this->getString('uuid');
     }
 
 
