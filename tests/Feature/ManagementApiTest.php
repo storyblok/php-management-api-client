@@ -145,6 +145,35 @@ test('Testing edit resource, StoryblokData', function (): void {
 
 });
 
+test('Testing StoryblokData', function (): void {
+    $responses = [
+        \mockResponse(
+            "list-tags",
+            200,
+            ["total" => 8, "per-page" => 25]
+        ),
+        \mockResponse("empty-tags", 404),
+    ];
+
+    $client = new MockHttpClient($responses, baseUri: 'https://mapi.storyblok.com');
+    $mapiClient = MapiClient::initTest($client);
+    $managementApi = $mapiClient->managementApi();
+
+    $spaceId = "321388";
+    $response = $managementApi->get(
+        sprintf('spaces/%s/internal_tags', $spaceId),
+        [
+            "by_object_type" => "asset",
+            //"search" => "so"
+        ]
+    );
+    $array =
+    expect($response->toArray())->toBeArray();
+
+});
+
+
+
 
 
 

@@ -30,9 +30,10 @@ use Storyblok\Mapi\MapiClient;
 /** @var MapiClient $client */
 $client = new MapiClient($storyblokPersonalAccessToken);
 ```
-The second parameter is for setting the region.
-We provide and Enum class for setting the region.In this case, you can use the Region Enum Region::US or Region::AP or Region::CA or Region::CN.
-For example:
+The second optional parameter is for setting the region.
+We provide and Enum class for setting the region.In this case, you can use the Region Enum like `Region::US` or `Region::AP` or `Region::CA` or `Region::CN`.
+
+For example for using the US region you can use:
 ```php
 
 use \Storyblok\Mapi\Data\Enum\Region;
