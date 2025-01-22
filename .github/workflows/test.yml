@@ -1,4 +1,4 @@
-name: Source Code Check
+name: Executing tests
 on:
     push:
         branches:
@@ -48,7 +48,13 @@ jobs:
 
 
             - name: running tests
-              run: vendor/bin/pest --coverage --configuration=phpunit.xml.dist
+              run: "vendor/bin/pest --configuration=phpunit.xml.dist --coverage-clover=.build/logs/clover.xml"
 
+            - name: 'Upload coverage reports to Codecov'
+              if: ${{ secrets.CODECOV_TOKEN != '' && exists('./.build/logs/clover.xml') }}
+              uses: 'codecov/codecov-action@v5.1.2'
+              with:
+                  files: './.build/logs/clover.xml'
+                  token: ${{ secrets.CODECOV_TOKEN }}
 
 
