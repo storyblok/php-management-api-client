@@ -9,6 +9,7 @@ use Storyblok\Mapi\Endpoints\AssetApi;
 use Storyblok\Mapi\Endpoints\ManagementApi;
 use Storyblok\Mapi\Endpoints\SpaceApi;
 use Storyblok\Mapi\Endpoints\StoryApi;
+use Storyblok\Mapi\Endpoints\TagApi;
 use Storyblok\Mapi\Endpoints\UserApi;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -79,6 +80,11 @@ class MapiClient
     public function assetApi(string|int $spaceId): AssetApi
     {
         return new AssetApi($this->httpClient, $spaceId);
+    }
+
+    public function tagApi(string|int $spaceId): TagApi
+    {
+        return new TagApi($this->httpClient, $spaceId);
     }
 
     public function managementApi(): ManagementApi
