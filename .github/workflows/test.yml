@@ -1,0 +1,50 @@
+name: Source Code Check
+on:
+    push:
+        branches:
+            - main
+            - develop
+            - features/**
+            - test/**
+    pull_request:
+        branches:
+            - main
+            - develop
+            - features/**
+
+jobs:
+    checks:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                operating-system: [ 'ubuntu-latest']
+                php-versions: [  '8.4']
+                dependency-stability: [ 'prefer-none' ]
+
+        name: P${{ matrix.php-versions }} - ${{ matrix.operating-system}}
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Install PHP versions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, bcmath, soap, intl, iconv, fileinfo
+                  coverage: none
+            - name: Install Dependencies
+              run: composer install --prefer-dist --no-interaction
+
+            - name: Show dir
+              run: pwd
+            - name: PHP Version
+              run: php --version
+            - name: Platform check
+              run: composer check-platform-reqs
+
+
+            - name: running tests
+              run: vendor/bin/pest --configuration=phpunit.xml
+
+
+
