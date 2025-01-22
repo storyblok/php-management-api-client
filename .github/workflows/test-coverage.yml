@@ -57,6 +57,6 @@ jobs:
               uses: 'codecov/codecov-action@v5.1.2'
               with:
                   files: './.build/logs/clover.xml'
-                  token: ${{ secrets.CODECOV_TOKEN }}
+                  token: ${{ env.my_codecov_token }}
 
 

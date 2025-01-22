@@ -30,27 +30,14 @@ use Storyblok\Mapi\MapiClient;
 /** @var MapiClient $client */
 $client = new MapiClient($storyblokPersonalAccessToken);
 ```
-The second parameter (a string) for setting the region. In this case, you can use the string "US" or "AP" or "CA" or "CN".
+The second parameter is for setting the region.
+We provide and Enum class for setting the region.In this case, you can use the Region Enum Region::US or Region::AP or Region::CA or Region::CN.
 For example:
 ```php
-$client = new MapiClient($storyblokPersonalAccessToken, 'US');
-```
-Or if you prefer you can use the static methods `initEU` to access the European region.
 
-If you need access to other regions, you can use:
+use \Storyblok\Mapi\Data\Enum\Region;
 
-- `initUS()` for the US region
-- `initAP()` for the Asian Pacific region
-- `initCA()` for the Canadian region
-- `initCN()` for the China region.
-
-You can use a more generic `init()` method defining the second parameter (a string) for setting the region. In this case, you can use the string "US" or "AP" or "CA" or "CN":
-
-```php
-// Using the default region EU
-$client = MapiClient::init($storyblokPersonalAccessToken);
-// Using the region US as an alternative way of initUS()
-$client = MapiClient::init($storyblokPersonalAccessToken, 'US');
+$client = new MapiClient($storyblokPersonalAccessToken, Region::US);
 ```
 
 ## Handling the Personal Access Token

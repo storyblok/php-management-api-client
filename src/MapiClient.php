@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Storyblok\Mapi;
 
+use Storyblok\Mapi\Data\Enum\Region;
 use Storyblok\Mapi\Endpoints\AssetApi;
 use Storyblok\Mapi\Endpoints\ManagementApi;
 use Storyblok\Mapi\Endpoints\SpaceApi;
@@ -18,10 +19,10 @@ class MapiClient
 
     public function __construct(
         string $personalAccessToken,
-        string $region = "EU",
+        Region $region = Region::EU,
         ?string $baseUri = null,
     ) {
-        $baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region);
+        $baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region->value);
         $this->httpClient = HttpClient::create()
             ->withOptions([
                 'base_uri' => $baseUriMapi,
@@ -34,50 +35,11 @@ class MapiClient
             ]);
     }
 
-    public static function initEU(string $personalAccessToken): self
-    {
-        return self::init(
-            $personalAccessToken,
-            "EU",
-        );
-    }
-
-    public static function initUS(string $personalAccessToken): self
-    {
-        return self::init(
-            $personalAccessToken,
-            "US",
-        );
-    }
-
-    public static function initAP(string $personalAccessToken): self
-    {
-        return self::init(
-            $personalAccessToken,
-            "AP",
-        );
-    }
-
-    public static function initCA(string $personalAccessToken): self
-    {
-        return self::init(
-            $personalAccessToken,
-            "CA",
-        );
-    }
-
-    public static function initCN(string $personalAccessToken): self
-    {
-        return self::init(
-            $personalAccessToken,
-            "CN",
-        );
-    }
 
 
     public static function init(
         string $personalAccessToken,
-        string $region = "EU",
+        Region $region = Region::EU,
         ?string $baseUri = null,
     ): self {
 
