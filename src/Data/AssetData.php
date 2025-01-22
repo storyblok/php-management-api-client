@@ -9,7 +9,7 @@ use Storyblok\Mapi\StoryblokUtils;
 class AssetData extends StoryblokData
 {
     /*
-     * The Asset data response payload doesnt' have the typical
+     * The Asset data response payload doesn't have the typical
      * "asset" attribute (like the story, the space etc)
      * This is the reason why the makeFromResponse is not implemented here
      */
@@ -26,14 +26,18 @@ class AssetData extends StoryblokData
     }
 
 
-    public function filenameCDN(): int|string
+    public function filenameCDN(): string
     {
-        $filename = $this->getString('filename', "");
         return str_replace(
             "https://s3.amazonaws.com/a.storyblok.com",
             "https://a.storyblok.com",
-            $filename,
+            $this->filename(),
         );
+    }
+
+    public function filename(): string
+    {
+        return $this->getString('filename', "");
     }
 
 

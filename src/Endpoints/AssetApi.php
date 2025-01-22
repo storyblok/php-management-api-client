@@ -94,9 +94,7 @@ class AssetApi extends EndpointSpace
                 "body" => $postFields,
             ],
         );
-        if ($responseUpload->getStatusCode() >= 200 && $responseUpload->getStatusCode() < 300) {
-            echo "UPLOAD OK: " . $responseUpload->getStatusCode() . PHP_EOL;
-        } else {
+        if (!($responseUpload->getStatusCode() >= 200 && $responseUpload->getStatusCode() < 300)) {
             throw new \Exception("Upload Asset, Upload call failed (Step 2) , " . $responseUpload->getStatusCode());
         }
 
@@ -107,6 +105,7 @@ class AssetApi extends EndpointSpace
                 '/assets/' .
                 $signedResponseData->getString('id') .
                 '/finish_upload',
+            dataClass: AssetData::class,
         );
     }
 
