@@ -44,7 +44,7 @@ jobs:
 
 
             - name: running tests
-              run: vendor/bin/pest --configuration=phpunit.xml
+              run: vendor/bin/pest --configuration=phpunit.xml.dist
 
 
 
