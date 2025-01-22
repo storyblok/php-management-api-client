@@ -32,6 +32,7 @@
         "test-code": "vendor/bin/pest",
         "test-code-ci": "vendor/bin/pest -c . --ci --cache-directory ./tmp",
         "refactor-check-code": "vendor/bin/rector --dry-run",
+        "test-coverage": "vendor/bin/pest --configuration=phpunit.xml.dist --coverage-html .build/html",
         "all-checks": [
             "@style-check-code",
             "@static-code",

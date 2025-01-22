@@ -55,5 +55,96 @@ test('Testing multiple resources, StoryblokData', function (): void {
 });
 
 
+test('Testing create resource, StoryblokData', function (): void {
+    $responses = [
+        \mockResponse("one-tag", 200),
+        \mockResponse("empty-tags", 404),
+    ];
+
+    $client = new MockHttpClient($responses, baseUri: 'https://mapi.storyblok.com');
+    $mapiClient = MapiClient::initTest($client);
+    $managementApi = $mapiClient->managementApi();
+
+
+    // CREATE A TAG
+    $tag = [
+        "name" => "new tag",
+        "object_type" => "asset"
+    ];
+    $spaceId = "321388";
+    $response = $managementApi->post(
+        "spaces/{$spaceId}/internal_tags",
+        ["internal_tag" => $tag ]
+    );
+    expect($response->isOk())->toBe(true);
+    var_dump($response->data());
+    $tag = $response->data()->get("internal_tag");
+    expect($tag->get("name"))->toBeString();
+    expect($tag->getString("name"))->toBeString();
+    expect($tag->getString("name"))->toBe("some");
+
+});
+
+test('Testing delete resource, StoryblokData', function (): void {
+    $responses = [
+        \mockResponse("one-tag", 200),
+        \mockResponse("empty-tags", 404),
+    ];
+
+    $client = new MockHttpClient($responses, baseUri: 'https://mapi.storyblok.com');
+    $mapiClient = MapiClient::initTest($client);
+    $managementApi = $mapiClient->managementApi();
+
+
+    // CREATE A TAG
+    $tag = [
+        "name" => "new tag",
+        "object_type" => "asset"
+    ];
+    $spaceId = "321388";
+    $tagId="56980";
+    $response = $managementApi->delete(
+        "spaces/{$spaceId}/internal_tags/{$tagId}"
+    );
+    expect($response->isOk())->toBe(true);
+    var_dump($response->data());
+    $tag = $response->data()->get("internal_tag");
+    expect($tag->get("name"))->toBeString();
+    expect($tag->getString("name"))->toBeString();
+    expect($tag->getString("name"))->toBe("some");
+
+});
+
+test('Testing edit resource, StoryblokData', function (): void {
+    $responses = [
+        \mockResponse("one-tag", 200),
+        \mockResponse("empty-tags", 404),
+    ];
+
+    $client = new MockHttpClient($responses, baseUri: 'https://mapi.storyblok.com');
+    $mapiClient = MapiClient::initTest($client);
+    $managementApi = $mapiClient->managementApi();
+
+
+    // CREATE A TAG
+    $tag = [
+        "name" => "some",
+        "object_type" => "asset"
+    ];
+    $spaceId = "321388";
+    $tagId="56980";
+    $response = $managementApi->put(
+        "spaces/{$spaceId}/internal_tags/{$tagId}"
+    );
+    expect($response->isOk())->toBe(true);
+    var_dump($response->data());
+    $tag = $response->data()->get("internal_tag");
+    expect($tag->get("name"))->toBeString();
+    expect($tag->getString("name"))->toBeString();
+    expect($tag->getString("name"))->toBe("some");
+
+});
+
+
 
 
