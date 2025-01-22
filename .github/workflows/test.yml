@@ -51,7 +51,9 @@ jobs:
               run: "vendor/bin/pest --configuration=phpunit.xml.dist --coverage-clover=.build/logs/clover.xml"
 
             - name: 'Upload coverage reports to Codecov'
-              if: ${{ secrets.CODECOV_TOKEN != '' && exists('./.build/logs/clover.xml') }}
+              env:
+                  my_codecov_token: ${{ secrets.CODECOV_TOKEN }}
+              if: ${{ env.my_codecov_token  != '' && hashFiles('./.build/logs/clover.xml')!= '' }}
               uses: 'codecov/codecov-action@v5.1.2'
               with:
                   files: './.build/logs/clover.xml'
