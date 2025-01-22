@@ -341,7 +341,7 @@ try {
 
 ### Getting the StoryApi instance
 
-To handle the Stories, getting stories, getting a single story, creating a story, updating a story, deleting a story, you can start getting the instance of StoryApi that allows you to access the methods for handling stories.
+To handle Stories, get stories, get a single story, create a story, update a story, or delete a story, you can start getting the instance of StoryApi that allows you to access the methods for handling stories.
 
 ```php
 use Storyblok\Mapi\MapiClient;
@@ -437,21 +437,34 @@ echo $currentUser->hasPartner() ? " HAS PARTNER" : "NO PARTNER";
 
 ## Handling assets
 
+### Getting the AssetApi instance
+
+To handle assets, get assets, get a single asset, upload an asset, update an asset, or delete an asset, you can start getting the instance of AssetApi that allows you to access the methods for handling assets.
+
+```php
+use Storyblok\Mapi\MapiClient;
+$client = new MapiClient($storyblokPersonalAccessToken);
+
+$spaceId = "spaceid";
+$assetApi = $client->assetApi($spaceId);
+```
+
 ### Getting the assets list
 
 To get the assets list you can use the `assetApi` and the `AssetsData`.
 
 ```php
-$assetApi = $c->assetApi($spaceId);
+$assetApi = $client->assetApi($spaceId);
 $response = $assetApi->page();
 /** @var AssetsData $assets */
 $assets = $response->data();
 
 foreach ($assets as $key => $asset) {
-    echo $asset->get("id");
-    echo $asset->get("content_type");
-    echo $asset->get("content_length");
-    echo $asset->filenameCDN();
+    echo $asset->id() . PHP_EOL;
+    echo $asset->contentType() . PHP_EOL;
+    echo $asset->contentLength() . PHP_EOL;
+    echo $asset->filenameCDN() . PHP_EOL;
+    echo "---" . PHP_EOL;
 }
 ```
 
@@ -460,11 +473,15 @@ foreach ($assets as $key => $asset) {
 To get a specific asset, you can use the `AssetApi` and the `AssetData` classes.
 
 ```php
-$assetApi = $c->assetApi($spaceId);
 $response = $assetApi->get($assetId);
-/** @var AssetData $asset */
+/** @var AssetData $assets */
 $asset = $response->data();
-echo $asset->filenameCDN();
+echo $asset->id() . PHP_EOL;
+echo $asset->contentType() . PHP_EOL;
+echo $asset->contentLength() . PHP_EOL;
+echo $asset->filenameCDN() . PHP_EOL;
+echo $asset->filename() . PHP_EOL;
+echo "---" . PHP_EOL;
 ```
 
 ### Uploading an Asset
@@ -472,11 +489,19 @@ echo $asset->filenameCDN();
 To upload an asset, you can use the `upload()` method:
 
 ```php
-$assetApi = $c->assetApi($spaceId);
-echo "UPLOADING " . $filename . PHP_EOL;
-$response = $assetApi->upload($filename);
-$uploadedAsset = $response->data();
-echo "UPLOADED ASSET, ID : " . $uploadedAsset->get("id") . PHP_EOL;
+$response = $assetApi->upload("image.png");
+
+echo $response->getLastCalledUrl() . PHP_EOL;
+echo $response->asJson() . PHP_EOL;
+echo $response->getResponseStatusCode() . PHP_EOL;
+if ($response->isOk()) {
+    $assetCreated = $response->data();
+    echo "Asset created, ID: " . $assetCreated->id() . PHP_EOL;
+    echo "         filename: " . $assetCreated->filename() . PHP_EOL;
+    echo "     filename CDN: " . $assetCreated->filenameCDN() . PHP_EOL;
+} else {
+    echo $response->getErrorMessage();
+}
 ```
 
 ### Deleting an Asset

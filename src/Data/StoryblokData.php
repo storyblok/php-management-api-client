@@ -108,6 +108,17 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
         return $defaultValue;
     }
 
+    public function getInt(mixed $key, int|null $defaultValue = null, string $charNestedKey = "."): int|null
+    {
+        $returnValue = $this->get($key, null, $charNestedKey);
+
+        if (is_scalar($returnValue)) {
+            return intval($returnValue);
+        }
+
+        return $defaultValue;
+    }
+
     public function getBoolean(mixed $key, bool $defaultValue = false, string $charNestedKey = "."): bool
     {
         $returnValue = $this->get($key, false, $charNestedKey);

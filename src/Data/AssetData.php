@@ -40,6 +40,16 @@ class AssetData extends StoryblokData
         return $this->getString('filename', "");
     }
 
+    public function contentType(): string
+    {
+        return $this->getString('content_type');
+    }
+
+    public function contentLength(): int|null
+    {
+        return $this->getInt('content_length');
+    }
+
 
     public function createdAt(): null|string
     {
