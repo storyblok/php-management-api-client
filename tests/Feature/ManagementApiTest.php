@@ -73,7 +73,7 @@ test('Testing create resource, StoryblokData', function (): void {
     ];
     $spaceId = "321388";
     $response = $managementApi->post(
-        "spaces/{$spaceId}/internal_tags",
+        sprintf('spaces/%s/internal_tags', $spaceId),
         ["internal_tag" => $tag ]
     );
     expect($response->isOk())->toBe(true);
@@ -104,7 +104,7 @@ test('Testing delete resource, StoryblokData', function (): void {
     $spaceId = "321388";
     $tagId="56980";
     $response = $managementApi->delete(
-        "spaces/{$spaceId}/internal_tags/{$tagId}"
+        sprintf('spaces/%s/internal_tags/%s', $spaceId, $tagId)
     );
     expect($response->isOk())->toBe(true);
     var_dump($response->data());
@@ -134,7 +134,7 @@ test('Testing edit resource, StoryblokData', function (): void {
     $spaceId = "321388";
     $tagId="56980";
     $response = $managementApi->put(
-        "spaces/{$spaceId}/internal_tags/{$tagId}"
+        sprintf('spaces/%s/internal_tags/%s', $spaceId, $tagId)
     );
     expect($response->isOk())->toBe(true);
     var_dump($response->data());
