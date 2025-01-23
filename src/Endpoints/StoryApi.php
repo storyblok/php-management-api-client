@@ -106,5 +106,20 @@ class StoryApi extends EndpointSpace
     }
 
 
+    public function update(string $storyId, StoryData $storyData): StoryblokResponseInterface
+    {
+        return $this->makeRequest(
+            "PUT",
+            "/v1/spaces/" . $this->spaceId . "/stories/" . $storyId,
+            [
+                "body" => [
+                    "story" => $storyData->toArray(),
+                ],
+            ],
+            dataClass: StoryData::class,
+        );
+    }
+
+
 
 }
