@@ -571,6 +571,58 @@ if ($response->isOk()) {
 }
 ```
 
+## A practical example
+
+Now we want to upload a new image, and then create a new simple story that includes the new image.
+
+```php
+use Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\Mapi\Data\StoryData;
+use Storyblok\Mapi\MapiClient;
+
+$client = new MapiClient($storyblokPersonalAccessToken);
+
+$spaceId = "your-space-id";
+$storyApi = $client->storyApi($spaceId);
+$assetApi = $client->assetApi($spaceId);
+
+echo "UPLOADING ASSET..." . PHP_EOL;
+$response = $assetApi->upload("image.png");
+/** @var AssetData $assetCreated */
+$assetCreated = $response->data();
+echo "Asset created, ID: " . $assetCreated->id() . PHP_EOL;
+
+echo "PREPARING STORY DATA..." . PHP_EOL;
+$content = new StoryblokData();
+$content->set("component", "article-page");
+$content->set("title", "New Article");
+$content->set("body", "This is the content");
+$content->set("image.id", $assetCreated->id());
+$content->set("image.fieldtype", "asset");
+$content->set("image.filename",$assetCreated->filename());
+
+$story = new StoryData();
+$story->setName("An Article");
+$story->setSlug("an-article-" . random_int(10000, 99999));
+$story->setContent($content->toArray());
+
+echo "CREATING STORY..." . PHP_EOL;
+$response = $storyApi->create($story);
+
+echo $response->getLastCalledUrl() . PHP_EOL;
+echo $response->asJson() . PHP_EOL;
+echo $response->getResponseStatusCode() . PHP_EOL;
+if ($response->isOk()) {
+  	/** @var StoryData $storyCreated */
+    $storyCreated = $response->data();
+    echo "Story created, ID: " . $storyCreated->id() . PHP_EOL;
+    echo "             UUID: " . $storyCreated->uuid() . PHP_EOL;
+    echo "             SLUG: " . $storyCreated->slug() . PHP_EOL;
+} else {
+    echo $response->getErrorMessage();
+}
+```
+
 
 
 ## Documentation
