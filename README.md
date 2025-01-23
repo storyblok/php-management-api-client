@@ -555,9 +555,9 @@ foreach ($tags as $key => $tag) {
 }
 ```
 
-### Creating an asset
+### Creating a new tag
 
-To create a new asset you can define the name of the asset using the `create` method:
+To create a new tag, you can define the name of the tag using the `create` method:
 ```php
 $assetName = "tag-" . random_int(100, 999);
 $response = $tagApi->create($assetName);
