@@ -12,7 +12,7 @@ Install the package via Composer:
 composer require storyblok/php-management-api-client:dev-main
 ```
 
-> Since we are in the PoC phase, you need to install the package via Composer using `:dev-main` suffix within the package name.
+> Since we are in the PoC phase, you must install the package via Composer using the `:dev-main` suffix within the package name.
 
 
 Below is an example showcasing how to use the library to interact with the Management API.
@@ -31,9 +31,9 @@ use Storyblok\Mapi\MapiClient;
 $client = new MapiClient($storyblokPersonalAccessToken);
 ```
 The second optional parameter is for setting the region.
-We provide and Enum class for setting the region.In this case, you can use the Region Enum like `Region::US` or `Region::AP` or `Region::CA` or `Region::CN`.
+We provide an Enum class to set the region. In this case, you can use the `Region` enum: `Region::US` or `Region::AP` or `Region::CA` or `Region::CN`.
 
-For example for using the US region you can use:
+For example, for using the US region, you can use:
 ```php
 
 use \Storyblok\Mapi\Data\Enum\Region;
@@ -42,7 +42,19 @@ $client = new MapiClient($storyblokPersonalAccessToken, Region::US);
 ```
 
 ## Handling the Personal Access Token
-Instead of handling the access token directly in the source code, you should consider handling it via environment variables.
+To access the Management API and interact with its endpoints, you need to follow two steps:
+
+- Retrieve a Personal Access Token (or an OAuth token).
+- Store the token securely and make it available to your application (e.g., in an environment variable or another secure location).
+
+> The token for accessing the Management API differs from the Access Token used for the Content Delivery API.
+
+To obtain a proper token for accessing the Management API you can choose:
+
+- **Personal Access Token**: Navigate to [your Storyblok account settings](https://app.storyblok.com/#/me/account?tab=token) and click on "Generate new token."
+- **OAuth Token**: Follow the steps outlined in [this guide on authentication apps](https://www.storyblok.com/docs/plugins/authentication-apps).
+
+Once you have your Token, instead of storing the access token directly in the source code, you should consider handling it via environment variables.
 For example, you can create the `.env` file (if it does not already exist) and set a parameter for storing the Personal Access Token.
 
 Then, for loading the environment variable, you can use the PHP "dotenv" package:
@@ -260,22 +272,16 @@ if ($response->isOk()) {
 
 ### Quick recap: using the `ManagementApi` Class
 
-The `ManagementApi` class is used for performing administrative tasks in Storyblok, including creating, updating, retrieving, and deleting resources like tags, components, and content entries. Here's when you would use it:
-
-- you need to add new resources to your space, such as tags, folders, or components. This is typically done when setting up new content structures or organizing assets.
-- you need to modify existing resources. For example, if you want to update a tag’s name, change a component’s structure, or modify content metadata.
-- you need to remove a resource that is no longer needed, such as deleting tags, components, or outdated content entries.
-- although the `ManagementApi` is focused on writing data, it’s also used for retrieving the details of resources that have been created or modified, helping you validate changes or access specific resource information.
-
-The `ManagementApi` class is best for scenarios where you need to manage the backend resources and automate workflows in Storyblok, such as integrating with third-party systems, synchronizing data, or implementing content versioning.
+The `ManagementApi` class is used for performing generic administrative tasks in Storyblok, including creating, updating, retrieving, and deleting resources. 
 
 ### Note: `ManagementApi` vs Specialized Api Classes
 
-In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, and `AssetApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
+In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi` and `AssetApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
 
 - **`SpaceApi`** focuses on managing space-level operations, such as retrieving space information, performing backup etc.
 - **`StoryApi`** specializes in handling stories and their content, including creating, updating, retrieving, and deleting stories. This class also provides methods that deal with the structure and fields specific to stories.
 - **`AssetApi`** designed to manage assets like images, files, and other media. It provides methods to upload, retrieve, and manage assets, offering features specific to media management.
+- **`TagApi`** designed to manage tags.
 
 These specialized classes extend the functionality of the `ManagementApi` class, offering more precise control and optimized methods for interacting with specific resource types in your Storyblok space.
 
@@ -515,6 +521,57 @@ $response = $assetApi->delete($assetId);
 $deletedAsset = $response->data();
 echo "DELETED ASSET, ID : " . $deletedAsset->get("id") . PHP_EOL;
 ```
+
+## Handling tags
+
+### Getting the TagApi instance
+
+To handle tags, get tags,create an asset, update an asset, or delete an asset, you can start getting the instance of `TagApi` that allows you to access the methods for handling tags.
+
+```php
+use Storyblok\Mapi\MapiClient;
+$client = new MapiClient($storyblokPersonalAccessToken);
+
+$spaceId = "spaceid";
+$tagApi = $client->tagApi($spaceId);
+```
+
+### Getting the tags list
+
+To get the tags list you can use the `tagApi` and the `TagsData`.
+
+```php
+$pageNumber=1;
+$itemsPerPage= 5;
+$response = $tagApi->page($pageNumber, $itemsPerPage);
+echo "Total Tags: " . $response->total() . PHP_EOL;
+/** @var TagsData $tags */
+$tags = $response->data();
+foreach ($tags as $key => $tag) {
+    echo $tag->name() . PHP_EOL;
+    echo $tag->taggingsCount() . PHP_EOL;
+    echo $tag->tagOnStories() . PHP_EOL;
+    echo "---" . PHP_EOL;
+}
+```
+
+### Creating an asset
+
+To create a new asset you can define the name of the asset using the `create` method:
+```php
+$assetName = "tag-" . random_int(100, 999);
+$response = $tagApi->create($assetName);
+if ($response->isOk()) {
+    $tagCreated = $response->data();
+    $name = $tagCreated->name();
+		echo "TAG Created: " . $name . PHP_EOL;
+
+} else {
+    echo $response->getErrorMessage();
+}
+```
+
+
 
 ## Documentation
 
