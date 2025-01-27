@@ -89,9 +89,13 @@ class MapiClient
      * @param LoggerInterface|null $logger
      * @return StoryApi
      */
-    public function storyApi(string|int $spaceId, ?LoggerInterface $logger = new NullLogger()): StoryApi
+    public function storyApi(string|int $spaceId, ?LoggerInterface $logger = null): StoryApi
     {
-        return new StoryApi($this->httpClient, $spaceId, $logger);
+        return new StoryApi(
+            $this->httpClient,
+            $spaceId,
+            $logger ?? new NullLogger(),
+        );
     }
 
     public function userApi(): UserApi

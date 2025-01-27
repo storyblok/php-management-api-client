@@ -29,12 +29,12 @@ class StoryApi extends EndpointSpace
     private LoggerInterface $logger;
 
     /**
-    * StoryApi constructor.
-    *
-    * @param HttpClientInterface $httpClient
-    * @param string|int $spaceId
-    * @param LoggerInterface|null $logger Optional logger, defaults to NullLogger if not provided
-    */
+     * StoryApi constructor.
+     *
+     * @param HttpClientInterface $httpClient
+     * @param string|int $spaceId
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         HttpClientInterface $httpClient,
         string|int $spaceId,
@@ -234,13 +234,14 @@ class StoryApi extends EndpointSpace
      * Extracts stories from the API response
      *
      * @param StoryblokResponseInterface $response
-     * @return \Generator<StoryData>
+     * @return \Generator<int, StoryData>
      */
     private function getStoriesFromResponse(StoryblokResponseInterface $response): \Generator
     {
         /** @var StoriesData $stories */
         $stories = $response->data();
         foreach ($stories as $story) {
+            /** @var StoryData $story */
             yield $story;
         }
     }
@@ -250,7 +251,7 @@ class StoryApi extends EndpointSpace
      *
      * @param int $page
      * @param int $perPage
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     private function validatePaginationParams(int $page, int $perPage): void
     {
@@ -266,7 +267,7 @@ class StoryApi extends EndpointSpace
      * Validates story ID
      *
      * @param string $storyId
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     private function validateStoryId(string $storyId): void
     {
