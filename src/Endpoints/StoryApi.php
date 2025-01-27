@@ -38,7 +38,7 @@ class StoryApi extends EndpointSpace
     public function __construct(
         HttpClientInterface $httpClient,
         string|int $spaceId,
-        LoggerInterface $logger
+        LoggerInterface $logger,
     ) {
         parent::__construct($httpClient, $spaceId);
         $this->logger = $logger;
@@ -73,7 +73,7 @@ class StoryApi extends EndpointSpace
             } catch (\Exception $e) {
                 $this->logger->error('Error fetching stories', [
                     'error' => $e->getMessage(),
-                    'page' => $pageNumber
+                    'page' => $pageNumber,
                 ]);
                 throw new StoryblokApiException('Failed to fetch stories: ' . $e->getMessage(), 0, $e);
             }
@@ -89,7 +89,7 @@ class StoryApi extends EndpointSpace
      */
     public function page(
         int $page = self::DEFAULT_PAGE,
-        int $perPage = self::DEFAULT_ITEMS_PER_PAGE
+        int $perPage = self::DEFAULT_ITEMS_PER_PAGE,
     ): StoryblokResponseInterface {
         $this->validatePaginationParams($page, $perPage);
 
@@ -187,7 +187,7 @@ class StoryApi extends EndpointSpace
     private function handleSuccessfulResponse(
         StoryblokResponseInterface $response,
         ?int $totalPages,
-        int $itemsPerPage
+        int $itemsPerPage,
     ): int {
         if ($totalPages === null) {
             $totalPages = (int) ceil($response->total() / $itemsPerPage);
@@ -215,7 +215,7 @@ class StoryApi extends EndpointSpace
         } else {
             $this->logger->error('API error', [
                 'status' => $response->getResponseStatusCode(),
-                'message' => $response->getErrorMessage()
+                'message' => $response->getErrorMessage(),
             ]);
             throw new StoryblokApiException($response->getErrorMessage());
         }

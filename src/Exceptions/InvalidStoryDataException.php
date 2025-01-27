@@ -7,6 +7,4 @@ namespace Storyblok\Mapi\Exceptions;
 /**
  * Exception thrown when invalid story data is provided
  */
-class InvalidStoryDataException extends \InvalidArgumentException
-{
-}
+class InvalidStoryDataException extends \InvalidArgumentException {}
