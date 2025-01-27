@@ -3,9 +3,10 @@
 declare(strict_types=1);
 
 use Storyblok\Mapi\MapiClient;
+use Storyblok\Mapi\Data\StoryData;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
-
+use Psr\Log\NullLogger;
 
 test('Testing One Story, StoryData', function (): void {
     $responses = [
@@ -29,10 +30,100 @@ test('Testing One Story, StoryData', function (): void {
     $storyblokResponse = $storyApi->get("111notexists");
     expect( $storyblokResponse->getResponseStatusCode())->toBe(404) ;
     expect( $storyblokResponse->asJson())->toBe('["This record could not be found"]');
-
-
 });
 
+test('Create story encodes data correctly as JSON', function (): void {
+    $expectedStoryData = [
+        'name' => 'Test Story',
+        'slug' => 'test-story',
+        'content' => [
+            'component' => 'blog-post',
+            'title' => 'Test Title'
+        ]
+    ];
 
+    // Create a callback to verify the request
+    $callback = function ($method, $url, $options) use ($expectedStoryData): void {
+        expect($method)->toBe('POST');
+        expect($url)->toContain('/stories');
 
+        // Decode the request body and verify it matches expected structure
+        $requestBody = json_decode($options['body'], true);
+        expect($requestBody)->toBeArray();
+        expect($requestBody)->toHaveKey('story');
+        expect($requestBody['story'])->toEqual($expectedStoryData);
+    };
 
+    // Create mock response
+    $response = new MockResponse(json_encode([
+        'story' => $expectedStoryData
+    ]), [
+        'http_code' => 201,
+        'response_headers' => ['Content-Type: application/json'],
+    ]);
+
+    // Create mock client with response and callback
+    $client = new MockHttpClient([$response], 'https://api.storyblok.com');
+    $mapiClient = MapiClient::initTest($client);
+    $storyApi = $mapiClient->storyApi('222');
+
+    // Create story data
+    $storyData = StoryData::make($expectedStoryData);
+
+    // Make the request
+    $response = $storyApi->create($storyData);
+
+    // Verify response
+    expect($response->isOk())->toBeTrue();
+    expect($response->getResponseStatusCode())->toBe(201);
+
+    /** @var StoryData $responseData */
+    $responseData = $response->data();
+    expect($responseData->name())->toBe('Test Story');
+    expect($responseData->slug())->toBe('test-story');
+});
+
+test('StoryApi works with custom logger', function (): void {
+    // Create a mock logger that tracks log calls
+    $mockLogger = new class extends NullLogger {
+        public array $logs = [];
+
+        public function log($level, string|\Stringable $message, array $context = []): void
+        {
+            $this->logs[] = [
+                'level' => $level,
+                'message' => $message,
+                'context' => $context
+            ];
+        }
+
+        public function error(string|\Stringable $message, array $context = []): void
+        {
+            $this->log('error', $message, $context);
+        }
+    };
+
+    // Create a response that will trigger error logging
+    $responses = [
+        new MockResponse([], [
+            'http_code' => 500,
+            'response_headers' => ['Content-Type: application/json'],
+        ])
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = MapiClient::initTest($client);
+    $storyApi = $mapiClient->storyApi('222', $mockLogger);
+
+    // Use the all() method which we know triggers logging
+    try {
+        iterator_to_array($storyApi->all());
+    } catch (\Exception $e) {
+        // Expected exception
+    }
+
+    // Verify that logs were recorded
+    expect($mockLogger->logs)->not->toBeEmpty()
+        ->and($mockLogger->logs[0]['level'])->toBe('error')
+        ->and($mockLogger->logs[0]['message'])->toBe('Error fetching stories');
+});

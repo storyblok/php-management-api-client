@@ -13,11 +13,24 @@ use Storyblok\Mapi\Endpoints\TagApi;
 use Storyblok\Mapi\Endpoints\UserApi;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
+/**
+ * Class MapiClient
+ * @package Storyblok\Mapi
+ */
 class MapiClient
 {
     private HttpClientInterface $httpClient;
 
+    /**
+     * MapiClient constructor.
+     *
+     * @param string $personalAccessToken
+     * @param Region $region
+     * @param string|null $baseUri
+     */
     public function __construct(
         string $personalAccessToken,
         Region $region = Region::EU,
@@ -36,16 +49,20 @@ class MapiClient
             ]);
     }
 
-
-
+    /**
+     * Initialize the MapiClient
+     *
+     * @param string $personalAccessToken
+     * @param Region $region
+     * @param string|null $baseUri
+     * @return MapiClient
+     */
     public static function init(
         string $personalAccessToken,
         Region $region = Region::EU,
         ?string $baseUri = null,
     ): self {
-
         return new self($personalAccessToken, $region, $baseUri);
-
     }
 
     public static function initTest(
@@ -67,9 +84,14 @@ class MapiClient
         return new SpaceApi($this->httpClient);
     }
 
-    public function storyApi(string|int $spaceId): StoryApi
+    /**
+     * @param string|int $spaceId
+     * @param LoggerInterface|null $logger
+     * @return StoryApi
+     */
+    public function storyApi(string|int $spaceId, ?LoggerInterface $logger = new NullLogger()): StoryApi
     {
-        return new StoryApi($this->httpClient, $spaceId);
+        return new StoryApi($this->httpClient, $spaceId, $logger);
     }
 
     public function userApi(): UserApi

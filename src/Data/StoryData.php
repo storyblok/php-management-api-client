@@ -89,6 +89,21 @@ class StoryData extends StoryblokData
         return $this->getString('uuid');
     }
 
+    /**
+        * Validates if the story data contains all required fields and valid values
+        *
+        * @return bool
+        */
+    public function isValid(): bool
+    {
+        if (!$this->hasKey('name') || empty($this->getString('name'))) {
+            return false;
+        }
 
+        if (!$this->hasKey('slug') || empty($this->getString('slug'))) {
+            return false;
+        }
 
+        return true;
+    }
 }

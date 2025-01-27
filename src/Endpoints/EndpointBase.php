@@ -9,6 +9,10 @@ use Storyblok\Mapi\StoryblokResponse;
 use Storyblok\Mapi\StoryblokResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Class EndpointBase
+ * @package Storyblok\Mapi\Endpoints
+ */
 class EndpointBase
 {
     public function __construct(protected HttpClientInterface $httpClient) {}
@@ -31,7 +35,5 @@ class EndpointBase
         );
 
         return StoryblokResponse::make($response, $dataClass);
-
     }
-
 }
