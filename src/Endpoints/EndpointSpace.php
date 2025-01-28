@@ -6,6 +6,10 @@ namespace Storyblok\Mapi\Endpoints;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Class EndpointSpace
+ * @package Storyblok\Mapi\Endpoints
+ */
 class EndpointSpace extends EndpointBase
 {
     public function __construct(
@@ -14,6 +18,4 @@ class EndpointSpace extends EndpointBase
     ) {
         parent::__construct($httpClient);
     }
-
-
 }
