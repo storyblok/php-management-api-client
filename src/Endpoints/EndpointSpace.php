@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Endpoints;
+namespace Storyblok\ManagementApi\Endpoints;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * Class EndpointSpace
- * @package Storyblok\Mapi\Endpoints
+ * @package Storyblok\ManagementApi\Endpoints
  */
 class EndpointSpace extends EndpointBase
 {

@@ -17,18 +17,18 @@ composer require storyblok/php-management-api-client:dev-main
 
 Below is an example showcasing how to use the library to interact with the Management API.
 
-## Initializing the `MapiClient`
+## Initializing the `ManagementApiClient`
 
-Initialize the `MapiClient` with your personal access token to interact with the API:
+Initialize the `ManagementApiClient` with your personal access token to interact with the API:
 
 ```php
 <?php
 require 'vendor/autoload.php';
 
-use Storyblok\Mapi\MapiClient;
+use Storyblok\ManagementApi\ManagementApiClient;
 
-/** @var MapiClient $client */
-$client = new MapiClient($storyblokPersonalAccessToken);
+/** @var ManagementApiClient $client */
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
 ```
 The second optional parameter is for setting the region.
 We provide an Enum class to set the region. In this case, you can use the `Region` enum: `Region::US` or `Region::AP` or `Region::CA` or `Region::CN`.
@@ -36,9 +36,9 @@ We provide an Enum class to set the region. In this case, you can use the `Regio
 For example, for using the US region, you can use:
 ```php
 
-use \Storyblok\Mapi\Data\Enum\Region;
+use \Storyblok\ManagementApi\Data\Enum\Region;
 
-$client = new MapiClient($storyblokPersonalAccessToken, Region::US);
+$client = new ManagementApiClient($storyblokPersonalAccessToken, Region::US);
 ```
 
 ## Handling the Personal Access Token
@@ -63,7 +63,7 @@ Then, for loading the environment variable, you can use the PHP "dotenv" package
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 $storyblokPersonalAccessToken = $_ENV['SECRET_KEY'];
-$client = new MapiClient($storyblokPersonalAccessToken);
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
 ```
 
 > The PHP dotenv package is here: <https://github.com/vlucas/phpdotenv>
@@ -101,7 +101,7 @@ For example, to retrieve multiple internal tags, use the Internal Tags endpoint 
 Below is an example of initializing the client for the EU region (default) using a Personal Access Token:
 
 ```php
-$client = new MapiClient($storyblokPersonalAccessToken);
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
 ```
 
 Getting the ManagementApi instance:
@@ -272,7 +272,7 @@ if ($response->isOk()) {
 
 ### Quick recap: using the `ManagementApi` Class
 
-The `ManagementApi` class is used for performing generic administrative tasks in Storyblok, including creating, updating, retrieving, and deleting resources. 
+The `ManagementApi` class is used for performing generic administrative tasks in Storyblok, including creating, updating, retrieving, and deleting resources.
 
 ### Note: `ManagementApi` vs Specialized Api Classes
 
@@ -291,7 +291,7 @@ These specialized classes extend the functionality of the `ManagementApi` class,
 
 ### Retrieve all the spaces
 
-Fetch a list of all spaces associated with your account in the current region (the region is initialized in the `MapiClient`):
+Fetch a list of all spaces associated with your account in the current region (the region is initialized in the `ManagementApiClient`):
 
 ```php
 // Retrieve all spaces
@@ -350,9 +350,9 @@ try {
 To handle Stories, get stories, get a single story, create a story, update a story, or delete a story, you can start getting the instance of StoryApi that allows you to access the methods for handling stories.
 
 ```php
-use Storyblok\Mapi\MapiClient;
+use Storyblok\ManagementApi\ManagementApiClient;
 $spaceId= "1234";
-$client = new MapiClient($storyblokPersonalAccessToken);
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
 $storyApi = $client->storyApi($spaceId);
 ```
 
@@ -448,8 +448,8 @@ echo $currentUser->hasPartner() ? " HAS PARTNER" : "NO PARTNER";
 To handle assets, get assets, get a single asset, upload an asset, update an asset, or delete an asset, you can start getting the instance of AssetApi that allows you to access the methods for handling assets.
 
 ```php
-use Storyblok\Mapi\MapiClient;
-$client = new MapiClient($storyblokPersonalAccessToken);
+use Storyblok\ManagementApi\ManagementApiClient;
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 $spaceId = "spaceid";
 $assetApi = $client->assetApi($spaceId);
@@ -529,8 +529,8 @@ echo "DELETED ASSET, ID : " . $deletedAsset->get("id") . PHP_EOL;
 To handle tags, get tags,create an asset, update an asset, or delete an asset, you can start getting the instance of `TagApi` that allows you to access the methods for handling tags.
 
 ```php
-use Storyblok\Mapi\MapiClient;
-$client = new MapiClient($storyblokPersonalAccessToken);
+use Storyblok\ManagementApi\ManagementApiClient;
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 $spaceId = "spaceid";
 $tagApi = $client->tagApi($spaceId);
@@ -576,11 +576,11 @@ if ($response->isOk()) {
 Now we want to upload a new image, and then create a new simple story that includes the new image.
 
 ```php
-use Storyblok\Mapi\Data\StoryblokData;
-use Storyblok\Mapi\Data\StoryData;
-use Storyblok\Mapi\MapiClient;
+use Storyblok\ManagementApi\Data\StoryblokData;
+use Storyblok\ManagementApi\Data\StoryData;
+use Storyblok\ManagementApi\ManagementApiClient;
 
-$client = new MapiClient($storyblokPersonalAccessToken);
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 $spaceId = "your-space-id";
 $storyApi = $client->storyApi($spaceId);

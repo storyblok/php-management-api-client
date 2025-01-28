@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi;
+namespace Storyblok\ManagementApi;
 
 class StoryblokUtils
 {

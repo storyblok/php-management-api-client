@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Endpoints;
+namespace Storyblok\ManagementApi\Endpoints;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Storyblok\Mapi\Data\StoriesData;
-use Storyblok\Mapi\Data\StoryData;
-use Storyblok\Mapi\Exceptions\InvalidStoryDataException;
-use Storyblok\Mapi\Exceptions\StoryblokApiException;
-use Storyblok\Mapi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Data\StoriesData;
+use Storyblok\ManagementApi\Data\StoryData;
+use Storyblok\ManagementApi\Exceptions\InvalidStoryDataException;
+use Storyblok\ManagementApi\Exceptions\StoryblokApiException;
+use Storyblok\ManagementApi\StoryblokResponseInterface;
 use Psr\Log\LoggerInterface;
 
 /**

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Storyblok\Mapi\MapiClient;
+use Storyblok\ManagementApi\ManagementApiClient;
 
 use Symfony\Component\HttpClient\MockHttpClient;
 
@@ -14,11 +14,11 @@ test('Testing One asset, AssetData', function (): void {
     ];
 
     $client = new MockHttpClient($responses);
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $assetApi = $mapiClient->assetApi("222");
 
     $storyblokResponse = $assetApi->get("111");
-    /** @var \Storyblok\Mapi\Data\AssetData $storyblokData */
+    /** @var \Storyblok\ManagementApi\Data\AssetData $storyblokData */
     $storyblokData =  $storyblokResponse->data();
     expect($storyblokData->get("id"))
         ->toBe(111)
@@ -39,12 +39,12 @@ test('Testing list of assets, AssetsData', function (): void {
     ];
 
     $client = new MockHttpClient($responses);
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $assetApi = $mapiClient->assetApi("222");
 
     $storyblokResponse = $assetApi->page(1, 25);
 
-    /** @var \Storyblok\Mapi\Data\AssetsData $storyblokData */
+    /** @var \Storyblok\ManagementApi\Data\AssetsData $storyblokData */
     $storyblokData =  $storyblokResponse->data();
     foreach ($storyblokData as $asset) {
         expect($asset->id())->toBeGreaterThan(10);

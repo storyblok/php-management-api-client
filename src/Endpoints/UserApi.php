@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Endpoints;
+namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\Mapi\Data\SpaceData;
-use Storyblok\Mapi\Data\SpacesData;
-use Storyblok\Mapi\Data\StoryblokData;
-use Storyblok\Mapi\Data\UserData;
-use Storyblok\Mapi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Data\SpaceData;
+use Storyblok\ManagementApi\Data\SpacesData;
+use Storyblok\ManagementApi\Data\StoryblokData;
+use Storyblok\ManagementApi\Data\UserData;
+use Storyblok\ManagementApi\StoryblokResponseInterface;
 
 /**
  *

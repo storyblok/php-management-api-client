@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Storyblok\Mapi\MapiClient;
+use Storyblok\ManagementApi\ManagementApiClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
 
@@ -31,7 +31,7 @@ test('Testing One space, SpaceData', function (): void {
     ];
 
     $client = new MockHttpClient($responses);
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $spaceApi = $mapiClient->spaceApi();
 
     $storyblokResponse = $spaceApi->get("111");
@@ -104,11 +104,11 @@ test('Testing multiple spaces, SpaceData', function (): void {
     ];
 
     $client = new MockHttpClient($responses);
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $spaceApi = $mapiClient->spaceApi();
 
     $storyblokResponse = $spaceApi->all();
-    /** @var Storyblok\Mapi\Data\SpacesData $storyblokData */
+    /** @var Storyblok\ManagementApi\Data\SpacesData $storyblokData */
     $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("0.name"))
         ->toBe("Example Space")

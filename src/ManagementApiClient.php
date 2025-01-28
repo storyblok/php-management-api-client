@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi;
+namespace Storyblok\ManagementApi;
 
-use Storyblok\Mapi\Data\Enum\Region;
-use Storyblok\Mapi\Endpoints\AssetApi;
-use Storyblok\Mapi\Endpoints\ManagementApi;
-use Storyblok\Mapi\Endpoints\SpaceApi;
-use Storyblok\Mapi\Endpoints\StoryApi;
-use Storyblok\Mapi\Endpoints\TagApi;
-use Storyblok\Mapi\Endpoints\UserApi;
+use Storyblok\ManagementApi\Data\Enum\Region;
+use Storyblok\ManagementApi\Endpoints\AssetApi;
+use Storyblok\ManagementApi\Endpoints\ManagementApi;
+use Storyblok\ManagementApi\Endpoints\SpaceApi;
+use Storyblok\ManagementApi\Endpoints\StoryApi;
+use Storyblok\ManagementApi\Endpoints\TagApi;
+use Storyblok\ManagementApi\Endpoints\UserApi;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Log\LoggerInterface;
@@ -18,9 +18,9 @@ use Psr\Log\NullLogger;
 
 /**
  * Class MapiClient
- * @package Storyblok\Mapi
+ * @package Storyblok\ManagementApi
  */
-class MapiClient
+class ManagementApiClient
 {
     private HttpClientInterface $httpClient;
 

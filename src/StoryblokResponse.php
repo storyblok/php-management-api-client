@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi;
+namespace Storyblok\ManagementApi;
 
-use Storyblok\Mapi\Data\StoryblokData;
-use Storyblok\Mapi\Data\StoryblokDataInterface;
-use Storyblok\Mapi\Data\StoryData;
+use Storyblok\ManagementApi\Data\StoryblokData;
+use Storyblok\ManagementApi\Data\StoryblokDataInterface;
+use Storyblok\ManagementApi\Data\StoryData;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;

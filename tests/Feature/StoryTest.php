@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Storyblok\Mapi\MapiClient;
-use Storyblok\Mapi\Data\StoryData;
+use Storyblok\ManagementApi\ManagementApiClient;
+use Storyblok\ManagementApi\Data\StoryData;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Psr\Log\NullLogger;
@@ -15,7 +15,7 @@ test('Testing One Story, StoryData', function (): void {
     ];
 
     $client = new MockHttpClient($responses);
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $storyApi = $mapiClient->storyApi("222");
 
     $storyblokResponse = $storyApi->get("111");
@@ -64,7 +64,7 @@ test('Create story encodes data correctly as JSON', function (): void {
 
     // Create mock client with response and callback
     $client = new MockHttpClient([$response], 'https://api.storyblok.com');
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $storyApi = $mapiClient->storyApi('222');
 
     // Create story data
@@ -112,7 +112,7 @@ test('StoryApi works with custom logger', function (): void {
     ];
 
     $client = new MockHttpClient($responses);
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $storyApi = $mapiClient->storyApi('222', $mockLogger);
 
     // Use the all() method which we know triggers logging

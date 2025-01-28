@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Storyblok\Mapi\MapiClient;
+use Storyblok\ManagementApi\ManagementApiClient;
 
 use Symfony\Component\HttpClient\MockHttpClient;
 
@@ -15,7 +15,7 @@ test('Testing multiple resources, StoryblokData', function (): void {
     ];
 
     $client = new MockHttpClient($responses, baseUri: 'https://mapi.storyblok.com');
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $managementApi = $mapiClient->managementApi();
 
     $spaceId = "321388";
@@ -62,7 +62,7 @@ test('Testing create resource, StoryblokData', function (): void {
     ];
 
     $client = new MockHttpClient($responses, baseUri: 'https://mapi.storyblok.com');
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $managementApi = $mapiClient->managementApi();
 
 
@@ -92,7 +92,7 @@ test('Testing delete resource, StoryblokData', function (): void {
     ];
 
     $client = new MockHttpClient($responses, baseUri: 'https://mapi.storyblok.com');
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $managementApi = $mapiClient->managementApi();
 
 
@@ -122,7 +122,7 @@ test('Testing edit resource, StoryblokData', function (): void {
     ];
 
     $client = new MockHttpClient($responses, baseUri: 'https://mapi.storyblok.com');
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $managementApi = $mapiClient->managementApi();
 
 
@@ -156,7 +156,7 @@ test('Testing StoryblokData', function (): void {
     ];
 
     $client = new MockHttpClient($responses, baseUri: 'https://mapi.storyblok.com');
-    $mapiClient = MapiClient::initTest($client);
+    $mapiClient = ManagementApiClient::initTest($client);
     $managementApi = $mapiClient->managementApi();
 
     $spaceId = "321388";

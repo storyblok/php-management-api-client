@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Endpoints;
+namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\Mapi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\StoryblokResponseInterface;
 
 /**
  *
