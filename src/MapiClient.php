@@ -26,10 +26,6 @@ class MapiClient
 
     /**
      * MapiClient constructor.
-     *
-     * @param string $personalAccessToken
-     * @param Region $region
-     * @param string|null $baseUri
      */
     public function __construct(
         string $personalAccessToken,
@@ -51,11 +47,6 @@ class MapiClient
 
     /**
      * Initialize the MapiClient
-     *
-     * @param string $personalAccessToken
-     * @param Region $region
-     * @param string|null $baseUri
-     * @return MapiClient
      */
     public static function init(
         string $personalAccessToken,
@@ -84,11 +75,6 @@ class MapiClient
         return new SpaceApi($this->httpClient);
     }
 
-    /**
-     * @param string|int $spaceId
-     * @param LoggerInterface|null $logger
-     * @return StoryApi
-     */
     public function storyApi(string|int $spaceId, ?LoggerInterface $logger = null): StoryApi
     {
         return new StoryApi(

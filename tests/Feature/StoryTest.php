@@ -43,12 +43,12 @@ test('Create story encodes data correctly as JSON', function (): void {
     ];
 
     // Create a callback to verify the request
-    $callback = function ($method, $url, $options) use ($expectedStoryData): void {
+    $callback = function ($method, $url, array $options) use ($expectedStoryData): void {
         expect($method)->toBe('POST');
         expect($url)->toContain('/stories');
 
         // Decode the request body and verify it matches expected structure
-        $requestBody = json_decode($options['body'], true);
+        $requestBody = json_decode((string) $options['body'], true);
         expect($requestBody)->toBeArray();
         expect($requestBody)->toHaveKey('story');
         expect($requestBody['story'])->toEqual($expectedStoryData);
@@ -118,7 +118,7 @@ test('StoryApi works with custom logger', function (): void {
     // Use the all() method which we know triggers logging
     try {
         iterator_to_array($storyApi->all());
-    } catch (\Exception $e) {
+    } catch (\Exception) {
         // Expected exception
     }
 

@@ -20,28 +20,25 @@ use Psr\Log\LoggerInterface;
  */
 class StoryApi extends EndpointSpace
 {
-    private const DEFAULT_ITEMS_PER_PAGE = 25;
-    private const DEFAULT_PAGE = 1;
-    private const RATE_LIMIT_STATUS_CODE = 429;
-    private const RETRY_DELAY = 1;
-    private const MAX_RETRIES = 3;
+    private const int DEFAULT_ITEMS_PER_PAGE = 25;
 
-    private LoggerInterface $logger;
+    private const int DEFAULT_PAGE = 1;
+
+    private const int RATE_LIMIT_STATUS_CODE = 429;
+
+    private const int RETRY_DELAY = 1;
+
+    private const int MAX_RETRIES = 3;
 
     /**
      * StoryApi constructor.
-     *
-     * @param HttpClientInterface $httpClient
-     * @param string|int $spaceId
-     * @param LoggerInterface $logger
      */
     public function __construct(
         HttpClientInterface $httpClient,
         string|int $spaceId,
-        LoggerInterface $logger,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct($httpClient, $spaceId);
-        $this->logger = $logger;
     }
 
     /**
@@ -82,10 +79,6 @@ class StoryApi extends EndpointSpace
 
     /**
      * Retrieves a specific page of stories
-     *
-     * @param int $page
-     * @param int $perPage
-     * @return StoryblokResponseInterface
      */
     public function page(
         int $page = self::DEFAULT_PAGE,
@@ -111,8 +104,6 @@ class StoryApi extends EndpointSpace
     /**
      * Retrieves a specific story by ID
      *
-     * @param string $storyId
-     * @return StoryblokResponseInterface
      * @throws StoryblokApiException
      */
     public function get(string $storyId): StoryblokResponseInterface
@@ -129,8 +120,6 @@ class StoryApi extends EndpointSpace
     /**
      * Creates a new story
      *
-     * @param StoryData $storyData
-     * @return StoryblokResponseInterface
      * @throws InvalidStoryDataException
      */
     public function create(StoryData $storyData): StoryblokResponseInterface
@@ -156,9 +145,6 @@ class StoryApi extends EndpointSpace
     /**
      * Updates an existing story
      *
-     * @param string $storyId
-     * @param StoryData $storyData
-     * @return StoryblokResponseInterface
      * @throws InvalidStoryDataException
      */
     public function update(string $storyId, StoryData $storyData): StoryblokResponseInterface
@@ -178,11 +164,6 @@ class StoryApi extends EndpointSpace
 
     /**
      * Handles successful API response
-     *
-     * @param StoryblokResponseInterface $response
-     * @param int|null $totalPages
-     * @param int $itemsPerPage
-     * @return int
      */
     private function handleSuccessfulResponse(
         StoryblokResponseInterface $response,
@@ -200,8 +181,6 @@ class StoryApi extends EndpointSpace
     /**
      * Handles error responses from the API
      *
-     * @param StoryblokResponseInterface $response
-     * @param int $retryCount
      * @throws StoryblokApiException
      */
     private function handleErrorResponse(StoryblokResponseInterface $response, int $retryCount): void
@@ -233,7 +212,6 @@ class StoryApi extends EndpointSpace
     /**
      * Extracts stories from the API response
      *
-     * @param StoryblokResponseInterface $response
      * @return \Generator<int, StoryData>
      */
     private function getStoriesFromResponse(StoryblokResponseInterface $response): \Generator
@@ -249,8 +227,6 @@ class StoryApi extends EndpointSpace
     /**
      * Validates pagination parameters
      *
-     * @param int $page
-     * @param int $perPage
      * @throws \InvalidArgumentException
      */
     private function validatePaginationParams(int $page, int $perPage): void
@@ -258,6 +234,7 @@ class StoryApi extends EndpointSpace
         if ($page < 1) {
             throw new \InvalidArgumentException('Page number must be greater than 0');
         }
+
         if ($perPage < 1) {
             throw new \InvalidArgumentException('Items per page must be greater than 0');
         }
@@ -266,12 +243,11 @@ class StoryApi extends EndpointSpace
     /**
      * Validates story ID
      *
-     * @param string $storyId
      * @throws \InvalidArgumentException
      */
     private function validateStoryId(string $storyId): void
     {
-        if (empty($storyId)) {
+        if ($storyId === '' || $storyId === '0') {
             throw new \InvalidArgumentException('Story ID cannot be empty');
         }
     }
@@ -279,7 +255,6 @@ class StoryApi extends EndpointSpace
     /**
      * Validates story data
      *
-     * @param StoryData $storyData
      * @throws InvalidStoryDataException
      */
     private function validateStoryData(StoryData $storyData): void
@@ -291,8 +266,6 @@ class StoryApi extends EndpointSpace
 
     /**
      * Builds the base endpoint for stories
-     *
-     * @return string
      */
     private function buildStoriesEndpoint(): string
     {
@@ -301,9 +274,6 @@ class StoryApi extends EndpointSpace
 
     /**
      * Builds the endpoint for a specific story
-     *
-     * @param string $storyId
-     * @return string
      */
     private function buildStoryEndpoint(string $storyId): string
     {
