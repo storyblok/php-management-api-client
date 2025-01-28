@@ -1,19 +1,32 @@
-# Proof of Concept: Storyblok Management API PHP Client
+# Storyblok Management API PHP Client
+
+<p align=center>
+    <a href="https://packagist.org/packages/storyblok/php-management-api-client">
+        <img src="https://img.shields.io/packagist/v/storyblok/php-management-api-client.svg?style=for-the-badge" alt="Latest Version">
+    </a>
+    <a href="https://packagist.org/packages/storyblok/php-management-api-client">
+        <img src="https://img.shields.io/packagist/dt/storyblok/php-management-api-client.svg?style=for-the-badge" alt="Total Downloads">
+    </a>
+    <br />
+    <img src="https://img.shields.io/packagist/l/storyblok/php-management-api-client?style=for-the-badge" alt="Packagist License">
+    <img src="https://img.shields.io/packagist/php-v/storyblok/php-management-api-client?style=for-the-badge" alt="Supported PHP Versions">
+    <img src="https://img.shields.io/github/last-commit/storyblok/php-management-api-client?style=for-the-badge" alt="GitHub last commit">
+    <br />
+        <img src="https://img.shields.io/github/actions/workflow/status/storyblok/php-management-api-client/test-coverage.yml?style=for-the-badge&label=Test" alt="Tests">
+</p>
+
 
 The *Storyblok Management API PHP Client* library simplifies the integration with Storyblok's Management API in PHP applications. With easy-to-use methods, you can interact with your Storyblok space effectively.
 
-> ⚠️ This is just a Proof of Concept, so it is a Work In Progress. We are adding more endpoint coverage, specific Response Data, etc.
+> ⚠️ This is just a version 0.x, we exapect to refactor classes and change interface before the version 1. Essentially it is a Work In Progress. We are adding more endpoint coverage, specific Response Data, etc.
 
 ## Installation
 
 Install the package via Composer:
 
 ```shell
-composer require storyblok/php-management-api-client:dev-main
+composer require storyblok/php-management-api-client
 ```
-
-> Since we are in the PoC phase, you must install the package via Composer using the `:dev-main` suffix within the package name.
-
 
 Below is an example showcasing how to use the library to interact with the Management API.
 
@@ -68,213 +81,18 @@ $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 > The PHP dotenv package is here: <https://github.com/vlucas/phpdotenv>
 
-## Using the ManagementApi class
+## Using the Api classes
 
-The Storyblok Management API Client provides two main approaches for interacting with the API:
+The Storyblok **Management API Client** provides two main approaches for interacting with the API:
 
+- Using specific API classes (like `StoryApi` or `SpaceApi` or `AssetApi` or `TagApi`)
 - Using the `ManagementApi` class
-- Using specific API classes (like `StoryApi` or `SpaceApi`)
 
 The `ManagementApi` class offers a flexible, generic interface for managing content. It includes methods to get, create, update, and delete content. With this approach, you can define the endpoint path and pass query string parameters as a generic array. The response is returned as a `StoryblokData` object, allowing you to access the JSON payload, status codes, and other details directly.
 
 Alternatively, you can leverage dedicated classes like `SpaceApi`, which are tailored to specific resources. For instance, the `SpaceApi` class provides methods for managing spaces and returns specialized data objects, such as `SpaceData` (for a single space) or `SpacesData` (for a collection of spaces). These classes simplify interactions with specific endpoints by offering resource-specific methods.
 
 If a dedicated API class like `SpaceApi` or `StoryApi` does not exist for your desired endpoint, you can always fall back to the more versatile `ManagementApi` class.
-
-To illustrate how to use the `ManagementApi` class, we will demonstrate its usage with the Internal Tags endpoint.
-
-> **Reference**: [Management API documentation for the Internal Tags endpoint](https://www.storyblok.com/docs/api/management/core-resources/internal-tags/)
-
-This approach can be adapted to create other resources by modifying the endpoint and payload, for example, for handling data sources, components, etc. To learn more about the endpoints, the parameters, and the structure of the response payload, you can use the [Storyblok Management API reference](https://www.storyblok.com/docs/api/management/getting-started).
-
-### Retrieving content with ManagementApi class
-
-To retrieve content using the `ManagementApi` class:
-
-1. Initialize the client.
-2. Obtain an instance of the `ManagementApi` class.
-3. Call the `get` method of the `ManagementApi` class using the appropriate parameters.
-
-For example, to retrieve multiple internal tags, use the Internal Tags endpoint with the GET HTTP method:
-[Retrieve Multiple Internal Tags](https://www.storyblok.com/docs/api/management/core-resources/internal-tags/retrieve-multiple-internal-tags).
-
-Below is an example of initializing the client for the EU region (default) using a Personal Access Token:
-
-```php
-$client = new ManagementApiClient($storyblokPersonalAccessToken);
-```
-
-Getting the ManagementApi instance:
-
-```php
-$managementApi = $client->managementApi()
-```
-
-Calling GET HTTP method with `spaces/:spaceid/internal_tags`:
-
-```php
-$spaceId = "12345";
-$response = $clientEU->managementApi()->get(
-    "spaces/{$spaceId}/internal_tags",
-    [
-        "by_object_type" => "asset",
-        //"search" => "some"
-    ]
-);
-```
-
-#### Using Query Parameters and Accessing Data
-
-You can pass query string parameters as an array in the second parameter of the `get()` method.
-
-To retrieve internal tags, specify the object type, such as `asset` or `component`. In the example below, the `by_object_type` parameter is set to `asset` to fetch tags for assets. You can also filter asset tags by name using the `search` query parameter.
-
-The `get()` method returns a `StoryblokResponse` instance, which provides useful information such as the last called URL, the total number of items (helpful for paginated responses), and the data itself:
-
-```php
-echo $response->getLastCalledUrl() . PHP_EOL;
-// https://mapi.storyblok.com/v1/spaces/321388/internal_tags?by_object_type=asset
-
-echo $response->asJson();
-// The returned JSON {"internal_tags":[ ... ]}
-
-echo "Total Tags: " . $response->total() . PHP_EOL;
-// Total Tags: 8
-```
-
-You can access the `internal_tags` data in the returned JSON like this:
-
-```php
-$tags = $response->data()->get("internal_tags");
-```
-
-The `$response->data()` method retrieves an instance of the `StoryblokData` class, which is responsible for storing the JSON response data in memory. It also provides convenient methods to access JSON values, including nested data.
-
-For example, the `get()` method, provided by the `StoryblokData` class, allows access to specific data:
-
-```php
-$tagName = $response->data()->get('internal_tags.0.name');
-```
-
-In this case, you're retrieving the name of the first tag in the `internal_tags` array.
-
-
-
-#### Looping through the items
-
-Thanks to the `StoryblokData` object returned by the `$response->data()`, you can loop through the items and get values.
-
-To loop through `internal_tags` from the `StoryblokData` object and access individual values.
-
-To retrieve the items, you use the `get()` method to access the `internal_tags` array.
-
- ```php
- $tags = $response->data()->get("internal_tags");
- ```
-
-To iterate through the items, you can use `foreach` because StoryblokData is iterable, and you can access specific properties of each tag using the `get()` method:
-
- ```php
- foreach ($tags as $tag) {
-     $name = $tag->get("name");
-     $id = $tag->get("id");
-     $objectType = $tag->get("object_type");
- }
- ```
-
-
-
-### Creating a new resource with the Storyblok Management API
-
-This example demonstrates creating a new internal tag using the Storyblok Management API.
-
-First, define the tag details in an array, including attributes like `name` and `object_type`. Then, use the `post` method of the `ManagementApi` class to send a POST request to the `internal_tags` endpoint for the specified space.
-
-The response will indicate whether the operation was successful. If it succeeds, you can retrieve the created tag’s data using the `data()->get("internal_tag")` method. If the operation fails, the error message can be retrieved using the `getErrorMessage()` method.
-
-Here is the complete example:
-
-```php
-// Define the tag details
-$tag = [
-    "name" => "new tag",
-    "object_type" => "asset"
-];
-
-// Send the POST request to create the tag
-$response = $managementApi()->post(
-    "spaces/{$spaceId}/internal_tags",
-    ["internal_tag" => $tag]
-);
-
-// Show the URL of the response
-echo $response->getLastCalledUrl() . PHP_EOL;
-
-if ($response->isOk()) {
-    // Parse the created tag data
-    $createdTag = $response->data()->get("internal_tag");
-    echo "Tag created with id: " . $createdTag->get("id") . PHP_EOL;
-    echo $createdTag->toJson();
-} else {
-    // Handle errors
-    echo $response->getErrorMessage();
-}
-
-```
-
-### Editing a resource with the Storyblok Management API
-
-This example demonstrates how to update an existing resource, such as an internal tag, using the Storyblok Management API.
-
-To edit a resource, first retrieve or define the resource data you want to update. Modify the desired fields in the resource array, then use the `put` method of the `ManagementApi` class to send an update request to the appropriate endpoint, including the resource's ID.
-
-After sending the request, check if the operation was successful. If successful, you can log the updated response or any relevant details. If it fails, retrieve the error message for debugging.
-
-Here is the complete example:
-
-```php
-$tag["name"] = $tag["name"] . "-UPDATED";
-$response = $managementApi()->put(
-    "spaces/{$spaceId}/internal_tags/{$id}",
-    ["internal_tag" => $tag]
-);
-if ($response->isOk()) {
-    echo "Updated Response : <" . $response->getResponseBody() . ">" . PHP_EOL;
-    echo "Tag updated via id: " . $id . PHP_EOL;
-} else {
-
-    echo $response->getErrorMessage() . PHP_EOL;
-}
-```
-
-### Deleting a resource with the Storyblok Management API
-
-This example explains how to delete a resource, such as an internal tag, using the Storyblok Management API.
-
-To delete a resource, use the `delete` method of the `ManagementApi` class and specify the appropriate endpoint along with the resource's ID. The ID uniquely identifies the resource you want to remove.
-
-After sending the delete request, check the response to confirm whether the operation was successful. For a successful delete, the response body is typically empty. If the operation fails, retrieve and log the error message for further investigation.
-
-Here is the complete example:
-
-```php
-$response = $managementApi()->delete(
-    "spaces/{$spaceId}/internal_tags/{$id}"
-);
-if ($response->isOk()) {
-    echo "Response from a delete is empty: <" . $response->getResponseBody() . ">" . PHP_EOL;
-    echo "Tag deleted via id: " . $id . PHP_EOL;
-} else {
-    echo $response->getErrorMessage() . PHP_EOL;
-}
-
-```
-
-### Quick recap: using the `ManagementApi` Class
-
-The `ManagementApi` class is used for performing generic administrative tasks in Storyblok, including creating, updating, retrieving, and deleting resources.
-
-### Note: `ManagementApi` vs Specialized Api Classes
 
 In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi` and `AssetApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
 
@@ -285,7 +103,7 @@ In addition to the general-purpose `ManagementApi` class, the Storyblok Manageme
 
 These specialized classes extend the functionality of the `ManagementApi` class, offering more precise control and optimized methods for interacting with specific resource types in your Storyblok space.
 
-
+Let's start analyzing the specialized classes, like for example the `SpaceApi`.
 
 ## Handling Spaces
 
@@ -524,7 +342,7 @@ echo "DELETED ASSET, ID : " . $deletedAsset->get("id") . PHP_EOL;
 
 ## Handling tags
 
-### Getting the TagApi instance
+### Getting the `TagApi` instance
 
 To handle tags, get tags,create an asset, update an asset, or delete an asset, you can start getting the instance of `TagApi` that allows you to access the methods for handling tags.
 
@@ -538,7 +356,7 @@ $tagApi = $client->tagApi($spaceId);
 
 ### Getting the tags list
 
-To get the tags list you can use the `tagApi` and the `TagsData`.
+To get the tags list you can use the `page` method from `TagApi` class and obtaining the `TagsData` object.
 
 ```php
 $pageNumber=1;
@@ -623,6 +441,204 @@ if ($response->isOk()) {
 }
 ```
 
+
+
+
+
+## Using the `ManagementApi` class
+
+To illustrate how to use the `ManagementApi` class, we will demonstrate its usage with the Internal Tags endpoint.
+
+> **Reference**: [Management API documentation for the Internal Tags endpoint](https://www.storyblok.com/docs/api/management/core-resources/internal-tags/)
+
+This approach can be adapted to create other resources by modifying the endpoint and payload, for example, for handling data sources, components, etc. To learn more about the endpoints, the parameters, and the structure of the response payload, you can use the [Storyblok Management API reference](https://www.storyblok.com/docs/api/management/getting-started).
+
+### Retrieving content with ManagementApi class
+
+To retrieve content using the `ManagementApi` class:
+
+1. Initialize the client.
+2. Obtain an instance of the `ManagementApi` class.
+3. Call the `get` method of the `ManagementApi` class using the appropriate parameters.
+
+For example, to retrieve multiple internal tags, use the Internal Tags endpoint with the GET HTTP method:
+[Retrieve Multiple Internal Tags](https://www.storyblok.com/docs/api/management/core-resources/internal-tags/retrieve-multiple-internal-tags).
+
+Below is an example of initializing the client for the EU region (default) using a Personal Access Token:
+
+```php
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
+```
+
+Getting the ManagementApi instance:
+
+```php
+$managementApi = $client->managementApi()
+```
+
+Calling GET HTTP method with `spaces/:spaceid/internal_tags`:
+
+```php
+$spaceId = "12345";
+$response = $clientEU->managementApi()->get(
+    "spaces/{$spaceId}/internal_tags",
+    [
+        "by_object_type" => "asset",
+        //"search" => "some"
+    ]
+);
+```
+
+#### Using Query Parameters and Accessing Data
+
+You can pass query string parameters as an array in the second parameter of the `get()` method.
+
+To retrieve internal tags, specify the object type, such as `asset` or `component`. In the example below, the `by_object_type` parameter is set to `asset` to fetch tags for assets. You can also filter asset tags by name using the `search` query parameter.
+
+The `get()` method returns a `StoryblokResponse` instance, which provides useful information such as the last called URL, the total number of items (helpful for paginated responses), and the data itself:
+
+```php
+echo $response->getLastCalledUrl() . PHP_EOL;
+// https://mapi.storyblok.com/v1/spaces/321388/internal_tags?by_object_type=asset
+
+echo $response->asJson();
+// The returned JSON {"internal_tags":[ ... ]}
+
+echo "Total Tags: " . $response->total() . PHP_EOL;
+// Total Tags: 8
+```
+
+You can access the `internal_tags` data in the returned JSON like this:
+
+```php
+$tags = $response->data()->get("internal_tags");
+```
+
+The `$response->data()` method retrieves an instance of the `StoryblokData` class, which is responsible for storing the JSON response data in memory. It also provides convenient methods to access JSON values, including nested data.
+
+For example, the `get()` method, provided by the `StoryblokData` class, allows access to specific data:
+
+```php
+$tagName = $response->data()->get('internal_tags.0.name');
+```
+
+In this case, you're retrieving the name of the first tag in the `internal_tags` array.
+
+
+
+#### Looping through the items
+
+Thanks to the `StoryblokData` object returned by the `$response->data()`, you can loop through the items and get values.
+
+To loop through `internal_tags` from the `StoryblokData` object and access individual values.
+
+To retrieve the items, you use the `get()` method to access the `internal_tags` array.
+
+ ```php
+ $tags = $response->data()->get("internal_tags");
+ ```
+
+To iterate through the items, you can use `foreach` because StoryblokData is iterable, and you can access specific properties of each tag using the `get()` method:
+
+ ```php
+ foreach ($tags as $tag) {
+     $name = $tag->get("name");
+     $id = $tag->get("id");
+     $objectType = $tag->get("object_type");
+ }
+ ```
+
+
+
+### Creating a new resource with the Storyblok Management API
+
+This example demonstrates creating a new internal tag using the Storyblok Management API.
+
+First, define the tag details in an array, including attributes like `name` and `object_type`. Then, use the `post` method of the `ManagementApi` class to send a POST request to the `internal_tags` endpoint for the specified space.
+
+The response will indicate whether the operation was successful. If it succeeds, you can retrieve the created tag’s data using the `data()->get("internal_tag")` method. If the operation fails, the error message can be retrieved using the `getErrorMessage()` method.
+
+Here is the complete example:
+
+```php
+// Define the tag details
+$tag = [
+    "name" => "new tag",
+    "object_type" => "asset"
+];
+
+// Send the POST request to create the tag
+$response = $managementApi()->post(
+    "spaces/{$spaceId}/internal_tags",
+    ["internal_tag" => $tag]
+);
+
+// Show the URL of the response
+echo $response->getLastCalledUrl() . PHP_EOL;
+
+if ($response->isOk()) {
+    // Parse the created tag data
+    $createdTag = $response->data()->get("internal_tag");
+    echo "Tag created with id: " . $createdTag->get("id") . PHP_EOL;
+    echo $createdTag->toJson();
+} else {
+    // Handle errors
+    echo $response->getErrorMessage();
+}
+
+```
+
+### Editing a resource with the Storyblok Management API
+
+This example demonstrates how to update an existing resource, such as an internal tag, using the Storyblok Management API.
+
+To edit a resource, first retrieve or define the resource data you want to update. Modify the desired fields in the resource array, then use the `put` method of the `ManagementApi` class to send an update request to the appropriate endpoint, including the resource's ID.
+
+After sending the request, check if the operation was successful. If successful, you can log the updated response or any relevant details. If it fails, retrieve the error message for debugging.
+
+Here is the complete example:
+
+```php
+$tag["name"] = $tag["name"] . "-UPDATED";
+$response = $managementApi()->put(
+    "spaces/{$spaceId}/internal_tags/{$id}",
+    ["internal_tag" => $tag]
+);
+if ($response->isOk()) {
+    echo "Updated Response : <" . $response->getResponseBody() . ">" . PHP_EOL;
+    echo "Tag updated via id: " . $id . PHP_EOL;
+} else {
+
+    echo $response->getErrorMessage() . PHP_EOL;
+}
+```
+
+### Deleting a resource with the Storyblok Management API
+
+This example explains how to delete a resource, such as an internal tag, using the Storyblok Management API.
+
+To delete a resource, use the `delete` method of the `ManagementApi` class and specify the appropriate endpoint along with the resource's ID. The ID uniquely identifies the resource you want to remove.
+
+After sending the delete request, check the response to confirm whether the operation was successful. For a successful delete, the response body is typically empty. If the operation fails, retrieve and log the error message for further investigation.
+
+Here is the complete example:
+
+```php
+$response = $managementApi()->delete(
+    "spaces/{$spaceId}/internal_tags/{$id}"
+);
+if ($response->isOk()) {
+    echo "Response from a delete is empty: <" . $response->getResponseBody() . ">" . PHP_EOL;
+    echo "Tag deleted via id: " . $id . PHP_EOL;
+} else {
+    echo $response->getErrorMessage() . PHP_EOL;
+}
+
+```
+
+### Quick recap: using the `ManagementApi` Class
+
+The `ManagementApi` class is used for performing generic administrative tasks in Storyblok, including creating, updating, retrieving, and deleting resources.
 
 
 ## Documentation
