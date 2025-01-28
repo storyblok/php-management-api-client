@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Data;
+namespace Storyblok\ManagementApi\Data;
 
-use Storyblok\Mapi\Data\StoryblokData;
+use Storyblok\ManagementApi\Data\StoryblokData;
 
 class StoriesData extends StoryblokData
 {

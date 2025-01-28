@@ -3,7 +3,7 @@
 
 declare(strict_types=1);
 
-use Storyblok\Mapi\StoryblokUtils;
+use Storyblok\ManagementApi\StoryblokUtils;
 
 it('getPlanDescription', function (int $code, string $description): void {
     expect(StoryblokUtils::getPlanDescription($code))->toBe($description);

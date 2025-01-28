@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Data\Enum;
+namespace Storyblok\ManagementApi\Data\Enum;
 
 enum Region: string
 {

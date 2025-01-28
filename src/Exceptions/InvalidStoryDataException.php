@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Exceptions;
+namespace Storyblok\ManagementApi\Exceptions;
 
 /**
  * Exception thrown when invalid story data is provided

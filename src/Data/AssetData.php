@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Data;
+namespace Storyblok\ManagementApi\Data;
 
-use Storyblok\Mapi\StoryblokUtils;
+use Storyblok\ManagementApi\StoryblokUtils;
 
 class AssetData extends StoryblokData
 {

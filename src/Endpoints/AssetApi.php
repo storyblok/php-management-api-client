@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Endpoints;
+namespace Storyblok\ManagementApi\Endpoints;
 
 use GuzzleHttp\Client;
-use Storyblok\Mapi\Data\AssetData;
-use Storyblok\Mapi\Data\AssetsData;
-use Storyblok\Mapi\Data\SpaceData;
-use Storyblok\Mapi\Data\SpacesData;
-use Storyblok\Mapi\Data\StoryblokData;
-use Storyblok\Mapi\Data\UserData;
-use Storyblok\Mapi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Data\AssetData;
+use Storyblok\ManagementApi\Data\AssetsData;
+use Storyblok\ManagementApi\Data\SpaceData;
+use Storyblok\ManagementApi\Data\SpacesData;
+use Storyblok\ManagementApi\Data\StoryblokData;
+use Storyblok\ManagementApi\Data\UserData;
+use Storyblok\ManagementApi\StoryblokResponseInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\Multipart\FormDataPart;

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\Mapi\Endpoints;
+namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\Mapi\Data\StoryblokData;
-use Storyblok\Mapi\Data\TagData;
-use Storyblok\Mapi\Data\TagsData;
-use Storyblok\Mapi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Data\StoryblokData;
+use Storyblok\ManagementApi\Data\TagData;
+use Storyblok\ManagementApi\Data\TagsData;
+use Storyblok\ManagementApi\StoryblokResponseInterface;
 
 /**
  *
