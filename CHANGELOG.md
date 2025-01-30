@@ -4,7 +4,7 @@
 
 - Assets filtering with `AssetsParams`
 - Setting per page default constant
-
+- Filtering stories with `StoriesParams`
 
 ## 0.0.1 - 2025-01-28
 

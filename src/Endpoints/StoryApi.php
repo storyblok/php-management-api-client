@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
+use Storyblok\ManagementApi\QueryParameters\AssetsParams;
+use Storyblok\ManagementApi\QueryParameters\PaginationParams;
+use Storyblok\ManagementApi\QueryParameters\StoriesParams;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Storyblok\ManagementApi\Data\StoriesData;
 use Storyblok\ManagementApi\Data\StoryData;
@@ -48,20 +51,21 @@ class StoryApi extends EndpointSpace
      * @return \Generator<StoryData>
      * @throws StoryblokApiException
      */
-    public function all(int $itemsPerPage = self::DEFAULT_ITEMS_PER_PAGE): \Generator
+    public function all(?StoriesParams $params = null, int $itemsPerPage = self::DEFAULT_ITEMS_PER_PAGE): \Generator
     {
-        $pageNumber = self::DEFAULT_PAGE;
+
         $totalPages = null;
         $retryCount = 0;
+        $page = new PaginationParams(self::DEFAULT_PAGE, $itemsPerPage);
 
         do {
             try {
-                $response = $this->page($pageNumber, $itemsPerPage);
+                $response = $this->page($params, $page);
 
                 if ($response->isOk()) {
                     $totalPages = $this->handleSuccessfulResponse($response, $totalPages, $itemsPerPage);
                     yield from $this->getStoriesFromResponse($response);
-                    ++$pageNumber;
+                    $page->incrementPage();
                     $retryCount = 0;
                 } else {
                     $this->handleErrorResponse($response, $retryCount);
@@ -70,27 +74,32 @@ class StoryApi extends EndpointSpace
             } catch (\Exception $e) {
                 $this->logger->error('Error fetching stories', [
                     'error' => $e->getMessage(),
-                    'page' => $pageNumber,
+                    'page' => $page->page(),
                 ]);
                 throw new StoryblokApiException('Failed to fetch stories: ' . $e->getMessage(), 0, $e);
             }
-        } while ($pageNumber <= $totalPages);
+        } while ($page->page() <= $totalPages);
     }
 
     /**
      * Retrieves a specific page of stories
      */
     public function page(
-        int $page = self::DEFAULT_PAGE,
-        int $perPage = self::DEFAULT_ITEMS_PER_PAGE,
+        ?StoriesParams $params = null,
+        ?PaginationParams $page = null,
     ): StoryblokResponseInterface {
-        $this->validatePaginationParams($page, $perPage);
+        if (!$params instanceof StoriesParams) {
+            $params = new StoriesParams();
+        }
+
+        if (!$page instanceof PaginationParams) {
+            $page = new PaginationParams();
+        }
+
+        $this->validatePaginationParams($page);
 
         $options = [
-            'query' => [
-                'page' => $page,
-                'per_page' => $perPage,
-            ],
+            'query' => array_merge($params->toArray(), $page->toArray()),
         ];
 
         return $this->makeRequest(
@@ -229,13 +238,13 @@ class StoryApi extends EndpointSpace
      *
      * @throws \InvalidArgumentException
      */
-    private function validatePaginationParams(int $page, int $perPage): void
+    private function validatePaginationParams(PaginationParams $page): void
     {
-        if ($page < 1) {
+        if ($page->page() < 1) {
             throw new \InvalidArgumentException('Page number must be greater than 0');
         }
 
-        if ($perPage < 1) {
+        if ($page->perPage() < 1) {
             throw new \InvalidArgumentException('Items per page must be greater than 0');
         }
     }

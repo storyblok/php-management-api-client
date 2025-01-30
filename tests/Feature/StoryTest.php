@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\Data\StoryData;
+use Storyblok\ManagementApi\QueryParameters\PaginationParams;
+use Storyblok\ManagementApi\QueryParameters\StoriesParams;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Psr\Log\NullLogger;
@@ -126,4 +128,47 @@ test('StoryApi works with custom logger', function (): void {
     expect($mockLogger->logs)->not->toBeEmpty()
         ->and($mockLogger->logs[0]['level'])->toBe('error')
         ->and($mockLogger->logs[0]['message'])->toBe('Error fetching stories');
+});
+
+
+test('Testing list of stories, Params', function (): void {
+    $responses = [
+        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("list-stories", 200, ["total"=>200, "per-page" => 25 ]),
+        \mockResponse("list-stories", 200, ["total"=>200, "per-page" => 25 ]),
+        //\mockResponse("empty-asset", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $storyApi = $mapiClient->storyApi("222");
+
+    $storyblokResponse = $storyApi->page(params: new StoriesParams(
+        favorite: true
+    ));
+    $string = $storyblokResponse->getLastCalledUrl();
+    expect($string)->toMatch('/.*favorite=1.*$/');
+    expect($string)->toMatch('/.*page=1&per_page=25.*$/');
+
+    $storyblokResponse = $storyApi->page(
+        params: new StoriesParams(
+            favorite: true
+        ),page: new PaginationParams(5, 30)
+    );
+    $string = $storyblokResponse->getLastCalledUrl();
+    expect($string)->toMatch('/.*favorite=1.*$/');
+    expect($string)->toMatch('/.*page=5&per_page=30.*$/');
+
+    $storyblokResponse = $storyApi->page(
+        params: new StoriesParams(
+            withTag: "aaa",
+            search: "something"
+        ),page: new PaginationParams(5, 30)
+    );
+    $string = $storyblokResponse->getLastCalledUrl();
+    expect($string)->toMatch('/.*search=something.*$/');
+    expect($string)->toMatch('/.*with_tag=aaa.*$/');
+    expect($string)->toMatch('/.*page=5&per_page=30.*$/');
+
+
 });

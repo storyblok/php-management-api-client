@@ -195,6 +195,18 @@ foreach ($data as $key => $story) {
 }
 ```
 
+### Filtering stories
+You can filter stories using `StoriesParams`.
+
+```php
+
+$storyApi = $client->storyApi($spaceId);
+$stories = $storyApi->page(
+    new StoriesParams(containComponent: "feature"),
+    new PaginationParams(1, 1000)
+);
+```
+
 ### Getting a Story by ID
 
 ```php
