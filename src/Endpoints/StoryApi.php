@@ -48,7 +48,7 @@ class StoryApi extends EndpointSpace
      * @return \Generator<StoryData>
      * @throws StoryblokApiException
      */
-    public function all(int $itemsPerPage = 5): \Generator
+    public function all(int $itemsPerPage = self::DEFAULT_ITEMS_PER_PAGE): \Generator
     {
         $pageNumber = self::DEFAULT_PAGE;
         $totalPages = null;
