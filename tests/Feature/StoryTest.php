@@ -134,8 +134,11 @@ test('StoryApi works with custom logger', function (): void {
 test('Testing list of stories, Params', function (): void {
     $responses = [
         \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
-        \mockResponse("list-stories", 200, ["total"=>200, "per-page" => 25 ]),
-        \mockResponse("list-stories", 200, ["total"=>200, "per-page" => 25 ]),
+        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
         //\mockResponse("empty-asset", 404),
     ];
 
@@ -169,6 +172,18 @@ test('Testing list of stories, Params', function (): void {
     expect($string)->toMatch('/.*search=something.*$/');
     expect($string)->toMatch('/.*with_tag=aaa.*$/');
     expect($string)->toMatch('/.*page=5&per_page=30.*$/');
+
+
+    $storyblokResponse = $storyApi->all(
+        params: new StoriesParams(
+            withTag: "aaa",
+            search: "something"
+        )
+    );
+    expect($storyblokResponse)->toBeInstanceOf(Generator::class);
+    foreach ($storyblokResponse as $story) {
+        expect($story->name())->toBe("My third post");
+    }
 
 
 });
