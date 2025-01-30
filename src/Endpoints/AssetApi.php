@@ -7,27 +7,35 @@ namespace Storyblok\ManagementApi\Endpoints;
 use GuzzleHttp\Client;
 use Storyblok\ManagementApi\Data\AssetData;
 use Storyblok\ManagementApi\Data\AssetsData;
-use Storyblok\ManagementApi\Data\SpaceData;
-use Storyblok\ManagementApi\Data\SpacesData;
 use Storyblok\ManagementApi\Data\StoryblokData;
-use Storyblok\ManagementApi\Data\UserData;
+use Storyblok\ManagementApi\QueryParameters\AssetsParams;
+use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\StoryblokResponseInterface;
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\Mime\Part\DataPart;
-use Symfony\Component\Mime\Part\Multipart\FormDataPart;
 
 /**
  *
  */
 class AssetApi extends EndpointSpace
 {
-    public function page(int $page = 1, int $perPage = 25): StoryblokResponseInterface
+    /**
+     * @link https://www.storyblok.com/docs/api/management/core-resources/assets/retrieve-multiple-assets
+     * @param AssetsParams $params
+     * @param PaginationParams $page
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function page(?AssetsParams $params = null, ?PaginationParams $page = null): StoryblokResponseInterface
     {
+        if (!$params instanceof \Storyblok\ManagementApi\QueryParameters\AssetsParams) {
+            $params = new AssetsParams();
+        }
+
+        if (!$page instanceof \Storyblok\ManagementApi\QueryParameters\PaginationParams) {
+            $page = new PaginationParams();
+        }
+
         $options = [
-            'query' => [
-                'page' => $page,
-                'per_page' => $perPage,
-            ],
+            'query' => array_merge($params->toArray(), $page->toArray()),
         ];
         return $this->makeRequest(
             "GET",
@@ -37,6 +45,11 @@ class AssetApi extends EndpointSpace
         );
     }
 
+    /**
+     * Retrieving a single asset via the asset id.
+     * @link https://www.storyblok.com/docs/api/management/core-resources/assets/retrieve-one-asset
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
     public function get(string|int $assetId): StoryblokResponseInterface
     {
         return $this->makeRequest(

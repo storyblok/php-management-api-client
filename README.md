@@ -292,6 +292,25 @@ foreach ($assets as $key => $asset) {
 }
 ```
 
+### Filtering assets
+Using the `AssetsParams` class you can set up filters for filtering the assets.
+
+```php
+use Storyblok\ManagementApi\QueryParameters\{AssetsParams,PaginationParams};
+
+$assetApi = $client->assetApi($spaceId);
+$assets = $assetApi->page(
+    new AssetsParams(
+        inFolder: -1,
+        search: "something"
+    ),
+    new PaginationParams(1,1000)
+);
+```
+
+In the example above, we are filtering the deleted assets (`inFolder : -1`) and with the filename that contains the term `something`.
+Additional info: using `PaginationParams` you can retrieve a specific page. The example `new PaginationParams(1,1000)` retrieves the page number `1` and `1000` items per page.
+
 ### Getting one asset
 
 To get a specific asset, you can use the `AssetApi` and the `AssetData` classes.
