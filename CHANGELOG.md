@@ -5,6 +5,8 @@
 - Assets filtering with `AssetsParams`
 - Setting per page default constant
 - Filtering stories with `StoriesParams`
+- Publishing a story with `publish()`
+- Unpublishing a story with `unpublish()`
 
 ## 0.0.1 - 2025-01-28
 

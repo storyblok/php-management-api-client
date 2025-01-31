@@ -159,7 +159,7 @@ class StoryApi extends EndpointSpace
     public function update(string $storyId, StoryData $storyData): StoryblokResponseInterface
     {
         $this->validateStoryId($storyId);
-        $this->validateStoryData($storyData);
+        //$this->validateStoryData($storyData);
 
         return $this->makeRequest(
             "PUT",
@@ -191,6 +191,31 @@ class StoryApi extends EndpointSpace
         return $this->makeRequest(
             "GET",
             sprintf('%s/%s/publish', $this->buildStoriesEndpoint(), $storyId),
+            [
+
+                "query" => $queryParams,
+
+            ],
+            dataClass: StoryData::class,
+        );
+    }
+
+    public function unpublish(
+        string $storyId,
+        string|null $language = null,
+    ): StoryblokResponseInterface {
+        $this->validateStoryId($storyId);
+        //$this->validateStoryData($storyData);
+
+        $queryParams = [];
+
+        if (null !== $language) {
+            $queryParams["lang"] = $language;
+        }
+
+        return $this->makeRequest(
+            "GET",
+            sprintf('%s/%s/unpublish', $this->buildStoriesEndpoint(), $storyId),
             [
 
                 "query" => $queryParams,
