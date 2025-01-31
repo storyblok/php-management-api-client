@@ -171,6 +171,35 @@ class StoryApi extends EndpointSpace
         );
     }
 
+    public function publish(
+        string $storyId,
+        int|string|null $release_id = null,
+        string|null $language = null,
+    ): StoryblokResponseInterface {
+        $this->validateStoryId($storyId);
+        //$this->validateStoryData($storyData);
+
+        $queryParams = [];
+        if (null !== $release_id) {
+            $queryParams["release_id"] = $release_id;
+        }
+
+        if (null !== $language) {
+            $queryParams["lang"] = $language;
+        }
+
+        return $this->makeRequest(
+            "GET",
+            sprintf('%s/%s/publish', $this->buildStoriesEndpoint(), $storyId),
+            [
+
+                "query" => $queryParams,
+
+            ],
+            dataClass: StoryData::class,
+        );
+    }
+
     /**
      * Handles successful API response
      */

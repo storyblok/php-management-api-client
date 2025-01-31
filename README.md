@@ -244,6 +244,14 @@ if ($response->isOk()) {
 }
 ```
 
+### Publishing a story
+
+For publishing a story by the story identifier you can use the `publish` method:
+
+```php
+$storyApi->publish($storyId);
+```
+
 
 
 ## Handling users
