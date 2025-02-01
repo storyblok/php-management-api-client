@@ -38,9 +38,19 @@ class SpaceData extends StoryblokData
         return $this->getString('name', "");
     }
 
+    public function id(): string
+    {
+        return $this->getString('id', "");
+    }
+
     public function createdAt(): null|string
     {
         return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
+    }
+
+    public function updatedAt(): null|string
+    {
+        return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
     }
 
 
