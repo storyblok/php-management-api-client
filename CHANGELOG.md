@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.0.2 - WIP
+## 0.0.2 - 2025-02-01
 
 - Assets filtering with `AssetsParams`
 - Setting per page default constant
