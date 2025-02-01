@@ -207,6 +207,50 @@ $stories = $storyApi->page(
 );
 ```
 
+### Filtering stories via query filters
+
+Besides using query parameters to filter stories, you can leverage more powerful query filters.
+In this example, you will retrieve all stories where the "title" field is empty. (Stories with content types that do not include a "title" field in their schema will be skipped.)
+
+```php
+use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
+use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
+
+$stories = $storyApi->all(
+    filters: (new QueryFilters())->add(
+        new Filter(
+            "title",
+            "like",
+            ""
+        )
+    )
+);
+foreach ($stories as $story) {
+    echo $story->name() . PHP_EOL;
+}
+
+```
+
+> Even the "query filters" are documented in the Content Delivery API, you can use the query filters with Management API. Here you can find more examples: https://www.storyblok.com/docs/api/content-delivery/v2/filter-queries/
+
+For retrieving stories with `article-page` content type:
+
+```php
+$stories = $storyApi->all(
+    filters: (new QueryFilters())->add(
+        new Filter(
+            "component",
+            "in",
+            "article-page"
+        )
+    )
+);
+foreach ($stories as $story) {
+    echo $story->name() . PHP_EOL;
+}
+```
+
+
 ### Getting a Story by ID
 
 ```php

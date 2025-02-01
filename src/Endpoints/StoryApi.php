@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Storyblok\ManagementApi\Endpoints;
 
 use Storyblok\ManagementApi\QueryParameters\AssetsParams;
+use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -51,7 +52,7 @@ class StoryApi extends EndpointSpace
      * @return \Generator<StoryData>
      * @throws StoryblokApiException
      */
-    public function all(?StoriesParams $params = null, int $itemsPerPage = self::DEFAULT_ITEMS_PER_PAGE): \Generator
+    public function all(?StoriesParams $params = null, ?QueryFilters $filters = null, int $itemsPerPage = self::DEFAULT_ITEMS_PER_PAGE): \Generator
     {
 
         $totalPages = null;
@@ -60,7 +61,11 @@ class StoryApi extends EndpointSpace
 
         do {
             try {
-                $response = $this->page($params, $page);
+                $response = $this->page(
+                    params: $params,
+                    queryFilters: $filters,
+                    page: $page,
+                );
 
                 if ($response->isOk()) {
                     $totalPages = $this->handleSuccessfulResponse($response, $totalPages, $itemsPerPage);
@@ -86,11 +91,17 @@ class StoryApi extends EndpointSpace
      */
     public function page(
         ?StoriesParams $params = null,
+        ?QueryFilters $queryFilters = null,
         ?PaginationParams $page = null,
     ): StoryblokResponseInterface {
         if (!$params instanceof StoriesParams) {
             $params = new StoriesParams();
         }
+
+        if (!$queryFilters instanceof QueryFilters) {
+            $queryFilters = new QueryFilters();
+        }
+
 
         if (!$page instanceof PaginationParams) {
             $page = new PaginationParams();
@@ -99,7 +110,11 @@ class StoryApi extends EndpointSpace
         $this->validatePaginationParams($page);
 
         $options = [
-            'query' => array_merge($params->toArray(), $page->toArray()),
+            'query' => array_merge(
+                $params->toArray(),
+                $queryFilters->toArray(),
+                $page->toArray(),
+            ),
         ];
 
         return $this->makeRequest(

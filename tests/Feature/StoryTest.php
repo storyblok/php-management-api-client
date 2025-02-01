@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\Data\StoryData;
+use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
+use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
 use Symfony\Component\HttpClient\Response\MockResponse;
@@ -173,6 +175,55 @@ test('Testing list of stories, Params', function (): void {
     expect($string)->toMatch('/.*with_tag=aaa.*$/');
     expect($string)->toMatch('/.*page=5&per_page=30.*$/');
 
+
+    $storyblokResponse = $storyApi->page(
+        params: new StoriesParams(
+            withTag: "aaa",
+            search: "something"
+        ),
+        queryFilters: (new QueryFilters())->add(
+            new Filter(
+                "headline",
+                "like",
+                "something"
+            )
+        ),
+
+        page: new PaginationParams(5, 30)
+    );
+    $string = $storyblokResponse->getLastCalledUrl();
+    expect($string)->toMatch('/.*search=something.*$/');
+    expect($string)->toMatch('/.*with_tag=aaa.*$/');
+    expect($string)->toMatch('/.*page=5&per_page=30.*$/');
+    expect($string)->toMatch('/.*filter_query\[headline\]\[like\]=something.*$/');
+
+    $storyblokResponse = $storyApi->page(
+        params: new StoriesParams(
+            withTag: "aaa",
+            search: "something"
+        ),
+        queryFilters: (new QueryFilters())->add(
+            new Filter(
+                "headline",
+                "like",
+                "something"
+            ))->add(
+            new Filter(
+                "subheadline",
+                "like",
+                "somethingelse"
+            ),
+
+        ),
+
+        page: new PaginationParams(5, 30)
+    );
+    $string = $storyblokResponse->getLastCalledUrl();
+    expect($string)->toMatch('/.*search=something.*$/');
+    expect($string)->toMatch('/.*with_tag=aaa.*$/');
+    expect($string)->toMatch('/.*page=5&per_page=30.*$/');
+    expect($string)->toMatch('/.*filter_query\[headline\]\[like\]=something.*$/');
+    expect($string)->toMatch('/.*filter_query\[subheadline\]\[like\]=somethingelse.*$/');
 
     $storyblokResponse = $storyApi->all(
         params: new StoriesParams(

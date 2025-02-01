@@ -77,7 +77,6 @@ test('Testing create resource, StoryblokData', function (): void {
         ["internal_tag" => $tag ]
     );
     expect($response->isOk())->toBe(true);
-    var_dump($response->data());
     $tag = $response->data()->get("internal_tag");
     expect($tag->get("name"))->toBeString();
     expect($tag->getString("name"))->toBeString();
@@ -107,7 +106,6 @@ test('Testing delete resource, StoryblokData', function (): void {
         sprintf('spaces/%s/internal_tags/%s', $spaceId, $tagId)
     );
     expect($response->isOk())->toBe(true);
-    var_dump($response->data());
     $tag = $response->data()->get("internal_tag");
     expect($tag->get("name"))->toBeString();
     expect($tag->getString("name"))->toBeString();
@@ -137,7 +135,7 @@ test('Testing edit resource, StoryblokData', function (): void {
         sprintf('spaces/%s/internal_tags/%s', $spaceId, $tagId)
     );
     expect($response->isOk())->toBe(true);
-    var_dump($response->data());
+
     $tag = $response->data()->get("internal_tag");
     expect($tag->get("name"))->toBeString();
     expect($tag->getString("name"))->toBeString();
