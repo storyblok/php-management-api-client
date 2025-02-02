@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.3 - WIP
+
+- Adding helper methods for SpaceData (id(), updatedAt())
+
 ## 0.0.2 - 2025-02-01
 
 - Assets filtering with `AssetsParams`
