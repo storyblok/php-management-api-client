@@ -7,4 +7,4 @@
 /.phpunit.result.cache
 .phpunit.cache/test-results
 /test-output
-
+.phpactor.json

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi;
 
-use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\Data\StoryblokDataInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 

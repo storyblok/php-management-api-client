@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\ManagementApi\QueryParameters\AssetsParams;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
+use Storyblok\ManagementApi\Data\StoryblokDataInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Storyblok\ManagementApi\Data\StoriesData;
 use Storyblok\ManagementApi\Data\StoryData;
@@ -145,6 +145,7 @@ class StoryApi extends EndpointSpace
      * Creates a new story
      *
      * @throws InvalidStoryDataException
+     * @throws StoryblokApiException
      */
     public function create(StoryData $storyData): StoryblokResponseInterface
     {
@@ -156,14 +157,53 @@ class StoryApi extends EndpointSpace
             ]);
         }
 
-        return $this->makeRequest(
-            "POST",
-            $this->buildStoriesEndpoint(),
-            [
-                "body" => json_encode(["story" => $storyData->toArray()]),
-            ],
-            dataClass: StoryData::class,
-        );
+        try {
+            $response = $this->makeRequest(
+                "POST",
+                $this->buildStoriesEndpoint(),
+                [
+                    "body" => json_encode(["story" => $storyData->toArray()]),
+                ],
+                dataClass: StoryData::class,
+            );
+
+            if ($response->isOk()) {
+                $this->logger->info('Story created successfully', [
+                    'story_name' => $storyData->name(),
+                ]);
+                return $response;
+            }
+
+            $this->logger->error('Failed to create story', [
+                'status_code' => $response->getResponseStatusCode(),
+                'error_message' => $response->getErrorMessage(),
+                'story_name' => $storyData->name(),
+            ]);
+
+            throw new StoryblokApiException(
+                sprintf(
+                    'Failed to create story: %s (Status code: %d)',
+                    $response->getErrorMessage(),
+                    $response->getResponseStatusCode(),
+                ),
+                $response->getResponseStatusCode(),
+            );
+        } catch (\Exception $exception) {
+            if ($exception instanceof StoryblokApiException) {
+                throw $exception;
+            }
+
+            $this->logger->error('Unexpected error while creating story', [
+                'error' => $exception->getMessage(),
+                'story_name' => $storyData->name(),
+            ]);
+
+            throw new StoryblokApiException(
+                'Failed to create story: ' . $exception->getMessage(),
+                0,
+                $exception,
+            );
+        }
     }
 
     /**
@@ -241,6 +281,53 @@ class StoryApi extends EndpointSpace
     }
 
     /**
+     * Creates multiple stories with rate limit handling and retries
+     *
+     * @param StoryData[] $stories Array of stories to create
+     * @return \Generator<StoryblokDataInterface> Generated stories
+     * @throws StoryblokApiException
+     */
+    public function createBulk(array $stories): \Generator
+    {
+        $retryCount = 0;
+
+        foreach ($stories as $storyData) {
+            while (true) {
+                try {
+                    $response = $this->create($storyData);
+                    yield $response->data();
+                    $retryCount = 0;
+                    break;
+                } catch (StoryblokApiException $e) {
+                    if ($e->getCode() === self::RATE_LIMIT_STATUS_CODE) {
+                        if ($retryCount >= self::MAX_RETRIES) {
+                            $this->logger->error('Max retries reached while creating story', [
+                                'story_name' => $storyData->name(),
+                            ]);
+                            throw new StoryblokApiException(
+                                'Rate limit exceeded maximum retries',
+                                self::RATE_LIMIT_STATUS_CODE,
+                            );
+                        }
+
+                        $this->logger->warning('Rate limit reached while creating story, retrying...', [
+                            'retry_count' => $retryCount + 1,
+                            'max_retries' => self::MAX_RETRIES,
+                            'story_name' => $storyData->name(),
+                        ]);
+
+                        $this->handleRateLimit();
+                        ++$retryCount;
+                        continue;
+                    }
+
+                    throw $e;
+                }
+            }
+        }
+    }
+
+    /**
      * Handles successful API response
      */
     private function handleSuccessfulResponse(
@@ -281,7 +368,7 @@ class StoryApi extends EndpointSpace
     /**
      * Handles rate limiting by implementing a delay
      */
-    private function handleRateLimit(): void
+    protected function handleRateLimit(): void
     {
         $this->logger->warning('Rate limit reached, waiting before retry...');
         sleep(self::RETRY_DELAY);
