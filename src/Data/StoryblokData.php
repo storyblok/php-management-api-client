@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Storyblok\ManagementApi\Data;
 
 use ArrayAccess;
+use ArrayObject;
 use Countable;
 use Iterator;
 
@@ -121,10 +122,29 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
 
     public function getBoolean(mixed $key, bool $defaultValue = false, string $charNestedKey = "."): bool
     {
-        $returnValue = $this->get($key, false, $charNestedKey);
+        $returnValue = $this->get($key, $defaultValue, $charNestedKey);
 
         if (is_scalar($returnValue)) {
             return boolval($returnValue);
+        }
+
+        return $defaultValue;
+    }
+
+    /**
+     * @param mixed[] $defaultValue
+     * @return mixed[]
+     */
+    public function getArray(mixed $key, array $defaultValue = [], string $charNestedKey = "."): array
+    {
+        $returnValue = $this->get($key, $defaultValue, $charNestedKey);
+
+        if (is_scalar($returnValue)) {
+            return [strval($returnValue) ];
+        }
+
+        if ($returnValue instanceof StoryblokData) {
+            return $returnValue->toArray();
         }
 
         return $defaultValue;

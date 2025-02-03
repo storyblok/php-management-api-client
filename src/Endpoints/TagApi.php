@@ -72,7 +72,7 @@ class TagApi extends EndpointSpace
     {
         return $this->makeRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . '/tags' . $name,
+            "/v1/spaces/" . $this->spaceId . '/tags/' . $name,
             [
                 "body" => [
                     "name" => $newName,

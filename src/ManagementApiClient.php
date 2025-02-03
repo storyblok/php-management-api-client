@@ -11,6 +11,7 @@ use Storyblok\ManagementApi\Endpoints\SpaceApi;
 use Storyblok\ManagementApi\Endpoints\StoryApi;
 use Storyblok\ManagementApi\Endpoints\TagApi;
 use Storyblok\ManagementApi\Endpoints\UserApi;
+use Storyblok\ManagementApi\Endpoints\WorkflowApi;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Log\LoggerInterface;
@@ -97,6 +98,11 @@ class ManagementApiClient
     public function tagApi(string|int $spaceId): TagApi
     {
         return new TagApi($this->httpClient, $spaceId);
+    }
+
+    public function workflowApi(string|int $spaceId): WorkflowApi
+    {
+        return new WorkflowApi($this->httpClient, $spaceId);
     }
 
     public function managementApi(): ManagementApi

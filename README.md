@@ -525,7 +525,35 @@ if ($response->isOk()) {
 ```
 
 
+## Handling Workflows
 
+If you need to handle workflows (retrieving workflows or create new custome workflow - in the case you have a proper plan - ) you can use the `WorkflowApi` class.
+
+### Retrieving workflows
+
+```php
+$workflowApi = $client->workflowApi($spaceId);
+$response = $workflowApi->list();
+/** @var WorkflowsData $workflows */
+$workflows = $response->data();
+
+foreach ($workflows as $key => $workflow) {
+    echo $workflow->name() . PHP_EOL;
+    echo print_r($workflow->contentTypes(), true) . PHP_EOL;
+    echo $workflow->isDefault() . PHP_EOL;
+    echo "---" . PHP_EOL;
+}
+
+```
+
+### Creating a new custom workflow
+
+```php
+$workflowApi = $client->workflowApi($spaceId);
+$workflowData = new WorkflowData();
+$workflowData->setName("Name");
+$response = $workflowApi->create($workflowData);
+```
 
 
 ## Using the `ManagementApi` class

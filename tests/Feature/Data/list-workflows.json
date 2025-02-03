@@ -1,0 +1,19 @@
+{
+    "workflows": [
+        {
+            "id": 12345,
+            "content_types": [
+                "article"
+            ],
+            "is_default": false,
+            "name": "Article "
+        },
+        {
+            "id": 12346,
+            "content_types": [
+            ],
+            "is_default": true,
+            "name": "Default one"
+        }
+    ]
+}

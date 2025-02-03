@@ -17,6 +17,7 @@ return RectorConfig::configure()
         typeDeclarations: true,
         // naming: true,
         instanceOf: true,
+
         earlyReturn: true,
         strictBooleans: true,
         carbon: true,
