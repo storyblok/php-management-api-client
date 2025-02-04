@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.4 - WIP
+
+- Adding WorkflowStage Api class for handling workflow stages
+-
 ## 0.0.3 - 2025-02-03
 
 - Adding helper methods for SpaceData (id(), updatedAt())

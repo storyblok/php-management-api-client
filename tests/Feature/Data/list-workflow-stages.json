@@ -1,0 +1,15 @@
+{
+    "workflow_stages": [
+        {
+            "allow_publish":false,
+            "is_default":false,
+            "id":653554,"user_ids":[],"space_role_ids":[],"workflow_stage_ids":[653555],"name":"Drafting","color":"#babcb6","allow_all_stages":false,"allow_admin_publish":false,"allow_all_users":true,"allow_admin_change":false,"allow_editor_change":false,"position":1,"after_publish_id":null,"workflow_id":93606,"story_editing_locked":false,"allow_none_for_next_stages":false,"auto_remove_assignee":false,"_new":false,"_destroy":false
+        }
+,
+        {
+            "allow_publish":false,
+            "is_default":false,
+            "id":653555,"user_ids":[],"space_role_ids":[],"workflow_stage_ids":[653556],"name":"Review","color":"#babcb6","allow_all_stages":false,"allow_admin_publish":false,"allow_all_users":true,"allow_admin_change":false,"allow_editor_change":false,"position":1,"after_publish_id":null,"workflow_id":93606,"story_editing_locked":false,"allow_none_for_next_stages":false,"auto_remove_assignee":false,"_new":false,"_destroy":false
+        }
+    ]
+}

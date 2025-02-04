@@ -527,7 +527,7 @@ if ($response->isOk()) {
 
 ## Handling Workflows
 
-If you need to handle workflows (retrieving workflows or create new custome workflow - in the case you have a proper plan - ) you can use the `WorkflowApi` class.
+If you need to handle workflows (retrieving workflows or create new custom workflow - in the case you have a proper plan - ) you can use the `WorkflowApi` class.
 
 ### Retrieving workflows
 
@@ -553,6 +553,43 @@ $workflowApi = $client->workflowApi($spaceId);
 $workflowData = new WorkflowData();
 $workflowData->setName("Name");
 $response = $workflowApi->create($workflowData);
+```
+
+## Handling Workflow Stage
+
+If you need to handle workflow stages (retrieving workflow stages or create new custom workflow stage - in the case you have a proper plan - ) you can use the `WorkflowStageApi` class.
+
+### Retrieving workflow stages
+
+```php
+$response = $workflowStageApi->list();
+/** @var WorkflowsData $workflows */
+$workflowStages = $response->data();
+foreach ($workflowStages as $key => $workflowStage) {
+    echo "Workflow Stage: " . $workflowStage->name() . " - ";
+    echo $workflowStage->id() . PHP_EOL;
+}
+```
+### Creating a new custom workflow stage
+
+In this example, we are going to retrieve the first workflow id available (probably you should retrieve a proper workflow that makes sense for your use case):
+
+```php
+$workflowApi = $client->workflowApi($spaceId);
+$response = $workflowApi->list();
+$workflowId = $response->data()->get("0.id");
+```
+
+And then create a new workflow stage:
+
+```php
+use Storyblok\ManagementApi\Data\WorkflowStageData;
+
+$workflowStageApi = $client->workflowStageApi($spaceId);
+$workflowStageData = new WorkflowStageData();
+$workflowStageData->setName("Name");
+$workflowStageData->setWorkflowId($workflowId);
+$response = $workflowStageApi->create($workflowStageData);
 ```
 
 
