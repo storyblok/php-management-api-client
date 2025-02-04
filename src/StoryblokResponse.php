@@ -6,7 +6,6 @@ namespace Storyblok\ManagementApi;
 
 use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\Data\StoryblokDataInterface;
-use Storyblok\ManagementApi\Data\StoryData;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -33,7 +32,6 @@ class StoryblokResponse implements StoryblokResponseInterface
         return $this->response;
     }
 
-
     public function data(): StoryblokDataInterface
     {
 
@@ -42,8 +40,6 @@ class StoryblokResponse implements StoryblokResponseInterface
         }
 
         return $this->dataClass::make($this->toArray());
-        //return new $dataClass($this->toArray());
-
     }
 
 
