@@ -9,6 +9,7 @@ use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Component\HttpClient\Response\JsonMockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Psr\Log\NullLogger;
 
@@ -293,15 +294,9 @@ test('createBulk handles rate limiting and creates multiple stories', function (
     $responses = [
         // First story - Rate limit hit, then success
         \mockResponse('empty-story', 429, ['error' => 'Rate limit exceeded']),
-        new MockResponse(json_encode($story1Data), [
-            'http_code' => 201,
-            'response_headers' => ['Content-Type: application/json'],
-        ]),
+        new JsonMockResponse($story1Data, ['http_code' => 201]),
         // Second story - Immediate success
-        new MockResponse(json_encode($story2Data), [
-            'http_code' => 201,
-            'response_headers' => ['Content-Type: application/json'],
-        ]),
+        new JsonMockResponse($story2Data, ['http_code' => 201]),
     ];
 
     $client = new MockHttpClient($responses);
@@ -374,11 +369,10 @@ test('createBulk throws exception when max retries is reached', function (): voi
 
     // Create responses that always return rate limit error (429)
     // We need MAX_RETRIES + 1 responses to trigger the exception
-    $responses = array_fill(0, 4, new MockResponse(json_encode([
+    $responses = array_fill(0, 4, new JsonMockResponse([
         'error' => 'Rate limit exceeded'
-    ]), [
-        'http_code' => 429,
-        'response_headers' => ['Content-Type: application/json'],
+    ], [
+        'http_code' => 429
     ]));
 
     $client = new MockHttpClient($responses);
