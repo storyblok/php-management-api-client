@@ -1,9 +1,10 @@
 # Changelog
 
-## 0.0.4 - WIP
+## 0.0.4 - 2025-02-05
 
 - Adding WorkflowStage Api class for handling workflow stages
--
+- Adding bulk story creation with rate limit handling
+
 ## 0.0.3 - 2025-02-03
 
 - Adding helper methods for SpaceData (id(), updatedAt())

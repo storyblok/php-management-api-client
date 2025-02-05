@@ -297,6 +297,35 @@ $storyApi->publish($storyId);
 ```
 
 
+### Creating stories in bulk
+You can create multiple stories using the `createBulk()` method, which processes an array of stories while managing rate limits through a retry mechanism that respects the '429' status code.
+
+For example, if you have a CSV file containing content for new stories, you can use this method to efficiently create them.
+
+```csv
+myslug-001;My Story 1 BULK;page
+myslug-002;My Story 2 BULK;page
+myslug-003;My Story 3 BULK;page
+```
+
+Next, you can implement a script to load and parse the CSV file. In this case, we use `SplFileObject` and then call the `createBulk` method to process the data:
+
+```php
+$storyApi = $client->storyApi($spaceId);
+$file = new SplFileObject("stories.csv");
+$file->setFlags(SplFileObject::READ_CSV);
+$file->setCsvControl(separator: ";");
+$stories = [];
+foreach ($file as $row) {
+    list($slug, $name, $contentType) = $row;
+    $story = new StoryData();
+    $story->setName($name);
+    $story->setSlug($slug);
+    $story->setContentType($contentType);
+    $stories[] = $story;
+}
+$createdStories = iterator_to_array($storyApi->createBulk($stories));
+```
 
 ## Handling users
 
