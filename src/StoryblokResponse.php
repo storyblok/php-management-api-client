@@ -89,9 +89,14 @@ class StoryblokResponse implements StoryblokResponseInterface
         return $this->response->getStatusCode();
     }
 
-    public function getLastCalledUrl(): mixed
+    public function getLastCalledUrl(): string
     {
-        return $this->response->getInfo('url');
+        if (is_scalar($this->response->getInfo('url'))) {
+            return strval($this->response->getInfo('url'));
+        }
+
+        return "";
+
     }
 
     public function isOk(): bool

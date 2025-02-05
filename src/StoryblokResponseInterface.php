@@ -36,7 +36,7 @@ interface StoryblokResponseInterface
 
     public function data(): StoryblokDataInterface;
 
-    public function getLastCalledUrl(): mixed;
+    public function getLastCalledUrl(): string;
 
     public function isOk(): bool;
 
