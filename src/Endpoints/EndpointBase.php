@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Storyblok\ManagementApi\Data\StoryblokData;
+use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\StoryblokResponse;
 use Storyblok\ManagementApi\StoryblokResponseInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -15,7 +18,14 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class EndpointBase
 {
-    public function __construct(protected HttpClientInterface $httpClient) {}
+    protected HttpClientInterface $httpClient;
+
+    public function __construct(
+        protected ManagementApiClient $managementClient,
+        protected LoggerInterface $logger = new NullLogger(),
+    ) {
+        $this->httpClient = $managementClient->httpClient();
+    }
 
 
     /**

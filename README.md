@@ -171,7 +171,7 @@ To handle Stories, get stories, get a single story, create a story, update a sto
 use Storyblok\ManagementApi\ManagementApiClient;
 $spaceId= "1234";
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
-$storyApi = $client->storyApi($spaceId);
+$storyApi = new StoryApi($client, $spaceId);
 ```
 
 
@@ -199,8 +199,9 @@ foreach ($data as $key => $story) {
 You can filter stories using `StoriesParams`.
 
 ```php
+use Storyblok\ManagementApi\Endpoints\StoryApi;
 
-$storyApi = $client->storyApi($spaceId);
+$storyApi = new StoryApi($client, $spaceId);
 $stories = $storyApi->page(
     new StoriesParams(containComponent: "feature"),
     new PaginationParams(1, 1000)
@@ -217,9 +218,10 @@ In this example, you will retrieve all stories where the "title" field is empty.
 
 ```php
 use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
+use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 
-$storyBulkApi = $client->storyBulkApi($spaceId);
+$storyBulkApi = new StoryBulkApi($client, $spaceId);
 $stories = $storyBulkApi->all(
     filters: (new QueryFilters())->add(
         new Filter(
@@ -315,7 +317,7 @@ myslug-003;My Story 3 BULK;page
 Next, you can implement a script to load and parse the CSV file. In this case, we use `SplFileObject` and then call the `createStories` method to process the data:
 
 ```php
-$storyBulkApi = $client->storyBulkApi($spaceId);
+$storyBulkApi = new StoryBulkApi($client, $spaceId);
 $file = new SplFileObject("stories.csv");
 $file->setFlags(SplFileObject::READ_CSV);
 $file->setCsvControl(separator: ";");
@@ -339,7 +341,7 @@ To get the current user, owner of the Personal access token used you can use the
 
 ```php
 
-$response = $c->userApi()->me();
+$response = new UserApi($client)->me();
  /** @var UserData $currentUser */
 $currentUser = $response->data();
 // "User ID"
@@ -367,7 +369,7 @@ use Storyblok\ManagementApi\ManagementApiClient;
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 $spaceId = "spaceid";
-$assetApi = $client->assetApi($spaceId);
+$assetApi = new AssetApi($client, $spaceId);
 ```
 
 ### Getting the assets list
@@ -375,7 +377,7 @@ $assetApi = $client->assetApi($spaceId);
 To get the assets list you can use the `assetApi` and the `AssetsData`.
 
 ```php
-$assetApi = $client->assetApi($spaceId);
+$assetApi = new AssetApi($client, $spaceId);
 $response = $assetApi->page();
 /** @var AssetsData $assets */
 $assets = $response->data();
@@ -395,7 +397,7 @@ Using the `AssetsParams` class you can set up filters for filtering the assets.
 ```php
 use Storyblok\ManagementApi\QueryParameters\{AssetsParams,PaginationParams};
 
-$assetApi = $client->assetApi($spaceId);
+$assetApi = new AssetApi($client, $spaceId);
 $assets = $assetApi->page(
     new AssetsParams(
         inFolder: -1,
@@ -449,7 +451,7 @@ if ($response->isOk()) {
 To delete an asset, you can use the `delete()` method. The `delete()` method requires the asset ID (you want to delete) as parameter:
 
 ```php
-$assetApi = $c->assetApi($spaceId);
+$assetApi = new AssetApi($client, $spaceId);
 echo "DELETING " . $assetId . PHP_EOL;
 $response = $assetApi->delete($assetId);
 $deletedAsset = $response->data();
@@ -467,7 +469,7 @@ use Storyblok\ManagementApi\ManagementApiClient;
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 $spaceId = "spaceid";
-$tagApi = $client->tagApi($spaceId);
+$tagApi = new TagApi($client, $spaceId);
 ```
 
 ### Getting the tags list
@@ -517,8 +519,8 @@ use Storyblok\ManagementApi\ManagementApiClient;
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 $spaceId = "your-space-id";
-$storyApi = $client->storyApi($spaceId);
-$assetApi = $client->assetApi($spaceId);
+$storyApi = new StoryApi($client, $spaceId);
+$assetApi = new AssetApi($client, $spaceId);
 
 echo "UPLOADING ASSET..." . PHP_EOL;
 $response = $assetApi->upload("image.png");
@@ -565,7 +567,7 @@ If you need to handle workflows (retrieving workflows or create new custom workf
 ### Retrieving workflows
 
 ```php
-$workflowApi = $client->workflowApi($spaceId);
+$workflowApi = new WorkflowApi($client, $spaceId);
 $response = $workflowApi->list();
 /** @var WorkflowsData $workflows */
 $workflows = $response->data();
@@ -582,7 +584,7 @@ foreach ($workflows as $key => $workflow) {
 ### Creating a new custom workflow
 
 ```php
-$workflowApi = $client->workflowApi($spaceId);
+$workflowApi = new WorkflowApi($client, $spaceId);
 $workflowData = new WorkflowData();
 $workflowData->setName("Name");
 $response = $workflowApi->create($workflowData);
@@ -608,7 +610,7 @@ foreach ($workflowStages as $key => $workflowStage) {
 In this example, we are going to retrieve the first workflow id available (probably you should retrieve a proper workflow that makes sense for your use case):
 
 ```php
-$workflowApi = $client->workflowApi($spaceId);
+$workflowApi = new WorkflowApi($client, $spaceId);
 $response = $workflowApi->list();
 $workflowId = $response->data()->get("0.id");
 ```
@@ -654,14 +656,14 @@ $client = new ManagementApiClient($storyblokPersonalAccessToken);
 Getting the ManagementApi instance:
 
 ```php
-$managementApi = $client->managementApi()
+$managementApi = new ManagementApi($client);
 ```
 
 Calling GET HTTP method with `spaces/:spaceid/internal_tags`:
 
 ```php
 $spaceId = "12345";
-$response = $clientEU->managementApi()->get(
+$response = new ManagementApi($client)->get(
     "spaces/{$spaceId}/internal_tags",
     [
         "by_object_type" => "asset",

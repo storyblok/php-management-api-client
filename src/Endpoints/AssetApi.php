@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
-use GuzzleHttp\Client;
 use Storyblok\ManagementApi\Data\AssetData;
 use Storyblok\ManagementApi\Data\AssetsData;
 use Storyblok\ManagementApi\Data\StoryblokData;

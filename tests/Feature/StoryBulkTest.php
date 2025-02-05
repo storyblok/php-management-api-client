@@ -149,7 +149,7 @@ test('createBulk handles rate limiting and creates multiple stories', function (
     $mapiClient = ManagementApiClient::initTest($client);
 
     // Use TestStoryApi instead of regular StoryApi
-    $storyBulkApi = new TestStoryBulkApi($client, '222', $mockLogger);
+    $storyBulkApi = new TestStoryBulkApi($mapiClient, '222', $mockLogger);
 
     // Create test stories
     $stories = [
@@ -225,7 +225,7 @@ test('createBulk throws exception when max retries is reached', function (): voi
     $mapiClient = ManagementApiClient::initTest($client);
 
     // Use TestStoryApi instead of regular StoryApi
-    $storyApi = new TestStoryBulkApi($client, '222', $mockLogger);
+    $storyApi = new TestStoryBulkApi($mapiClient, '222', $mockLogger);
 
     // Create test story
     $stories = [

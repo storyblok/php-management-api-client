@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\Data\TagData;
 use Storyblok\ManagementApi\Data\TagsData;
 use Storyblok\ManagementApi\StoryblokResponseInterface;

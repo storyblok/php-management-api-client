@@ -73,15 +73,20 @@ class ManagementApiClient
 
     }
 
+    public function httpClient(): HttpClientInterface
+    {
+        return $this->httpClient;
+    }
+
     public function spaceApi(): SpaceApi
     {
-        return new SpaceApi($this->httpClient);
+        return new SpaceApi($this);
     }
 
     public function storyApi(string|int $spaceId, ?LoggerInterface $logger = null): StoryApi
     {
         return new StoryApi(
-            $this->httpClient,
+            $this,
             $spaceId,
             $logger ?? new NullLogger(),
         );
@@ -90,7 +95,7 @@ class ManagementApiClient
     public function storyBulkApi(string|int $spaceId, ?LoggerInterface $logger = null): StoryBulkApi
     {
         return new StoryBulkApi(
-            $this->httpClient,
+            $this,
             $spaceId,
             $logger ?? new NullLogger(),
         );
@@ -98,31 +103,31 @@ class ManagementApiClient
 
     public function userApi(): UserApi
     {
-        return new UserApi($this->httpClient);
+        return new UserApi($this);
     }
 
     public function assetApi(string|int $spaceId): AssetApi
     {
-        return new AssetApi($this->httpClient, $spaceId);
+        return new AssetApi($this, $spaceId);
     }
 
     public function tagApi(string|int $spaceId): TagApi
     {
-        return new TagApi($this->httpClient, $spaceId);
+        return new TagApi($this, $spaceId);
     }
 
     public function workflowApi(string|int $spaceId): WorkflowApi
     {
-        return new WorkflowApi($this->httpClient, $spaceId);
+        return new WorkflowApi($this, $spaceId);
     }
 
     public function workflowStageApi(string|int $spaceId): WorkflowStageApi
     {
-        return new WorkflowStageApi($this->httpClient, $spaceId);
+        return new WorkflowStageApi($this, $spaceId);
     }
 
     public function managementApi(): ManagementApi
     {
-        return new ManagementApi($this->httpClient);
+        return new ManagementApi($this);
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
+use Psr\Log\NullLogger;
+use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
@@ -28,11 +30,11 @@ class StoryApi extends EndpointSpace
      * StoryApi constructor.
      */
     public function __construct(
-        HttpClientInterface $httpClient,
+        ManagementApiClient $managementClient,
         string|int $spaceId,
-        private readonly LoggerInterface $logger,
+        LoggerInterface $logger = new NullLogger(),
     ) {
-        parent::__construct($httpClient, $spaceId);
+        parent::__construct($managementClient, $spaceId, $logger);
     }
 
     /**
