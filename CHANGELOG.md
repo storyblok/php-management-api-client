@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.5 - WIP
+
+- Re-structuring bulk operations and pagination with `StoryBulkApi` class
+
 ## 0.0.4 - 2025-02-05
 
 - Adding WorkflowStage Api class for handling workflow stages

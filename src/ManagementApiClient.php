@@ -9,6 +9,7 @@ use Storyblok\ManagementApi\Endpoints\AssetApi;
 use Storyblok\ManagementApi\Endpoints\ManagementApi;
 use Storyblok\ManagementApi\Endpoints\SpaceApi;
 use Storyblok\ManagementApi\Endpoints\StoryApi;
+use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
 use Storyblok\ManagementApi\Endpoints\TagApi;
 use Storyblok\ManagementApi\Endpoints\UserApi;
 use Storyblok\ManagementApi\Endpoints\WorkflowApi;
@@ -80,6 +81,15 @@ class ManagementApiClient
     public function storyApi(string|int $spaceId, ?LoggerInterface $logger = null): StoryApi
     {
         return new StoryApi(
+            $this->httpClient,
+            $spaceId,
+            $logger ?? new NullLogger(),
+        );
+    }
+
+    public function storyBulkApi(string|int $spaceId, ?LoggerInterface $logger = null): StoryBulkApi
+    {
+        return new StoryBulkApi(
             $this->httpClient,
             $spaceId,
             $logger ?? new NullLogger(),

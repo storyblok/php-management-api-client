@@ -210,13 +210,17 @@ $stories = $storyApi->page(
 ### Filtering stories via query filters
 
 Besides using query parameters to filter stories, you can leverage more powerful query filters.
+
+> If you need to handle pagination (retrieving all stories across multiple pages) or create multiple stories at once, you can use the `StoryBulkApi` instead of the `StoryApi` class.
+
 In this example, you will retrieve all stories where the "title" field is empty. (Stories with content types that do not include a "title" field in their schema will be skipped.)
 
 ```php
 use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 
-$stories = $storyApi->all(
+$storyBulkApi = $client->storyBulkApi($spaceId);
+$stories = $storyBulkApi->all(
     filters: (new QueryFilters())->add(
         new Filter(
             "title",
@@ -298,7 +302,7 @@ $storyApi->publish($storyId);
 
 
 ### Creating stories in bulk
-You can create multiple stories using the `createBulk()` method, which processes an array of stories while managing rate limits through a retry mechanism that respects the '429' status code.
+You can create multiple stories using the `createStories()` method (in the `StoryBulkApi` class), which processes an array of stories while managing rate limits through a retry mechanism that respects the '429' status code.
 
 For example, if you have a CSV file containing content for new stories, you can use this method to efficiently create them.
 
@@ -308,10 +312,10 @@ myslug-002;My Story 2 BULK;page
 myslug-003;My Story 3 BULK;page
 ```
 
-Next, you can implement a script to load and parse the CSV file. In this case, we use `SplFileObject` and then call the `createBulk` method to process the data:
+Next, you can implement a script to load and parse the CSV file. In this case, we use `SplFileObject` and then call the `createStories` method to process the data:
 
 ```php
-$storyApi = $client->storyApi($spaceId);
+$storyBulkApi = $client->storyBulkApi($spaceId);
 $file = new SplFileObject("stories.csv");
 $file->setFlags(SplFileObject::READ_CSV);
 $file->setCsvControl(separator: ";");
@@ -324,7 +328,7 @@ foreach ($file as $row) {
     $story->setContentType($contentType);
     $stories[] = $story;
 }
-$createdStories = iterator_to_array($storyApi->createBulk($stories));
+$createdStories = iterator_to_array($storyBulkApi->createStories($stories));
 ```
 
 ## Handling users
