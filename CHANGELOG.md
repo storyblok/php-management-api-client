@@ -1,8 +1,9 @@
 # Changelog
 
-## 0.0.5 - WIP
+## 0.0.5 - 2025-02-25
 
 - Re-structuring bulk operations and pagination with `StoryBulkApi` class
+- Refactoring creating new Api instance from Api classes
 
 ## 0.0.4 - 2025-02-05
 
