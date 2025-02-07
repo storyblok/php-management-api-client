@@ -27,9 +27,29 @@ class UserData extends StoryblokData
         return $this->getString('org.name');
     }
 
+    public function username(): string
+    {
+        return $this->getString('username');
+    }
+
+    public function firstname(): string
+    {
+        return $this->getString('firstname');
+    }
+
+    public function lastname(): string
+    {
+        return $this->getString('lastname');
+    }
+
     public function id(): string
     {
         return $this->getString('id');
+    }
+
+    public function orgRole(): string
+    {
+        return $this->getString('org_role');
     }
 
     public function userId(): string
@@ -40,6 +60,14 @@ class UserData extends StoryblokData
     public function email(): string
     {
         return $this->getString('email');
+    }
+
+    public function createdAt(string $format = 'Y-m-d H:i:s'): string|null
+    {
+        return $this->getFormattedDateTime(
+            'created_at',
+            format: $format,
+        );
     }
 
 
@@ -54,14 +82,28 @@ class UserData extends StoryblokData
         return $this->getBoolean('has_partner');
     }
 
-    public function lastSignInAt(): null|string
+    public function partnerStatus(): string
     {
-        return $this->getFormattedDateTime('last_sign_in_at', "", format: "Y-m-d");
+        return $this->getString('partner_status');
     }
 
-    public function createdAt(): null|string
+    public function timezone(): string
     {
-        return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
+        return $this->getString('timezone');
     }
+
+    public function avatarUrl(?int $size = 72): string
+    {
+        $sizeString = "";
+        if (null !== $size) {
+            $sizeString = $size . 'x' . $size . "/";
+        }
+
+        return "https://img2.storyblok.com/" . $sizeString . $this->getString('avatar');
+    }
+
+
+
+
 
 }

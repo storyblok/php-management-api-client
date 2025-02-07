@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.0.5 - 2025-02-25
+## 0.0.6 - 2025-02-07
+
+- Adding helper methods to UserData
+- UserData / UserApi tests
+
+## 0.0.5 - 2025-02-05
 
 - Re-structuring bulk operations and pagination with `StoryBulkApi` class
 - Refactoring creating new Api instance from Api classes

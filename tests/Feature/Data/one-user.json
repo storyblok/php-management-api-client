@@ -1,0 +1,52 @@
+{
+    "user": {
+        "userid": "myuserid",
+        "email": "test@test.com",
+        "organization": null,
+        "username": "myusername",
+        "use_username": true,
+        "alt_email": null,
+        "firstname": "John",
+        "lastname": "Doe",
+        "phone": null,
+        "id": 123456,
+        "login_strategy": "otp_email",
+        "created_at": "2022-06-01T16:54:34.759Z",
+        "org_role": "admin",
+        "has_org": true,
+        "has_partner": true,
+        "partner_status": "approved",
+        "org": {
+            "name": "Storyblok",
+            "settings": []
+        },
+        "timezone": "Europe\/Rome",
+        "avatar": "avatars\/118830\/01290bd7fa\/myimage.JPG",
+        "friendly_name": "John Doe",
+        "notified": [],
+        "lang": "en",
+        "partner_role": "partner_member",
+        "favourite_spaces": [
+            123456,
+            123457
+        ],
+        "favourite_ideas": [],
+        "role": null,
+        "beta_user": true,
+        "track_statistics": true,
+        "ui_theme": {
+            "theme": "default"
+        },
+        "is_editor": false,
+        "sso": false,
+        "job_role": "developer",
+        "totp_factor_verified": false,
+        "configured_2fa_options": [
+            "otp_email"
+        ],
+        "disclaimer_ids": [
+            1,
+            2
+        ]
+    }
+}
