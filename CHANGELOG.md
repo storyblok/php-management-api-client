@@ -1,5 +1,7 @@
 # Changelog
 
+## 0.0.7 - WIP
+
 ## 0.0.6 - 2025-02-07
 
 - Adding helper methods to UserData
