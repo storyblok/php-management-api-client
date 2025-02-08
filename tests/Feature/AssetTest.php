@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Storyblok\ManagementApi\Data\AssetsData;
 use Storyblok\ManagementApi\Endpoints\AssetApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 
@@ -27,7 +28,11 @@ test('Testing One asset, AssetData', function (): void {
     expect($storyblokData->get("id"))
         ->toBe(111)
         ->and($storyblokData->filenameCDN())->toBe("https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg")
-        ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
+        ->and($storyblokResponse->getResponseStatusCode())->toBe(200)
+        ->and($storyblokData->contentType())->toBe("image/jpeg")
+        ->and($storyblokData->contentLength())->toBe(3094788)
+        ->and($storyblokData->createdAt())->toBe('2025-01-18')
+        ->and($storyblokData->updatedAt())->toBe('2025-01-19');
 
     $storyblokResponse = $assetApi->get("111notexists");
     expect( $storyblokResponse->getResponseStatusCode())->toBe(404) ;
@@ -48,7 +53,7 @@ test('Testing list of assets, AssetsData', function (): void {
 
     $storyblokResponse = $assetApi->page();
 
-    /** @var \Storyblok\ManagementApi\Data\AssetsData $storyblokData */
+    /** @var AssetsData $storyblokData */
     $storyblokData =  $storyblokResponse->data();
     foreach ($storyblokData as $asset) {
         expect($asset->id())->toBeGreaterThan(10);
@@ -64,6 +69,9 @@ test('Testing list of assets, AssetsData', function (): void {
     expect( $storyblokResponse->asJson())->toBe('["This record could not be found"]');
     expect( $storyblokResponse->isOk())->toBeFalse() ;
     expect( $storyblokResponse->getErrorMessage())->toStartWith("404 - Not Found.") ;
+
+    $assetsData = AssetsData::make([]);
+    expect($assetsData)->toBeInstanceOf(AssetsData::class);
 });
 
 
