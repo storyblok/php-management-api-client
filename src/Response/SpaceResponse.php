@@ -31,8 +31,6 @@ class SpaceResponse extends StoryblokResponse implements StoryblokResponseInterf
             return new SpaceData($array[$key]);
         }
 
-        //var_dump($array);
-
         throw new StoryblokFormatException(sprintf("Expected '%s' in the response.", $key));
 
     }
