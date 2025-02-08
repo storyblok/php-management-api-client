@@ -15,6 +15,7 @@ use Storyblok\ManagementApi\Endpoints\UserApi;
 use Storyblok\ManagementApi\Endpoints\WorkflowApi;
 use Storyblok\ManagementApi\Endpoints\WorkflowStageApi;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -26,6 +27,8 @@ use Psr\Log\NullLogger;
 class ManagementApiClient
 {
     private HttpClientInterface $httpClient;
+
+    private HttpClientInterface $httpAssetClient;
 
     /**
      * MapiClient constructor.
@@ -46,6 +49,7 @@ class ManagementApiClient
                         'Authorization' => $personalAccessToken,
                     ],
             ]);
+        $this->httpAssetClient = HttpClient::create();
     }
 
     /**
@@ -61,12 +65,19 @@ class ManagementApiClient
 
     public static function initTest(
         HttpClientInterface $httpClient,
+        ?HttpClientInterface $httpAssetClient = null,
     ): self {
 
         $client = new self("");
         //$baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region);
 
         $client->httpClient = $httpClient;
+        if ($httpAssetClient instanceof \Symfony\Contracts\HttpClient\HttpClientInterface) {
+            $client->httpAssetClient = $httpAssetClient;
+        } else {
+            $client->httpAssetClient = new MockHttpClient();
+        }
+
 
 
         return $client;
@@ -76,6 +87,11 @@ class ManagementApiClient
     public function httpClient(): HttpClientInterface
     {
         return $this->httpClient;
+    }
+
+    public function httpAssetClient(): HttpClientInterface
+    {
+        return $this->httpAssetClient;
     }
 
     public function spaceApi(): SpaceApi

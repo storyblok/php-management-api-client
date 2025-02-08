@@ -58,9 +58,13 @@ class AssetApi extends EndpointSpace
         );
     }
 
-    public function upload(string $filename, string|int|null $parent_id = null): StoryblokResponseInterface
-    {
-        // =========== CREATE A SIGNED REQUEST
+    /**
+     * @return array<mixed>
+     */
+    public function buildPayload(
+        string $filename,
+        string|int|null $parent_id = null,
+    ): array {
         $payload = [
             'filename' => $filename,
             //'size' => $width . 'x' . $height,
@@ -73,6 +77,14 @@ class AssetApi extends EndpointSpace
             $height = $size[1];
             $payload['size'] = $width . 'x' . $height;
         }
+
+        return $payload;
+    }
+
+    public function upload(string $filename, string|int|null $parent_id = null): StoryblokResponseInterface
+    {
+        // =========== CREATE A SIGNED REQUEST
+        $payload = $this->buildPayload($filename, $parent_id);
 
         $signedResponse = $this->makeRequest(
             "POST",
@@ -99,14 +111,27 @@ class AssetApi extends EndpointSpace
         $postFields['file'] = fopen($filename, 'r');
         $postUrl = $signedResponseData->getString('post_url');
 
-        $responseUpload = HttpClient::create()->request(
+        /*
+        $responseUpload = $this->makeHttpRequest(
+            "POST",
+            $postUrl,
+            [
+                "body" => $postFields,
+            ],
+
+        );
+        */
+
+        $responseUpload = $this->managementClient->httpAssetClient()->request(
             "POST",
             $postUrl,
             [
                 "body" => $postFields,
             ],
         );
+
         if (!($responseUpload->getStatusCode() >= 200 && $responseUpload->getStatusCode() < 300)) {
+            //var_dump($responseUpload->getInfo());
             throw new \Exception("Upload Asset, Upload call failed (Step 2) , " . $responseUpload->getStatusCode());
         }
 
@@ -129,6 +154,7 @@ class AssetApi extends EndpointSpace
         return $this->makeRequest(
             "DELETE",
             '/v1/spaces/' . $this->spaceId . '/assets/' . $assetId,
+            dataClass: AssetData::class,
         );
     }
 

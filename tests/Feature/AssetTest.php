@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
+use Storyblok\ManagementApi\Endpoints\AssetApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 
 use Storyblok\ManagementApi\QueryParameters\AssetsParams;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\JsonMockResponse;
 
 
 test('Testing One asset, AssetData', function (): void {
@@ -17,10 +19,10 @@ test('Testing One asset, AssetData', function (): void {
 
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
-    $assetApi = $mapiClient->assetApi("222");
+    $assetApi = new AssetApi($mapiClient, "222");
 
     $storyblokResponse = $assetApi->get("111");
-    /** @var \Storyblok\ManagementApi\Data\AssetData $storyblokData */
+
     $storyblokData =  $storyblokResponse->data();
     expect($storyblokData->get("id"))
         ->toBe(111)
@@ -107,4 +109,99 @@ test('Testing list of assets, Params', function (): void {
 
 });
 
+test('testing asset payload', function (): void {
+    $responses = [
+        \mockResponse("list-assets", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("list-assets", 200, ["total"=>200, "per-page" => 25 ]),
+        \mockResponse("list-assets", 200, ["total"=>200, "per-page" => 25 ]),
+        \mockResponse("empty-asset", 404),
+    ];
 
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $assetApi = $mapiClient->assetApi("222");
+    $filename = "./tests/Feature/Data/image-test.png";
+    $parentId = "111";
+    $payload = $assetApi->buildPayload($filename, $parentId);
+    expect($payload)->toBeArray();
+    expect($payload)->toHaveKey("filename");
+});
+
+
+test('delete one asset', function (): void {
+    $responses = [
+        \mockResponse("one-asset", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("empty-asset", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $assetApi = new AssetApi($mapiClient, "222");
+    $assetId = "12345";
+    $response = $assetApi->delete($assetId);
+    $data = $response->data();
+    expect($data->id())->toBe("111");
+
+});
+
+test('upload one asset', function (): void {
+    $responses = [
+        \mockResponse('upload-asset-signed-response', 200),
+
+        \mockResponse('one-asset', 200),
+    ];
+    $responsesAsset = [
+        \mockResponse('one-asset', 200),
+    ];
+
+
+    $httpClient = new MockHttpClient($responses);
+    $httpAssetClient = new MockHttpClient($responsesAsset);
+    $mapiClient = ManagementApiClient::initTest($httpClient, $httpAssetClient );
+    $assetApi = new AssetApi($mapiClient, "222");
+
+    $response = $assetApi->upload("./tests/Feature/Data/image-test.png");
+    $data = $response->data();
+    expect($data->id())->toBe("111");
+
+});
+
+test('upload one asset - failing', function (): void {
+    $responses = [
+        \mockResponse('upload-asset-signed-response', 401),
+    ];
+    $responsesAsset = [
+        \mockResponse('one-asset', 200),
+    ];
+
+
+    $httpClient = new MockHttpClient($responses);
+    $httpAssetClient = new MockHttpClient($responsesAsset);
+    $mapiClient = ManagementApiClient::initTest($httpClient, $httpAssetClient );
+    $assetApi = new AssetApi($mapiClient, "222");
+
+    $response = $assetApi->upload("./tests/Feature/Data/image-test.png");
+    $data = $response->data();
+    expect($data->id())->toBe("111");
+
+})->throws(Exception::class);
+
+test('upload one asset - failing on second step', function (): void {
+    $responses = [
+        \mockResponse('upload-asset-signed-response', 200),
+    ];
+    $responsesAsset = [
+        \mockResponse('one-asset', 400),
+    ];
+
+
+    $httpClient = new MockHttpClient($responses);
+    $httpAssetClient = new MockHttpClient($responsesAsset);
+    $mapiClient = ManagementApiClient::initTest($httpClient, $httpAssetClient );
+    $assetApi = new AssetApi($mapiClient, "222");
+
+    $response = $assetApi->upload("./tests/Feature/Data/image-test.png");
+    $data = $response->data();
+    expect($data->id())->toBe("111");
+
+})->throws(Exception::class);
