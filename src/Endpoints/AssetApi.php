@@ -9,7 +9,7 @@ use Storyblok\ManagementApi\Data\AssetsData;
 use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\QueryParameters\AssetsParams;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
-use Storyblok\ManagementApi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
 /**

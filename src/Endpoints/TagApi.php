@@ -6,7 +6,7 @@ namespace Storyblok\ManagementApi\Endpoints;
 
 use Storyblok\ManagementApi\Data\TagData;
 use Storyblok\ManagementApi\Data\TagsData;
-use Storyblok\ManagementApi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
 /**
  *

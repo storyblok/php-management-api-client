@@ -7,36 +7,42 @@ namespace Storyblok\ManagementApi\Endpoints;
 use Storyblok\ManagementApi\Data\SpaceData;
 use Storyblok\ManagementApi\Data\SpacesData;
 use Storyblok\ManagementApi\Data\StoryblokData;
-use Storyblok\ManagementApi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\SpaceResponse;
+use Storyblok\ManagementApi\Response\SpacesResponse;
+use Storyblok\ManagementApi\Response\StoryblokResponse;
+use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
 /**
  *
  */
 class SpaceApi extends EndpointBase
 {
-    public function all(): StoryblokResponseInterface
+    public function all(): SpacesResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
             '/v1/spaces',
-            dataClass: SpacesData::class,
         );
+        return new SpacesResponse($httpResponse, SpacesData::class);
     }
 
 
-    public function get(string $spaceId): StoryblokResponseInterface
+
+
+    public function get(string $spaceId): SpaceResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
             '/v1/spaces/' . $spaceId,
-            dataClass: SpaceData::class,
         );
+        return new SpaceResponse($httpResponse);
     }
 
 
-    public function create(StoryblokData $storyblokData): StoryblokResponseInterface
+    public function create(StoryblokData $storyblokData): SpaceResponse
     {
-        return $this->makeRequest(
+
+        $httpResponse =  $this->makeHttpRequest(
             "POST",
             "/v1/spaces",
             [
@@ -45,11 +51,12 @@ class SpaceApi extends EndpointBase
                 ],
             ],
         );
+        return new SpaceResponse($httpResponse);
     }
 
-    public function duplicate(string|int $duplicateId, string $name): StoryblokResponseInterface
+    public function duplicate(string|int $duplicateId, string $name): SpaceResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "POST",
             "/v1/spaces",
             [
@@ -61,25 +68,27 @@ class SpaceApi extends EndpointBase
                 ],
             ],
         );
+        return new SpaceResponse($httpResponse);
     }
 
     /**
      * @param $spaceId
      */
-    public function delete(string $spaceId): StoryblokResponseInterface
+    public function delete(string $spaceId): SpaceResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "DELETE",
             '/v1/spaces/' . $spaceId,
         );
+        return new SpaceResponse($httpResponse);
     }
 
     /**
      * @param $spaceId
      */
-    public function backup(string $spaceId): StoryblokResponseInterface
+    public function backup(string $spaceId): SpaceResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "POST",
             sprintf('/v1/spaces/%s/backups', $spaceId),
             [
@@ -87,5 +96,6 @@ class SpaceApi extends EndpointBase
                 ],
             ],
         );
+        return new SpaceResponse($httpResponse);
     }
 }

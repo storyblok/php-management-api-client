@@ -18,13 +18,7 @@ class SpacesData extends StoryblokData
         return new self($data);
     }
 
-    /**
-     * @param array<string, array<mixed>> $data
-     */
-    public static function makeFromResponse(array $data = []): self
-    {
-        return new self($data["spaces"] ?? []);
-    }
+
 
 
     public function howManySpaces(): int

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\ManagementApi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
 /**
  *

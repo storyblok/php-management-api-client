@@ -8,7 +8,7 @@ use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\Data\WorkflowStageData;
 use Storyblok\ManagementApi\Data\WorkflowStagesData;
 use Storyblok\ManagementApi\QueryParameters\WorkflowStagesParams;
-use Storyblok\ManagementApi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
 /**
  *

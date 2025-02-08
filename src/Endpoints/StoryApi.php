@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
+use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Storyblok\ManagementApi\ManagementApiClient;
-use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
-use Storyblok\ManagementApi\QueryParameters\PaginationParams;
-use Storyblok\ManagementApi\QueryParameters\StoriesParams;
-use Storyblok\ManagementApi\Data\StoryblokDataInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Storyblok\ManagementApi\Data\StoriesData;
 use Storyblok\ManagementApi\Data\StoryData;
 use Storyblok\ManagementApi\Exceptions\InvalidStoryDataException;
 use Storyblok\ManagementApi\Exceptions\StoryblokApiException;
-use Storyblok\ManagementApi\StoryblokResponseInterface;
-use Psr\Log\LoggerInterface;
+use Storyblok\ManagementApi\ManagementApiClient;
+use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
+use Storyblok\ManagementApi\QueryParameters\PaginationParams;
+use Storyblok\ManagementApi\QueryParameters\StoriesParams;
+use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
 /**
  * StoryApi handles all story-related operations in the Storyblok Management API

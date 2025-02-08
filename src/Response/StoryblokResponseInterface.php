@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Storyblok\ManagementApi;
+namespace Storyblok\ManagementApi\Response;
 
 use Storyblok\ManagementApi\Data\StoryblokDataInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;

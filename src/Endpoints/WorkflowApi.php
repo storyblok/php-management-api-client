@@ -7,7 +7,7 @@ namespace Storyblok\ManagementApi\Endpoints;
 use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\Data\WorkflowData;
 use Storyblok\ManagementApi\Data\WorkflowsData;
-use Storyblok\ManagementApi\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
 /**
  *
