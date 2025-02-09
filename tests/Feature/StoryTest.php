@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Storyblok\ManagementApi\Endpoints\StoryApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\Data\StoryData;
 use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
@@ -178,3 +179,103 @@ test('Testing list of stories, Params', function (): void {
     expect($string)->toMatch('/.*filter_query\[subheadline\]\[like\]=somethingelse.*$/');
 
 });
+
+test('Testing edit Story, StoryData', function (): void {
+    $responses = [
+        \mockResponse("one-story", 200),
+        \mockResponse("one-story", 200),
+        \mockResponse("empty-story", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $storyApi = new StoryApi($mapiClient, "222");
+
+    $storyblokResponse = $storyApi->get("111");
+    /** @var \Storyblok\ManagementApi\Data\StoryData $storyblokData */
+    $storyblokData = $storyblokResponse->data();
+    expect($storyblokData->get("name"))
+        ->toBe("My third post")
+        ->and($storyblokData->name())->toBe("My third post")
+        ->and($storyblokData->createdAt())->toBe("2024-02-08")
+        ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
+    $storyblokData->setName("AAA");
+    $storyblokResponse = $storyApi->update("111", $storyblokData);
+    $storyblokData = $storyblokResponse->data();
+    expect($storyblokData->id())->toBe("440448565");
+
+});
+
+test('Testing publishing Story, StoryData', function (): void {
+    $responses = [
+        \mockResponse("one-story", 200),
+        \mockResponse("one-story", 200),
+        \mockResponse("empty-story", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $storyApi = new StoryApi($mapiClient, "222");
+
+    $storyblokResponse = $storyApi->publish("111", "1112", "en");
+    /** @var \Storyblok\ManagementApi\Data\StoryData $storyblokData */
+    $storyblokData = $storyblokResponse->data();
+    expect($storyblokData->get("name"))
+        ->toBe("My third post")
+        ->and($storyblokData->name())->toBe("My third post")
+        ->and($storyblokData->createdAt())->toBe("2024-02-08")
+        ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
+
+});
+
+test('Testing unpublishing Story, StoryData', function (): void {
+    $responses = [
+        \mockResponse("one-story", 200),
+        \mockResponse("one-story", 200),
+        \mockResponse("empty-story", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $storyApi = new StoryApi($mapiClient, "222");
+
+    $storyblokResponse = $storyApi->unpublish("111", "en");
+    /** @var \Storyblok\ManagementApi\Data\StoryData $storyblokData */
+    $storyblokData = $storyblokResponse->data();
+    expect($storyblokData->get("name"))
+        ->toBe("My third post")
+        ->and($storyblokData->name())->toBe("My third post")
+        ->and($storyblokData->createdAt())->toBe("2024-02-08")
+        ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
+
+});
+
+test('Testing validation input, StoryData', function (): void {
+    $responses = [
+        \mockResponse("list-stories", 200),
+        \mockResponse("list-stories", 200),
+        \mockResponse("empty-story", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $storyApi = new StoryApi($mapiClient, "222");
+
+    $storyblokResponse = $storyApi->page(page: new PaginationParams(-1, -20));
+
+})->throws(\InvalidArgumentException::class);
+
+test('Testing validation input 2, StoryData', function (): void {
+    $responses = [
+        \mockResponse("list-stories", 200),
+        \mockResponse("list-stories", 200),
+        \mockResponse("empty-story", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $storyApi = new StoryApi($mapiClient, "222");
+
+    $storyblokResponse = $storyApi->page(page: new PaginationParams(1, -20));
+
+})->throws(\InvalidArgumentException::class);

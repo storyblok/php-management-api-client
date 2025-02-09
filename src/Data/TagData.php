@@ -24,6 +24,7 @@ class TagData extends StoryblokData
     {
         return $this->getString('name');
     }
+
     public function id(): string
     {
         return $this->getString('id');

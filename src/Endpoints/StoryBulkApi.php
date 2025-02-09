@@ -145,6 +145,7 @@ class StoryBulkApi extends EndpointSpace
         int $itemsPerPage,
     ): int {
         if ($totalPages === null) {
+
             $totalPages = (int) ceil($response->total() / $itemsPerPage);
             $this->logger->info('Total stories found: ' . $response->total());
         }

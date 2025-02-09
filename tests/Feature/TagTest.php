@@ -23,7 +23,6 @@ test('Testing list of tags', function (): void {
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*tags.*$/');
 
-
 });
 
 test('Testing one tag', function (): void {
@@ -45,7 +44,6 @@ test('Testing one tag', function (): void {
     expect($data->getString("id"))->toBe("56932");
     expect($data->id())->toBe("56932");
     expect($data->name())->toBe("some");
-
 
 });
 
@@ -81,8 +79,6 @@ test('Testing creating tag', function (): void {
     $mapiClient = ManagementApiClient::initTest($client);
     $tagApi = new TagApi($mapiClient, "222");
 
-
-
     $storyblokResponse = $tagApi->create("name");
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*tags.*$/');
@@ -100,7 +96,6 @@ test('Testing updating tag', function (): void {
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
     $tagApi = new TagApi($mapiClient, "222");
-
 
     $storyblokResponse = $tagApi->update("56932", "some");
 

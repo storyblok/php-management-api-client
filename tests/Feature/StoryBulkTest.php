@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\Data\StoryData;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
@@ -50,7 +51,7 @@ test('StoryApi works with custom logger', function (): void {
 
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
-    $storyBulkApi = $mapiClient->storyBulkApi('222', $mockLogger);
+    $storyBulkApi = new TestStoryBulkApi($mapiClient, '222', $mockLogger);
 
     // Use the all() method which we know triggers logging
     try {
@@ -67,29 +68,59 @@ test('StoryApi works with custom logger', function (): void {
 
 test('Testing list of stories, Params', function (): void {
     $responses = [
-        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
-        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
-        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
-        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
-        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
-        \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("list-stories", 200, ["total"=>10, "per-page" => 2, "page" => 1 ]),
+        \mockResponse("list-stories", 429, ["total"=>10, "per-page" => 2, "page" => 2  ]),
+        \mockResponse("list-stories", 200, ["total"=>10, "per-page" => 2, "page" => 2  ]),
+        \mockResponse("list-stories", 200, ["total"=>10, "per-page" => 2, "page" => 3  ]),
+        \mockResponse("list-stories", 200, ["total"=>10, "per-page" => 2, "page" => 4  ]),
+        \mockResponse("list-stories", 200, ["total"=>10, "per-page" => 2, "page" => 5  ]),
         //\mockResponse("empty-asset", 404),
     ];
 
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
-    $storyBulkApi = $mapiClient->storyBulkApi("222");
+    $storyBulkApi = new TestStoryBulkApi($mapiClient, "222");
 
-    $storyblokResponse = $storyBulkApi->all(
+    foreach ($storyBulkApi->all(
         params: new StoriesParams(
             withTag: "aaa",
             search: "something"
-        )
-    );
-    expect($storyblokResponse)->toBeInstanceOf(Generator::class);
-    foreach ($storyblokResponse as $story) {
+        ),
+        itemsPerPage: 2,
+    ) as $story) {
         expect($story->name())->toBe("My third post");
     }
+});
+
+test('Testing list of stories max retry, Params', function (): void {
+    $responses = [
+        \mockResponse("list-stories", 429, ["total"=>10, "per-page" => 2, "page" => 1 ]),
+        \mockResponse("list-stories", 429, ["total"=>10, "per-page" => 2, "page" => 1  ]),
+        \mockResponse("list-stories", 429, ["total"=>10, "per-page" => 2, "page" => 1  ]),
+        \mockResponse("list-stories", 429, ["total"=>10, "per-page" => 2, "page" => 1  ]),
+        \mockResponse("list-stories", 429, ["total"=>10, "per-page" => 2, "page" => 1  ]),
+        \mockResponse("list-stories", 200, ["total"=>10, "per-page" => 2, "page" => 1  ]),
+        //\mockResponse("empty-asset", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $storyBulkApi = new TestStoryBulkApi($mapiClient, "222");
+
+    $i = 0;
+    foreach ($storyBulkApi->all(
+        params: new StoriesParams(
+            withTag: "aaa",
+            search: "something"
+        ),
+        itemsPerPage: 2
+    ) as $story) {
+        ++$i;
+        expect($story->name())->toBe("My third post");
+    }
+
+    expect($i)->toBe(0);
+
 });
 
 test('createBulk handles rate limiting and creates multiple stories', function (): void {
