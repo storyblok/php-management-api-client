@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 use Storyblok\ManagementApi\Data\WorkflowData;
 use Storyblok\ManagementApi\Endpoints\WorkflowApi;
 use Storyblok\ManagementApi\ManagementApiClient;
@@ -44,7 +43,8 @@ test('Testing one workflow', function (): void {
     $mapiClient = ManagementApiClient::initTest($client);
     $workflowApi = new WorkflowApi($mapiClient, "222");
 
-    $storyblokResponse = $workflowApi->get( "15268"
+    $storyblokResponse = $workflowApi->get(
+        "15268"
     );
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*workflow.*$/');
@@ -68,7 +68,8 @@ test('Testing deleting workflow', function (): void {
     $mapiClient = ManagementApiClient::initTest($client);
     $workflowApi = new WorkflowApi($mapiClient, "222");
 
-    $storyblokResponse = $workflowApi->delete( "15268"
+    $storyblokResponse = $workflowApi->delete(
+        "15268"
     );
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*workflow.*$/');
@@ -92,7 +93,6 @@ test('Testing creating workflow', function (): void {
     $mapiClient = ManagementApiClient::initTest($client);
     $workflowApi = new WorkflowApi($mapiClient, "222");
 
-
     $workflowData = new WorkflowData();
     $workflowData->setName("Name");
 
@@ -102,7 +102,6 @@ test('Testing creating workflow', function (): void {
     expect($storyblokResponse->isOk())->toBeTrue();
 
 });
-
 
 test('Testing updating workflow', function (): void {
     $responses = [
@@ -115,11 +114,11 @@ test('Testing updating workflow', function (): void {
     $mapiClient = ManagementApiClient::initTest($client);
     $workflowApi = new WorkflowApi($mapiClient, "222");
 
-    $storyblokResponse = $workflowApi->get( "15268");
+    $storyblokResponse = $workflowApi->get("15268");
     $workflowData = $storyblokResponse->data();
     $workflowData->setName("Name");
 
-    $storyblokResponse = $workflowApi->update( "15268", $workflowData);
+    $storyblokResponse = $workflowApi->update("15268", $workflowData);
 
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*workflow.*$/');

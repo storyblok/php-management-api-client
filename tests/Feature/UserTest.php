@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 use Storyblok\ManagementApi\Endpoints\UserApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -46,7 +45,5 @@ test('Testing current user', function (): void {
 
     $userApi = $mapiClient->userApi();
     expect($userApi)->toBeInstanceOf(UserApi::class);
-
-
 
 });

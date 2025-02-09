@@ -3,14 +3,15 @@
 declare(strict_types=1);
 
 use Storyblok\ManagementApi\ManagementApiClient;
-
 use Symfony\Component\HttpClient\MockHttpClient;
-
 
 test('Testing multiple resources, StoryblokData', function (): void {
     $responses = [
-        \mockResponse("list-tags", 200,
-            ["total"=>8, "per-page" => 25 ]),
+        \mockResponse(
+            "list-tags",
+            200,
+            ["total"=>8, "per-page" => 25 ]
+        ),
         \mockResponse("empty-tags", 404),
     ];
 
@@ -40,20 +41,17 @@ test('Testing multiple resources, StoryblokData', function (): void {
         expect($tag->get("id"))->toBeNumeric()->toBeGreaterThan(1000);
     }
 
-
     $response = $managementApi->get(
         sprintf('spaces/%s/internal_tags', $spaceId),
         [
             "by_object_type" => "asset",
-            "search" => "somethingnotexists"
+            "search" => "somethingnotexists",
         ]
     );
-    expect( $response->getResponseStatusCode())->toBe(404) ;
-    expect( $response->asJson())->toBe('["This record could not be found"]');
-
+    expect($response->getResponseStatusCode())->toBe(404) ;
+    expect($response->asJson())->toBe('["This record could not be found"]');
 
 });
-
 
 test('Testing create resource, StoryblokData', function (): void {
     $responses = [
@@ -65,11 +63,10 @@ test('Testing create resource, StoryblokData', function (): void {
     $mapiClient = ManagementApiClient::initTest($client);
     $managementApi = $mapiClient->managementApi();
 
-
     // CREATE A TAG
     $tag = [
         "name" => "new tag",
-        "object_type" => "asset"
+        "object_type" => "asset",
     ];
     $spaceId = "321388";
     $response = $managementApi->post(
@@ -94,14 +91,13 @@ test('Testing delete resource, StoryblokData', function (): void {
     $mapiClient = ManagementApiClient::initTest($client);
     $managementApi = $mapiClient->managementApi();
 
-
     // CREATE A TAG
     $tag = [
         "name" => "new tag",
-        "object_type" => "asset"
+        "object_type" => "asset",
     ];
     $spaceId = "321388";
-    $tagId="56980";
+    $tagId = "56980";
     $response = $managementApi->delete(
         sprintf('spaces/%s/internal_tags/%s', $spaceId, $tagId)
     );
@@ -123,14 +119,13 @@ test('Testing edit resource, StoryblokData', function (): void {
     $mapiClient = ManagementApiClient::initTest($client);
     $managementApi = $mapiClient->managementApi();
 
-
     // CREATE A TAG
     $tag = [
         "name" => "some",
-        "object_type" => "asset"
+        "object_type" => "asset",
     ];
     $spaceId = "321388";
-    $tagId="56980";
+    $tagId = "56980";
     $response = $managementApi->put(
         sprintf('spaces/%s/internal_tags/%s', $spaceId, $tagId)
     );
@@ -169,9 +164,3 @@ test('Testing StoryblokData', function (): void {
     expect($response->toArray())->toBeArray();
 
 });
-
-
-
-
-
-

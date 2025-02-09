@@ -51,7 +51,7 @@ function mockResponse($mockfile = 'test', $statsCode = 200, $headers = []): Mock
     $content = file_get_contents(sprintf('./tests/Feature/Data/%s.json', $mockfile));
     return new MockResponse($content, [
         'http_code' => $statsCode,
-        'response_headers' => $headers
+        'response_headers' => $headers,
     ]);
 
 }

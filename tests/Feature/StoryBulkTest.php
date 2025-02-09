@@ -20,7 +20,6 @@ class TestStoryBulkApi extends \Storyblok\ManagementApi\Endpoints\StoryBulkApi
     }
 }
 
-
 test('StoryApi works with custom logger', function (): void {
     // Create a mock logger that tracks log calls
     $mockLogger = new class extends NullLogger {
@@ -31,7 +30,7 @@ test('StoryApi works with custom logger', function (): void {
             $this->logs[] = [
                 'level' => $level,
                 'message' => $message,
-                'context' => $context
+                'context' => $context,
             ];
         }
 
@@ -46,7 +45,7 @@ test('StoryApi works with custom logger', function (): void {
         new MockResponse([], [
             'http_code' => 500,
             'response_headers' => ['Content-Type: application/json'],
-        ])
+        ]),
     ];
 
     $client = new MockHttpClient($responses);
@@ -65,7 +64,6 @@ test('StoryApi works with custom logger', function (): void {
         ->and($mockLogger->logs[0]['level'])->toBe('error')
         ->and($mockLogger->logs[0]['message'])->toBe('Error fetching stories');
 });
-
 
 test('Testing list of stories, Params', function (): void {
     $responses = [
@@ -103,7 +101,7 @@ test('createBulk handles rate limiting and creates multiple stories', function (
             $this->logs[] = [
                 'level' => $level,
                 'message' => $message,
-                'context' => $context
+                'context' => $context,
             ];
         }
 
@@ -121,8 +119,8 @@ test('createBulk handles rate limiting and creates multiple stories', function (
             'created_at' => '2024-02-08 09:40:59.123',
             'published_at' => null,
             'id' => 1,
-            'uuid' => '1234-5678'
-        ]
+            'uuid' => '1234-5678',
+        ],
     ];
 
     $story2Data = [
@@ -133,8 +131,8 @@ test('createBulk handles rate limiting and creates multiple stories', function (
             'created_at' => '2024-02-08 09:41:59.123',
             'published_at' => null,
             'id' => 2,
-            'uuid' => '8765-4321'
-        ]
+            'uuid' => '8765-4321',
+        ],
     ];
 
     $responses = [
@@ -156,12 +154,12 @@ test('createBulk handles rate limiting and creates multiple stories', function (
         StoryData::make([
             'name' => 'Story 1',
             'slug' => 'story-1',
-            'content' => ['component' => 'blog']
+            'content' => ['component' => 'blog'],
         ]),
         StoryData::make([
             'name' => 'Story 2',
             'slug' => 'story-2',
-            'content' => ['component' => 'blog']
+            'content' => ['component' => 'blog'],
         ]),
     ];
 
@@ -198,7 +196,7 @@ test('createBulk throws exception when max retries is reached', function (): voi
             $this->logs[] = [
                 'level' => $level,
                 'message' => $message,
-                'context' => $context
+                'context' => $context,
             ];
         }
 
@@ -216,9 +214,9 @@ test('createBulk throws exception when max retries is reached', function (): voi
     // Create responses that always return rate limit error (429)
     // We need MAX_RETRIES + 1 responses to trigger the exception
     $responses = array_fill(0, 4, new JsonMockResponse([
-        'error' => 'Rate limit exceeded'
+        'error' => 'Rate limit exceeded',
     ], [
-        'http_code' => 429
+        'http_code' => 429,
     ]));
 
     $client = new MockHttpClient($responses);
@@ -232,12 +230,12 @@ test('createBulk throws exception when max retries is reached', function (): voi
         StoryData::make([
             'name' => 'Story 1',
             'slug' => 'story-1',
-            'content' => ['component' => 'blog']
+            'content' => ['component' => 'blog'],
         ]),
     ];
 
     // Execute bulk creation and expect exception
-    expect(fn (): array => iterator_to_array($storyApi->createStories($stories)))
+    expect(fn(): array => iterator_to_array($storyApi->createStories($stories)))
         ->toThrow(
             \Storyblok\ManagementApi\Exceptions\StoryblokApiException::class,
             'Rate limit exceeded maximum retries'

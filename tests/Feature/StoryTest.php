@@ -11,9 +11,6 @@ use Storyblok\ManagementApi\QueryParameters\StoriesParams;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
 
-
-
-
 test('Testing One Story, StoryData', function (): void {
     $responses = [
         \mockResponse("one-story", 200),
@@ -26,7 +23,7 @@ test('Testing One Story, StoryData', function (): void {
 
     $storyblokResponse = $storyApi->get("111");
     /** @var \Storyblok\ManagementApi\Data\StoryData $storyblokData */
-    $storyblokData =  $storyblokResponse->data();
+    $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("My third post")
         ->and($storyblokData->name())->toBe("My third post")
@@ -34,8 +31,8 @@ test('Testing One Story, StoryData', function (): void {
         ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
 
     $storyblokResponse = $storyApi->get("111notexists");
-    expect( $storyblokResponse->getResponseStatusCode())->toBe(404) ;
-    expect( $storyblokResponse->asJson())->toBe('["This record could not be found"]');
+    expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
+    expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
 });
 
 test('Create story encodes data correctly as JSON', function (): void {
@@ -44,8 +41,8 @@ test('Create story encodes data correctly as JSON', function (): void {
         'slug' => 'test-story',
         'content' => [
             'component' => 'blog-post',
-            'title' => 'Test Title'
-        ]
+            'title' => 'Test Title',
+        ],
     ];
 
     // Create a callback to verify the request
@@ -62,7 +59,7 @@ test('Create story encodes data correctly as JSON', function (): void {
 
     // Create mock response
     $response = new MockResponse(json_encode([
-        'story' => $expectedStoryData
+        'story' => $expectedStoryData,
     ]), [
         'http_code' => 201,
         'response_headers' => ['Content-Type: application/json'],
@@ -89,7 +86,6 @@ test('Create story encodes data correctly as JSON', function (): void {
     expect($responseData->slug())->toBe('test-story');
 });
 
-
 test('Testing list of stories, Params', function (): void {
     $responses = [
         \mockResponse("list-stories", 200, ["total"=>2, "per-page" => 25 ]),
@@ -115,7 +111,8 @@ test('Testing list of stories, Params', function (): void {
     $storyblokResponse = $storyApi->page(
         params: new StoriesParams(
             favorite: true
-        ),page: new PaginationParams(5, 30)
+        ),
+        page: new PaginationParams(5, 30)
     );
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*favorite=1.*$/');
@@ -125,13 +122,13 @@ test('Testing list of stories, Params', function (): void {
         params: new StoriesParams(
             withTag: "aaa",
             search: "something"
-        ),page: new PaginationParams(5, 30)
+        ),
+        page: new PaginationParams(5, 30)
     );
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*search=something.*$/');
     expect($string)->toMatch('/.*with_tag=aaa.*$/');
     expect($string)->toMatch('/.*page=5&per_page=30.*$/');
-
 
     $storyblokResponse = $storyApi->page(
         params: new StoriesParams(
@@ -145,7 +142,6 @@ test('Testing list of stories, Params', function (): void {
                 "something"
             )
         ),
-
         page: new PaginationParams(5, 30)
     );
     $string = $storyblokResponse->getLastCalledUrl();
@@ -164,15 +160,14 @@ test('Testing list of stories, Params', function (): void {
                 "headline",
                 "like",
                 "something"
-            ))->add(
+            )
+        )->add(
             new Filter(
                 "subheadline",
                 "like",
                 "somethingelse"
             ),
-
         ),
-
         page: new PaginationParams(5, 30)
     );
     $string = $storyblokResponse->getLastCalledUrl();
@@ -182,6 +177,4 @@ test('Testing list of stories, Params', function (): void {
     expect($string)->toMatch('/.*filter_query\[headline\]\[like\]=something.*$/');
     expect($string)->toMatch('/.*filter_query\[subheadline\]\[like\]=somethingelse.*$/');
 
-
 });
-

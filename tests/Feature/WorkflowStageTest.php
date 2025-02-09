@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-
 use Storyblok\ManagementApi\ManagementApiClient;
 use Symfony\Component\HttpClient\MockHttpClient;
 
 test('Testing list of workflow stages', function (): void {
     $responses = [
         \mockResponse("list-workflow-stages", 200, []),
-        \mockResponse("list-workflow-stages", 200,[]),
+        \mockResponse("list-workflow-stages", 200, []),
         //\mockResponse("empty-asset", 404),
     ];
 

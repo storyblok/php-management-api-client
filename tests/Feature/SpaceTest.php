@@ -9,7 +9,6 @@ use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
 
-
 test("Testing making space", function (): void {
     $spaceData = \Storyblok\ManagementApi\Data\SpaceData::make([]);
     expect($spaceData)->toBeInstanceOf(\Storyblok\ManagementApi\Data\SpaceData::class);
@@ -25,7 +24,6 @@ test("Testing making space", function (): void {
     $spaceApi = $mapiClient->spaceApi();
     expect($spaceApi)->toBeInstanceOf(SpaceApi::class);
 
-
 });
 test('Testing One space, SpaceData', function (): void {
     $responses = [
@@ -33,13 +31,12 @@ test('Testing One space, SpaceData', function (): void {
         \mockResponse("empty-space", 404),
     ];
 
-
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
     $spaceApi = new SpaceApi($mapiClient);
 
     $storyblokResponse = $spaceApi->get("111");
-    $storyblokData =  $storyblokResponse->data();
+    $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("Example Space")
         ->and($storyblokData->name())->toBe("Example Space")
@@ -49,8 +46,8 @@ test('Testing One space, SpaceData', function (): void {
     ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
 
     $storyblokResponse = $spaceApi->get("111notexists");
-    expect( $storyblokResponse->getResponseStatusCode())->toBe(404) ;
-    expect( $storyblokResponse->asJson())->toBe('["This record could not be found"]');
+    expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
+    expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
 
     $storyblokData->setName("New Name");
     expect($storyblokData->get("name"))
@@ -71,16 +68,14 @@ test('Testing Creating One space, SpaceData', function (): void {
         \mockResponse("empty-space", 404),
     ];
 
-
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
     $spaceApi = new SpaceApi($mapiClient);
 
-    $spaceData =  new SpaceData();
+    $spaceData = new SpaceData();
 
     $spaceData->setName("New Name");
     $spaceData->setDomain("https://example.storyblok.com");
-
 
     expect($spaceData->get("name"))
         ->toBe("New Name")
@@ -90,7 +85,7 @@ test('Testing Creating One space, SpaceData', function (): void {
     $storyblokResponse = $spaceApi->create(
         $spaceData
     );
-    $storyblokData =  $storyblokResponse->data();
+    $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("Example Space")
         ->and($storyblokData->name())->toBe("Example Space")
@@ -103,7 +98,6 @@ test('throws exception in creating space', function (): void {
     $responses = [
         \mockResponse("empty-space", 404),
     ];
-
 
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
@@ -119,7 +113,6 @@ test('Testing backup One space, SpaceData', function (): void {
         \mockResponse("empty-space", 404),
     ];
 
-
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
     $spaceApi = new SpaceApi($mapiClient);
@@ -127,7 +120,7 @@ test('Testing backup One space, SpaceData', function (): void {
     $storyblokResponse = $spaceApi->backup(
         "111"
     );
-    $storyblokData =  $storyblokResponse->data();
+    $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("Example Space")
         ->and($storyblokData->name())->toBe("Example Space")
@@ -143,7 +136,6 @@ test('Testing delete One space, SpaceData', function (): void {
         \mockResponse("empty-space", 404),
     ];
 
-
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
     $spaceApi = new SpaceApi($mapiClient);
@@ -151,7 +143,7 @@ test('Testing delete One space, SpaceData', function (): void {
     $storyblokResponse = $spaceApi->delete(
         "111"
     );
-    $storyblokData =  $storyblokResponse->data();
+    $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("Example Space")
         ->and($storyblokData->name())->toBe("Example Space")
@@ -167,7 +159,6 @@ test('Testing duplicating One space, SpaceData', function (): void {
         \mockResponse("empty-space", 404),
     ];
 
-
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
     $spaceApi = new SpaceApi($mapiClient);
@@ -176,7 +167,7 @@ test('Testing duplicating One space, SpaceData', function (): void {
         "111",
         "New Space Name"
     );
-    $storyblokData =  $storyblokResponse->data();
+    $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("Example Space")
         ->and($storyblokData->name())->toBe("Example Space")
@@ -185,7 +176,6 @@ test('Testing duplicating One space, SpaceData', function (): void {
         ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
 
 });
-
 
 test('Testing multiple spaces, SpaceData', function (): void {
     $responses = [
