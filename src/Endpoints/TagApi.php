@@ -44,6 +44,7 @@ class TagApi extends EndpointSpace
         return $this->makeRequest(
             "DELETE",
             '/v1/spaces/' . $this->spaceId . '/tags/' . $name,
+            dataClass: TagData::class,
         );
     }
 
