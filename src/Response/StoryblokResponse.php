@@ -42,7 +42,6 @@ class StoryblokResponse implements StoryblokResponseInterface
         return $this->dataClass::make($this->toArray());
     }
 
-
     public function getResponseBody(): string
     {
         return $this->response->getContent(false);
@@ -70,7 +69,7 @@ class StoryblokResponse implements StoryblokResponseInterface
 
     public function getHeaderInt(string $headerName): int|null
     {
-        $value =  $this->getHeader($headerName);
+        $value = $this->getHeader($headerName);
         return is_numeric($value) ? (int) $value : null;
     }
 
@@ -129,13 +128,10 @@ class StoryblokResponse implements StoryblokResponseInterface
         return $this->getResponseStatusCode() . " - " . $message;
     }
 
-
-
     public function asJson(): string|false
     {
         return json_encode($this->toArray());
     }
-
 
     /**
      * @return array<mixed>
@@ -150,8 +146,4 @@ class StoryblokResponse implements StoryblokResponseInterface
 
         return $this->response->toArray(false);
     }
-
-
-
-
 }

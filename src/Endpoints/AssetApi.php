@@ -12,9 +12,6 @@ use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
-/**
- *
- */
 class AssetApi extends EndpointSpace
 {
     /**
@@ -157,9 +154,4 @@ class AssetApi extends EndpointSpace
             dataClass: AssetData::class,
         );
     }
-
-
-
-
-
 }

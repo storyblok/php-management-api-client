@@ -28,8 +28,6 @@ class WorkflowData extends StoryblokData
         $this->set('name', $name);
     }
 
-
-
     public function name(): string
     {
         return $this->getString('name', "");
@@ -52,5 +50,4 @@ class WorkflowData extends StoryblokData
     {
         return $this->getArray('content_types', []);
     }
-
 }

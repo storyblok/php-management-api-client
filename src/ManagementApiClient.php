@@ -78,8 +78,6 @@ class ManagementApiClient
             $client->httpAssetClient = new MockHttpClient();
         }
 
-
-
         return $client;
 
     }

@@ -36,8 +36,6 @@ class WorkflowStagesParams
             $array['exclude_id'] = $this->excludeId;
         }
 
-
-
         if (null !== $this->byIds) {
             if (is_array($this->byIds)) {
                 $array['by_ids'] = implode(",", $this->byIds);

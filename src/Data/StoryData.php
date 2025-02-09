@@ -67,7 +67,6 @@ class StoryData extends StoryblokData
         return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
     }
 
-
     public function setContentType(string $componentName): self
     {
         $this->defaultContentType = $componentName;

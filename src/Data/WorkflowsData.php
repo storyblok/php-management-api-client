@@ -26,10 +26,8 @@ class WorkflowsData extends StoryblokData
         return new self($data["workflows"] ?? []);
     }
 
-
     public function howManyWorkflows(): int
     {
         return $this->count();
     }
-
 }

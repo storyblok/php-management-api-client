@@ -12,9 +12,6 @@ use Storyblok\ManagementApi\Response\SpacesResponse;
 use Storyblok\ManagementApi\Response\StoryblokResponse;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
-/**
- *
- */
 class SpaceApi extends EndpointBase
 {
     public function all(): SpacesResponse
@@ -26,9 +23,6 @@ class SpaceApi extends EndpointBase
         return new SpacesResponse($httpResponse, SpacesData::class);
     }
 
-
-
-
     public function get(string $spaceId): SpaceResponse
     {
         $httpResponse = $this->makeHttpRequest(
@@ -38,11 +32,10 @@ class SpaceApi extends EndpointBase
         return new SpaceResponse($httpResponse);
     }
 
-
     public function create(StoryblokData $storyblokData): SpaceResponse
     {
 
-        $httpResponse =  $this->makeHttpRequest(
+        $httpResponse = $this->makeHttpRequest(
             "POST",
             "/v1/spaces",
             [

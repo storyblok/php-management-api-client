@@ -51,7 +51,6 @@ class StoryApi extends EndpointSpace
             $queryFilters = new QueryFilters();
         }
 
-
         if (!$page instanceof PaginationParams) {
             $page = new PaginationParams();
         }
@@ -228,8 +227,6 @@ class StoryApi extends EndpointSpace
             dataClass: StoryData::class,
         );
     }
-
-
 
     /**
      * Validates pagination parameters

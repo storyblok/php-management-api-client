@@ -20,7 +20,6 @@ class AssetsData extends StoryblokData
         return new self($data);
     }
 
-
     /**
      * @param array<string, array<mixed>> $data
      */
@@ -28,5 +27,4 @@ class AssetsData extends StoryblokData
     {
         return new self($data["assets"] ?? []);
     }
-
 }

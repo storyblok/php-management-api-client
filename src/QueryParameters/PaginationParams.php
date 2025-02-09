@@ -11,7 +11,6 @@ class PaginationParams
         private readonly int $perPage = 25,
     ) {}
 
-
     /**
      * @return array<mixed>
      */
@@ -34,6 +33,4 @@ class PaginationParams
     {
         ++$this->page;
     }
-
-
 }

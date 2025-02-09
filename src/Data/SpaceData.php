@@ -48,7 +48,6 @@ class SpaceData extends StoryblokData
         return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
     }
 
-
     public function planDescription(): null|string
     {
         return StoryblokUtils::getPlanDescription($this->getString('plan_level'));

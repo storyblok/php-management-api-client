@@ -41,7 +41,4 @@ class QueryFilters
         return $array;
 
     }
-
-
-
 }

@@ -48,12 +48,10 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
         return $this->data;
     }
 
-
     public function toJson(): string|false
     {
         return json_encode($this->data, JSON_PRETTY_PRINT);
     }
-
 
     /**
      * Retrieves a value from the data by key. Supports dot notation for nested keys.
@@ -92,7 +90,6 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
             }
 
         }
-
 
         return $this->returnData($this->data[$key], $raw) ?? $defaultValue;
 
@@ -156,8 +153,7 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
         string $charNestedKey = ".",
         string $format = "Y-m-d H:i:s",
     ): string|null {
-        $value =  $this->getString($key, "", $charNestedKey);
-
+        $value = $this->getString($key, "", $charNestedKey);
 
         if ($value === "") {
             return "";
@@ -171,7 +167,6 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
 
         return $date->format($format);
     }
-
 
     /**
      * Sets a value for a specific key in the data.
@@ -213,7 +208,6 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
         return $this;
     }
 
-
     /**
      * Returns data in the desired format.
      * Can be raw or converted to StoryblokData.
@@ -240,8 +234,6 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
             return new StoryblokData($value);
         }
 
-
-
         if ($value instanceof StoryblokData) {
             return $value;
         }
@@ -249,7 +241,6 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
         return new StoryblokData([]);
 
     }
-
 
     /**
      * Returns the class name of the current data class.
@@ -262,7 +253,6 @@ class StoryblokData implements StoryblokDataInterface, Iterator, ArrayAccess, Co
     {
         return self::class;
     }
-
 
     /**
      * @deprecated

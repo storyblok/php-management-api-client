@@ -6,9 +6,6 @@ namespace Storyblok\ManagementApi\Endpoints;
 
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
-/**
- *
- */
 class ManagementApi extends EndpointBase
 {
     /**
@@ -26,7 +23,6 @@ class ManagementApi extends EndpointBase
             ],
         );
     }
-
 
     /**
      * @param array<mixed> $payload
@@ -69,6 +65,4 @@ class ManagementApi extends EndpointBase
             ],
         );
     }
-
-
 }

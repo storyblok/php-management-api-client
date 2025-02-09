@@ -70,7 +70,6 @@ class AssetsParams
                 $array['with_tags'] = $this->withTags;
             }
 
-
         }
 
         return $array;

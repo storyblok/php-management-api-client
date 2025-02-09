@@ -32,7 +32,5 @@ class SpaceResponse extends StoryblokResponse implements StoryblokResponseInterf
         }
 
         throw new StoryblokFormatException(sprintf("Expected '%s' in the response.", $key));
-
     }
-
 }

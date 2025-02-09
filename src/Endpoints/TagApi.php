@@ -8,9 +8,6 @@ use Storyblok\ManagementApi\Data\TagData;
 use Storyblok\ManagementApi\Data\TagsData;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
-/**
- *
- */
 class TagApi extends EndpointSpace
 {
     public function page(int $page = 1, int $perPage = 25): StoryblokResponseInterface
@@ -38,7 +35,6 @@ class TagApi extends EndpointSpace
             dataClass: TagData::class,
         );
     }
-
 
     /**
      * @param $name
@@ -80,9 +76,4 @@ class TagApi extends EndpointSpace
             dataClass: TagData::class,
         );
     }
-
-
-
-
-
 }

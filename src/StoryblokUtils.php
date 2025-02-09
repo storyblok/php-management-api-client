@@ -11,7 +11,6 @@ class StoryblokUtils
         return ($spaceId >= 1_000_000) ? "US" : "EU";
     }
 
-
     /**
      * Each type of storyblok service plan
      * (Community, Business, Enterprise, etc.) is internally coded by
@@ -62,8 +61,4 @@ class StoryblokUtils
             default => "https://api.storyblok.com",
         };
     }
-
-
-
-
 }

@@ -33,10 +33,6 @@ class WorkflowStageData extends StoryblokData
         $this->set('workflow_id', $workflowId);
     }
 
-
-
-
-
     public function name(): string
     {
         return $this->getString('name', "");
@@ -46,7 +42,4 @@ class WorkflowStageData extends StoryblokData
     {
         return $this->getString('id', "");
     }
-
-
-
 }

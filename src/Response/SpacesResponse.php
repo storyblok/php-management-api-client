@@ -22,7 +22,5 @@ class SpacesResponse extends StoryblokResponse implements StoryblokResponseInter
         }
 
         throw new StoryblokFormatException(sprintf("Expected '%s' in the response.", $key));
-
     }
-
 }

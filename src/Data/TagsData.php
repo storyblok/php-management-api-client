@@ -18,7 +18,6 @@ class TagsData extends StoryblokData
         return new self($data);
     }
 
-
     /**
      * @param array<string, array<mixed>> $data
      */
@@ -26,5 +25,4 @@ class TagsData extends StoryblokData
     {
         return new self($data["tags"] ?? []);
     }
-
 }

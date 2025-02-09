@@ -9,9 +9,6 @@ use Storyblok\ManagementApi\Data\WorkflowData;
 use Storyblok\ManagementApi\Data\WorkflowsData;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
-/**
- *
- */
 class WorkflowApi extends EndpointSpace
 {
     /**
@@ -53,7 +50,6 @@ class WorkflowApi extends EndpointSpace
         );
     }
 
-
     /**
      * @param string|int $workflowId the workflow identifier
      */
@@ -90,9 +86,4 @@ class WorkflowApi extends EndpointSpace
             dataClass: WorkflowData::class,
         );
     }
-
-
-
-
-
 }

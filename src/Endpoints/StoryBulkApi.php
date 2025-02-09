@@ -89,7 +89,6 @@ class StoryBulkApi extends EndpointSpace
         } while ($page->page() <= $totalPages);
     }
 
-
     /**
      * Creates multiple stories with rate limit handling and retries
      *
@@ -198,7 +197,4 @@ class StoryBulkApi extends EndpointSpace
             yield $story;
         }
     }
-
-
-
 }

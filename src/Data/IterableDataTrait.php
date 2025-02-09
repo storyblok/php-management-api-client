@@ -84,5 +84,4 @@ trait IterableDataTrait
         return new StoryblokData($result);
 
     }
-
 }

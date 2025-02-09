@@ -39,5 +39,4 @@ interface StoryblokResponseInterface
     public function getLastCalledUrl(): string;
 
     public function isOk(): bool;
-
 }

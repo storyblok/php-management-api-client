@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Data;
 
-use Storyblok\ManagementApi\StoryblokUtils;
-
 class AssetData extends StoryblokData
 {
     /*
@@ -24,7 +22,6 @@ class AssetData extends StoryblokData
     {
         return $this->getString('id', "");
     }
-
 
     public function filenameCDN(): string
     {
@@ -50,7 +47,6 @@ class AssetData extends StoryblokData
         return $this->getInt('content_length');
     }
 
-
     public function createdAt(): null|string
     {
         return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
@@ -60,5 +56,4 @@ class AssetData extends StoryblokData
     {
         return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
     }
-
 }

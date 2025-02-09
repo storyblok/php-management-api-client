@@ -28,7 +28,6 @@ class EndpointBase
         $this->httpClient = $managementClient->httpClient();
     }
 
-
     /**
      * @param array<mixed> $options
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface

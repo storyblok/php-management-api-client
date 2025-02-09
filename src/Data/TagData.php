@@ -34,6 +34,4 @@ class TagData extends StoryblokData
     {
         return $this->getInt('tag_on_stories', 0);
     }
-
-
 }

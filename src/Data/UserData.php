@@ -70,8 +70,6 @@ class UserData extends StoryblokData
         );
     }
 
-
-
     public function hasOrganization(): bool
     {
         return $this->getBoolean('has_org');
@@ -101,9 +99,4 @@ class UserData extends StoryblokData
 
         return "https://img2.storyblok.com/" . $sizeString . $this->getString('avatar');
     }
-
-
-
-
-
 }

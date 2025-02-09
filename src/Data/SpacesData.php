@@ -18,12 +18,8 @@ class SpacesData extends StoryblokData
         return new self($data);
     }
 
-
-
-
     public function howManySpaces(): int
     {
         return $this->count();
     }
-
 }

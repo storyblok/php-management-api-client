@@ -7,9 +7,6 @@ namespace Storyblok\ManagementApi\Endpoints;
 use Storyblok\ManagementApi\Data\UserData;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 
-/**
- *
- */
 class UserApi extends EndpointBase
 {
     public function me(): StoryblokResponseInterface
@@ -20,7 +17,4 @@ class UserApi extends EndpointBase
             dataClass: UserData::class,
         );
     }
-
-
-
 }
