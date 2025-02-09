@@ -1,8 +1,13 @@
 # Changelog
 
-## 0.0.7 - WIP
+## 0.0.7 - 2025-02-09
 
-- Full test coverage for Assets
+- AssetApi full coverage tests
+- WorkflowApi full coverage tests
+- WorkflowStageApi full coverage tests
+- TagApi full coverage tests
+- Introducing stricter type for responses (Asset response)
+- Introducing common PHP CS Fixer configuration
 
 ## 0.0.6 - 2025-02-07
 
