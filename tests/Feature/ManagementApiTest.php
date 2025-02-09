@@ -8,7 +8,7 @@ use Symfony\Component\HttpClient\MockHttpClient;
 test('Testing multiple resources, StoryblokData', function (): void {
     $responses = [
         \mockResponse(
-            "list-tags",
+            "list-internal-tags",
             200,
             ["total"=>8, "per-page" => 25 ]
         ),
@@ -55,7 +55,7 @@ test('Testing multiple resources, StoryblokData', function (): void {
 
 test('Testing create resource, StoryblokData', function (): void {
     $responses = [
-        \mockResponse("one-tag", 200),
+        \mockResponse("one-internal-tag", 200),
         \mockResponse("empty-tags", 404),
     ];
 
@@ -83,7 +83,7 @@ test('Testing create resource, StoryblokData', function (): void {
 
 test('Testing delete resource, StoryblokData', function (): void {
     $responses = [
-        \mockResponse("one-tag", 200),
+        \mockResponse("one-internal-tag", 200),
         \mockResponse("empty-tags", 404),
     ];
 
@@ -111,7 +111,7 @@ test('Testing delete resource, StoryblokData', function (): void {
 
 test('Testing edit resource, StoryblokData', function (): void {
     $responses = [
-        \mockResponse("one-tag", 200),
+        \mockResponse("one-internal-tag", 200),
         \mockResponse("empty-tags", 404),
     ];
 
@@ -141,7 +141,7 @@ test('Testing edit resource, StoryblokData', function (): void {
 test('Testing StoryblokData', function (): void {
     $responses = [
         \mockResponse(
-            "list-tags",
+            "list-internal-tags",
             200,
             ["total" => 8, "per-page" => 25]
         ),
