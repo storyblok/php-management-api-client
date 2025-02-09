@@ -60,6 +60,7 @@ class WorkflowStageApi extends EndpointSpace
         return $this->makeRequest(
             "DELETE",
             '/v1/spaces/' . $this->spaceId . '/workflow_stages/' . $workflowStageId,
+            dataClass: WorkflowStageData::class,
         );
     }
 
