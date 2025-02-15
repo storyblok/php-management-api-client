@@ -144,6 +144,6 @@ class StoryblokResponse implements StoryblokResponseInterface
     public function toArray(): array
     {
 
-        return $this->response->toArray(false);
+        return $this->response->toArray();
     }
 }

@@ -6,15 +6,20 @@ namespace Storyblok\ManagementApi\Endpoints;
 
 use Storyblok\ManagementApi\Data\UserData;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\UserResponse;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class UserApi extends EndpointBase
 {
-    public function me(): StoryblokResponseInterface
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function me(): UserResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
-            '/v1/users/me',
-            dataClass: UserData::class,
+            '/v1/users/me'
         );
+        return new UserResponse($httpResponse);
     }
 }

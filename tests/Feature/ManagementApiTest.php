@@ -41,15 +41,21 @@ test('Testing multiple resources, StoryblokData', function (): void {
         expect($tag->get("id"))->toBeNumeric()->toBeGreaterThan(1000);
     }
 
-    $response = $managementApi->get(
-        sprintf('spaces/%s/internal_tags', $spaceId),
-        [
-            "by_object_type" => "asset",
-            "search" => "somethingnotexists",
-        ]
+    expect(function () use ($managementApi, $spaceId): void {
+        $response = $managementApi->get(
+            sprintf('spaces/%s/internal_tags', $spaceId),
+            [
+                "by_object_type" => "asset",
+                "search" => "somethingnotexists",
+            ]
+        );
+
+    })->toThrow(
+        \Symfony\Component\HttpClient\Exception\ClientException::class,
+        'HTTP 404 returned for "https://mapi.storyblok.com/v1/spaces/321388/internal_tags?by_object_type=asset&search=somethingnotexists'
     );
-    expect($response->getResponseStatusCode())->toBe(404) ;
-    expect($response->asJson())->toBe('["This record could not be found"]');
+    //expect($response->getResponseStatusCode())->toBe(404) ;
+    //expect($response->asJson())->toBe('["This record could not be found"]');
 
 });
 

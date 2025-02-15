@@ -92,11 +92,6 @@ class ManagementApiClient
         return $this->httpAssetClient;
     }
 
-    public function spaceApi(): SpaceApi
-    {
-        return new SpaceApi($this);
-    }
-
     public function storyApi(string|int $spaceId, ?LoggerInterface $logger = null): StoryApi
     {
         return new StoryApi(
@@ -113,11 +108,6 @@ class ManagementApiClient
             $spaceId,
             $logger ?? new NullLogger(),
         );
-    }
-
-    public function userApi(): UserApi
-    {
-        return new UserApi($this);
     }
 
     public function assetApi(string|int $spaceId): AssetApi

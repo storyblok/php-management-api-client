@@ -21,7 +21,7 @@ test("Testing making space", function (): void {
 
     $client = new MockHttpClient($responses);
     $mapiClient = ManagementApiClient::initTest($client);
-    $spaceApi = $mapiClient->spaceApi();
+    $spaceApi = new SpaceApi($mapiClient);
     expect($spaceApi)->toBeInstanceOf(SpaceApi::class);
 
 });
@@ -45,9 +45,15 @@ test('Testing One space, SpaceData', function (): void {
         ->and($storyblokData->planDescription())->toBe("Starter (Trial)")
     ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
 
-    $storyblokResponse = $spaceApi->get("111notexists");
-    expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
-    expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
+    expect(function () use ($spaceApi): void {
+        $storyblokResponse = $spaceApi->get("111notexists");
+    })->toThrow(
+        \Symfony\Component\HttpClient\Exception\ClientException::class,
+        'HTTP 404 returned for "https://example.com/v1/spaces/111notexists'
+    );
+
+    //expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
+    //expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
 
     $storyblokData->setName("New Name");
     expect($storyblokData->get("name"))

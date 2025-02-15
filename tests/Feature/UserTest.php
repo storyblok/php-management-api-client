@@ -43,7 +43,7 @@ test('Testing current user', function (): void {
     $userData = \Storyblok\ManagementApi\Data\UserData::make([]);
     expect($userData)->toBeInstanceOf(\Storyblok\ManagementApi\Data\UserData::class);
 
-    $userApi = $mapiClient->userApi();
+    $userApi = new UserApi($mapiClient);
     expect($userApi)->toBeInstanceOf(UserApi::class);
 
 });

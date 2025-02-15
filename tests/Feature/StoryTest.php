@@ -31,9 +31,15 @@ test('Testing One Story, StoryData', function (): void {
         ->and($storyblokData->createdAt())->toBe("2024-02-08")
         ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
 
-    $storyblokResponse = $storyApi->get("111notexists");
-    expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
-    expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
+    expect(function () use ($storyApi): void {
+        $storyblokResponse = $storyApi->get("111notexists");
+    })->toThrow(
+        \Exception::class,
+        'HTTP 404 returned for "https://example.com/v1/spaces/222/stories/111notexists'
+    );
+
+    //expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
+    //expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
 });
 
 test('Create story encodes data correctly as JSON', function (): void {

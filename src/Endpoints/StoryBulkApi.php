@@ -107,7 +107,7 @@ class StoryBulkApi extends EndpointSpace
                     yield $response->data();
                     $retryCount = 0;
                     break;
-                } catch (StoryblokApiException $e) {
+                } catch (\Exception $e) {
                     if ($e->getCode() === self::RATE_LIMIT_STATUS_CODE) {
                         if ($retryCount >= self::MAX_RETRIES) {
                             $this->logger->error('Max retries reached while creating story', [

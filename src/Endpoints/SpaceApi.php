@@ -11,6 +11,7 @@ use Storyblok\ManagementApi\Response\SpaceResponse;
 use Storyblok\ManagementApi\Response\SpacesResponse;
 use Storyblok\ManagementApi\Response\StoryblokResponse;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class SpaceApi extends EndpointBase
 {
@@ -23,12 +24,16 @@ class SpaceApi extends EndpointBase
         return new SpacesResponse($httpResponse, SpacesData::class);
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     public function get(string $spaceId): SpaceResponse
     {
         $httpResponse = $this->makeHttpRequest(
             "GET",
             '/v1/spaces/' . $spaceId,
         );
+
         return new SpaceResponse($httpResponse);
     }
 

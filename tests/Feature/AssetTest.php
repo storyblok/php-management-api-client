@@ -9,6 +9,7 @@ use Storyblok\ManagementApi\QueryParameters\AssetsParams;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
 test('Testing One asset, AssetData', function (): void {
     $responses = [
@@ -32,9 +33,15 @@ test('Testing One asset, AssetData', function (): void {
         ->and($storyblokData->createdAt())->toBe('2025-01-18')
         ->and($storyblokData->updatedAt())->toBe('2025-01-19');
 
-    $storyblokResponse = $assetApi->get("111notexists");
-    expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
-    expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
+    expect(
+        function () use ($assetApi, $storyblokData): void {
+            $storyblokResponse = $assetApi->get("111notexists");
+        }
+    )->toThrow(Exception::class, 'HTTP 404 returned for "https://example.com/v1/spaces/222/assets/111notexists');
+
+    //$storyblokResponse = $assetApi->get("111notexists");
+    //expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
+    //expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
 
 });
 
@@ -61,11 +68,18 @@ test('Testing list of assets, AssetsData', function (): void {
     expect($storyblokResponse->total())->toBe(2);
     expect($storyblokResponse->perPage())->toBe(25);
 
-    $storyblokResponse = $assetApi->page(page: new \Storyblok\ManagementApi\QueryParameters\PaginationParams(page: 100000));
-    expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
-    expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
-    expect($storyblokResponse->isOk())->toBeFalse() ;
-    expect($storyblokResponse->getErrorMessage())->toStartWith("404 - Not Found.") ;
+    expect(function () use ($assetApi, $storyblokData): void {
+        $storyblokResponse = $assetApi->page(page: new \Storyblok\ManagementApi\QueryParameters\PaginationParams(page: 100000));
+
+    })->toThrow(
+        \Symfony\Component\HttpClient\Exception\ClientException::class,
+        'HTTP 404 returned for "https://example.com/v1/spaces/222/assets?page=100000&per_page=25'
+    );
+
+    //expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
+    //expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
+    //expect($storyblokResponse->isOk())->toBeFalse() ;
+    //expect($storyblokResponse->getErrorMessage())->toStartWith("404 - Not Found.") ;
 
     $assetsData = AssetsData::make([]);
     expect($assetsData)->toBeInstanceOf(AssetsData::class);

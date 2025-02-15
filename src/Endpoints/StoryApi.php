@@ -15,6 +15,7 @@ use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
  * StoryApi handles all story-related operations in the Storyblok Management API
@@ -94,6 +95,7 @@ class StoryApi extends EndpointSpace
      *
      * @throws InvalidStoryDataException
      * @throws StoryblokApiException
+     * @throws TransportExceptionInterface
      */
     public function create(StoryData $storyData): StoryblokResponseInterface
     {
@@ -115,29 +117,18 @@ class StoryApi extends EndpointSpace
                 dataClass: StoryData::class,
             );
 
-            if ($response->isOk()) {
-                $this->logger->info('Story created successfully', [
-                    'story_name' => $storyData->name(),
-                ]);
-                return $response;
-            }
-
-            $this->logger->error('Failed to create story', [
-                'status_code' => $response->getResponseStatusCode(),
-                'error_message' => $response->getErrorMessage(),
+            $this->logger->info('Story created successfully', [
                 'story_name' => $storyData->name(),
             ]);
+            return $response;
 
-            throw new StoryblokApiException(
-                sprintf(
-                    'Failed to create story: %s (Status code: %d)',
-                    $response->getErrorMessage(),
-                    $response->getResponseStatusCode(),
-                ),
-                $response->getResponseStatusCode(),
-            );
         } catch (\Exception $exception) {
             if ($exception instanceof StoryblokApiException) {
+                $this->logger->error('Failed to create story', [
+                    'status_code' => $exception->getCode(),
+                    'error_message' => $exception->getMessage(),
+                    'story_name' => $storyData->name(),
+                ]);
                 throw $exception;
             }
 
@@ -145,12 +136,18 @@ class StoryApi extends EndpointSpace
                 'error' => $exception->getMessage(),
                 'story_name' => $storyData->name(),
             ]);
+            throw $exception;
+            /*
+            new StoryblokApiException(
+                sprintf(
+                    'Failed to create story: %s (Status code: %d) Error: %s',
+                    $storyData->name(),
+                    $exception->getCode(),
+                    $exception->getMessage(),
+                ),
+                $exception->getCode(),
+            );*/
 
-            throw new StoryblokApiException(
-                'Failed to create story: ' . $exception->getMessage(),
-                0,
-                $exception,
-            );
         }
     }
 
