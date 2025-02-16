@@ -6,9 +6,9 @@ namespace Storyblok\ManagementApi\Endpoints;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Storyblok\ManagementApi\Data\StoriesData;
+use Storyblok\ManagementApi\Data\Stories;
 use Storyblok\ManagementApi\Data\StoryblokDataInterface;
-use Storyblok\ManagementApi\Data\StoryData;
+use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\Exceptions\StoryblokApiException;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
@@ -52,7 +52,7 @@ class StoryBulkApi extends EndpointSpace
      * Retrieves all stories using pagination
      *
      * @param int $itemsPerPage Number of items to retrieve per page
-     * @return \Generator<StoryData>
+     * @return \Generator<Story>
      * @throws StoryblokApiException
      */
     public function all(?StoriesParams $params = null, ?QueryFilters $filters = null, int $itemsPerPage = self::DEFAULT_ITEMS_PER_PAGE): \Generator
@@ -92,7 +92,7 @@ class StoryBulkApi extends EndpointSpace
     /**
      * Creates multiple stories with rate limit handling and retries
      *
-     * @param StoryData[] $stories Array of stories to create
+     * @param Story[] $stories Array of stories to create
      * @return \Generator<StoryblokDataInterface> Generated stories
      * @throws StoryblokApiException
      */
@@ -104,10 +104,12 @@ class StoryBulkApi extends EndpointSpace
             while (true) {
                 try {
                     $response = $this->api->create($storyData);
+
                     yield $response->data();
                     $retryCount = 0;
                     break;
                 } catch (\Exception $e) {
+                    echo "====" . $e->getMessage() . "\n";
                     if ($e->getCode() === self::RATE_LIMIT_STATUS_CODE) {
                         if ($retryCount >= self::MAX_RETRIES) {
                             $this->logger->error('Max retries reached while creating story', [
@@ -187,14 +189,14 @@ class StoryBulkApi extends EndpointSpace
     /**
      * Extracts stories from the API response
      *
-     * @return \Generator<int, StoryData>
+     * @return \Generator<int, Story>
      */
     private function getStoriesFromResponse(StoryblokResponseInterface $response): \Generator
     {
-        /** @var StoriesData $stories */
+        /** @var Stories $stories */
         $stories = $response->data();
         foreach ($stories as $story) {
-            /** @var StoryData $story */
+            /** @var Story $story */
             yield $story;
         }
     }

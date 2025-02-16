@@ -196,6 +196,8 @@ To handle Stories, get stories, get a single story, create a story, update a sto
 
 ```php
 use Storyblok\ManagementApi\ManagementApiClient;
+use Storyblok\ManagementApi\Endpoints\StoryApi;
+
 $spaceId= "1234";
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 $storyApi = new StoryApi($client, $spaceId);
@@ -205,6 +207,22 @@ $storyApi = new StoryApi($client, $spaceId);
 
 ### Getting a page of stories
 
+When retrieving a list of stories from a space, the Management API provides paginated results.
+By default, each page contains 25 stories, but you can customize the number of stories per page and specify which page to retrieve.
+
+To fetch the first page of stories:
+
+```php
+use Storyblok\ManagementApi\Endpoints\StoryApi;
+
+$storyApi = new StoryApi($client, $spaceId);
+$stories = $storyApi->page()->data();
+foreach ($stories as $story) {
+    echo $story->id() . " - " . $story->name() . PHP_EOL;
+}
+```
+
+In the case you need to retrieve the response to access to some additional information you can obtain a `StoriesResponse` via the `page()` method:
 
 ```php
 $response = $storyApi->page();
@@ -214,10 +232,10 @@ echo "LAST URL    : " . $response->getLastCalledUrl() . PHP_EOL;
 echo "TOTAL       : " . $response->total() . PHP_EOL;
 echo "PAR PAGE    : " . $response->perPage() . PHP_EOL;
 
-$data = $response->data();
-echo "Stories found with the page: " . $data->howManyStories() . PHP_EOL;
-foreach ($data as $key => $story) {
-    echo $story->get("id") . "  " .
+$stories = $response->data();
+echo "Stories found with the page: " . $stories->howManyStories() . PHP_EOL;
+foreach ($stories as $key => $story) {
+    echo $story->id() . "  " .
     $story->getName() . PHP_EOL;
 }
 ```
@@ -225,14 +243,19 @@ foreach ($data as $key => $story) {
 ### Filtering stories
 You can filter stories using `StoriesParams`.
 
+> The `StoriesParams` attributes are documented in the `Query Parameters` of [Retrieving multiple stories](https://www.storyblok.com/docs/api/management/core-resources/stories/retrieve-multiple-stories)
+
 ```php
 use Storyblok\ManagementApi\Endpoints\StoryApi;
 
 $storyApi = new StoryApi($client, $spaceId);
 $stories = $storyApi->page(
-    new StoriesParams(containComponent: "feature"),
-    new PaginationParams(1, 1000)
-);
+    new StoriesParams(containComponent: "hero-section"),
+    page: new PaginationParams(2, 10)
+)->data();
+echo "Stories found: " . $stories->count();
+echo " STORY : " . $stories->get("0.name") . PHP_EOL;
+
 ```
 
 ### Filtering stories via query filters
@@ -244,17 +267,17 @@ Besides using query parameters to filter stories, you can leverage more powerful
 In this example, you will retrieve all stories where the "title" field is empty. (Stories with content types that do not include a "title" field in their schema will be skipped.)
 
 ```php
-use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
 use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
+use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 
 $storyBulkApi = new StoryBulkApi($client, $spaceId);
 $stories = $storyBulkApi->all(
     filters: (new QueryFilters())->add(
         new Filter(
-            "title",
+            "headline",
             "like",
-            ""
+            "%mars%"
         )
     )
 );
@@ -294,7 +317,7 @@ echo "STATUS CODE : " . $response->getResponseStatusCode() . PHP_EOL;
 echo "LAST URL    : " . $response->getLastCalledUrl() . PHP_EOL;
 
 $story = $response->data();
-echo $story->getName() . PHP_EOL;
+echo $story->name() . PHP_EOL;
 ```
 
 ### Creating a Story
@@ -302,23 +325,21 @@ echo $story->getName() . PHP_EOL;
 To create a story, you can call the `create()` method provided by `StoryApi` and use the `StoryData` class. The `StoryData` class is specific for storing and handling story information. It also provides some nice methods for accessing some relevant Story fields.
 
 ```php
-$story = new StoryData();
-$story->setName("A Story");
-$story->setSlug("a-story");
-$story->setContentType("page");
-$response = $storyApi->create($story);
-
-echo $response->getLastCalledUrl() . PHP_EOL;
-echo $response->asJson() . PHP_EOL;
-echo $response->getResponseStatusCode() . PHP_EOL;
-if ($response->isOk()) {
-    $storyCreated = $response->data();
-    echo "Story created, ID: " . $storyCreated->id() . PHP_EOL;
-    echo "             UUID: " . $storyCreated->uuid() . PHP_EOL;
-    echo "             SLUG: " . $storyCreated->slug() . PHP_EOL;
-} else {
-    echo $response->getErrorMessage();
+$story = new Story(
+    name: "A Story",
+    slug: "a-story",
+    contentType: "article-page"
+);
+try{
+    $storyCreated = $storyApi->create($story)->data();
+    echo "Created Story: " . $storyCreated->id() . " - " . $storyCreated->name() . PHP_EOL;
+} catch (ClientException $e) {
+    echo "Error while creating story: " . PHP_EOL;
+    echo $e->getResponse()->getContent(false);
+    echo PHP_EOL;
+    echo $e->getMessage();
 }
+echo PHP_EOL;
 ```
 
 ### Publishing a story
@@ -351,10 +372,7 @@ $file->setCsvControl(separator: ";");
 $stories = [];
 foreach ($file as $row) {
     list($slug, $name, $contentType) = $row;
-    $story = new StoryData();
-    $story->setName($name);
-    $story->setSlug($slug);
-    $story->setContentType($contentType);
+    $story = new Story($name, $slug, $contentType);
     $stories[] = $story;
 }
 $createdStories = iterator_to_array($storyBulkApi->createStories($stories));
@@ -540,7 +558,7 @@ Now we want to upload a new image, and then create a new simple story that inclu
 
 ```php
 use Storyblok\ManagementApi\Data\StoryblokData;
-use Storyblok\ManagementApi\Data\StoryData;
+use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\ManagementApiClient;
 
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
@@ -564,7 +582,7 @@ $content->set("image.id", $assetCreated->id());
 $content->set("image.fieldtype", "asset");
 $content->set("image.filename",$assetCreated->filename());
 
-$story = new StoryData();
+$story = new Story();
 $story->setName("An Article");
 $story->setSlug("an-article-" . random_int(10000, 99999));
 $story->setContent($content->toArray());
@@ -576,7 +594,7 @@ echo $response->getLastCalledUrl() . PHP_EOL;
 echo $response->asJson() . PHP_EOL;
 echo $response->getResponseStatusCode() . PHP_EOL;
 if ($response->isOk()) {
-  	/** @var StoryData $storyCreated */
+  	/** @var Story $storyCreated */
     $storyCreated = $response->data();
     echo "Story created, ID: " . $storyCreated->id() . PHP_EOL;
     echo "             UUID: " . $storyCreated->uuid() . PHP_EOL;

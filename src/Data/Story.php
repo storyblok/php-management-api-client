@@ -4,24 +4,51 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Data;
 
-use Storyblok\ManagementApi\Data\StoryblokData;
+use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 
-class StoryData extends StoryblokData
+class Story extends BaseData
 {
     private string $defaultContentType = "";
 
     /**
-     * @param array<string, array<mixed>> $data
+     * @param string $name the space name
      */
-    public static function makeFromResponse(array $data = []): self
-    {
-        return new self($data["story"] ?? []);
+    public function __construct(
+        string $name,
+        string $slug,
+        string $contentType
+    ) {
+        $this->data = [];
+        $this->data['name'] = $name;
+        $this->data['slug'] = $slug;
+        $this->data['content'] = [];
+        $this->data['content']['component'] = $contentType;
     }
 
-    #[\Override]
+    /**
+     * @param mixed[] $data
+     * @throws StoryblokFormatException
+     */
     public static function make(array $data = []): self
     {
-        return new self($data);
+        $dataObject = new StoryblokData($data);
+        if (!($dataObject->hasKey('name') && $dataObject->hasKey('slug') && $dataObject->hasKey('content') && $dataObject->hasKey('content.component'))) {
+            // is not valid
+        }
+
+        $story = new Story(
+            $dataObject->getString("name"),
+            $dataObject->getString("slug"),
+            $dataObject->getString("content.component")
+        );
+        $story->setData($dataObject->toArray());
+        // validate
+        if (! $story->isValid()) {
+            throw new StoryblokFormatException("Story is not valid");
+        }
+
+        return $story;
+
     }
 
     public function setName(string $name): void

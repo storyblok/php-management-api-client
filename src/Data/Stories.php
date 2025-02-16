@@ -6,12 +6,12 @@ namespace Storyblok\ManagementApi\Data;
 
 use Storyblok\ManagementApi\Data\StoryblokData;
 
-class StoriesData extends StoryblokData
+class Stories extends StoryblokData
 {
     #[\Override]
     public function getDataClass(): string
     {
-        return StoryData::class;
+        return Story::class;
     }
 
     #[\Override]

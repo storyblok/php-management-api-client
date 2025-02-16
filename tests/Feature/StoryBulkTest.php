@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
 use Storyblok\ManagementApi\ManagementApiClient;
-use Storyblok\ManagementApi\Data\StoryData;
+use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
@@ -182,12 +182,12 @@ test('createBulk handles rate limiting and creates multiple stories', function (
 
     // Create test stories
     $stories = [
-        StoryData::make([
+        Story::make([
             'name' => 'Story 1',
             'slug' => 'story-1',
             'content' => ['component' => 'blog'],
         ]),
-        StoryData::make([
+        Story::make([
             'name' => 'Story 2',
             'slug' => 'story-2',
             'content' => ['component' => 'blog'],
@@ -195,7 +195,12 @@ test('createBulk handles rate limiting and creates multiple stories', function (
     ];
 
     // Execute bulk creation
+    //expect(function () use ($storyBulkApi, $stories): void {
     $createdStories = iterator_to_array($storyBulkApi->createStories($stories));
+    //})->toThrow(
+    //    \Exception::class,
+    //    'HTTP 404 returned for "https://example.com/v1/spaces/222/stories/111notexists'
+    //);
 
     // Verify number of created stories
     expect($createdStories)->toHaveCount(2);
@@ -258,7 +263,7 @@ test('createBulk throws exception when max retries is reached', function (): voi
 
     // Create test story
     $stories = [
-        StoryData::make([
+        Story::make([
             'name' => 'Story 1',
             'slug' => 'story-1',
             'content' => ['component' => 'blog'],

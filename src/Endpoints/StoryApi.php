@@ -6,15 +6,18 @@ namespace Storyblok\ManagementApi\Endpoints;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Storyblok\ManagementApi\Data\StoriesData;
-use Storyblok\ManagementApi\Data\StoryData;
+use Storyblok\ManagementApi\Data\Stories;
+use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\Exceptions\InvalidStoryDataException;
 use Storyblok\ManagementApi\Exceptions\StoryblokApiException;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
-use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\SpaceResponse;
+use Storyblok\ManagementApi\Response\StoriesResponse;
+use Storyblok\ManagementApi\Response\StoryResponse;
+use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
@@ -43,7 +46,7 @@ class StoryApi extends EndpointSpace
         ?StoriesParams $params = null,
         ?QueryFilters $queryFilters = null,
         ?PaginationParams $page = null,
-    ): StoryblokResponseInterface {
+    ): StoriesResponse {
         if (!$params instanceof StoriesParams) {
             $params = new StoriesParams();
         }
@@ -66,12 +69,12 @@ class StoryApi extends EndpointSpace
             ),
         ];
 
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
             $this->buildStoriesEndpoint(),
-            options: $options,
-            dataClass: StoriesData::class,
+            options: $options
         );
+        return new StoriesResponse($httpResponse);
     }
 
     /**
@@ -79,15 +82,16 @@ class StoryApi extends EndpointSpace
      *
      * @throws StoryblokApiException
      */
-    public function get(string $storyId): StoryblokResponseInterface
+    public function get(string $storyId): StoryResponse
     {
         $this->validateStoryId($storyId);
 
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
             $this->buildStoryEndpoint($storyId),
-            dataClass: StoryData::class,
         );
+        return new StoryResponse($httpResponse);
+
     }
 
     /**
@@ -97,7 +101,7 @@ class StoryApi extends EndpointSpace
      * @throws StoryblokApiException
      * @throws TransportExceptionInterface
      */
-    public function create(StoryData $storyData): StoryblokResponseInterface
+    public function create(Story $storyData): StoryResponse
     {
         $this->validateStoryData($storyData);
 
@@ -108,23 +112,20 @@ class StoryApi extends EndpointSpace
         }
 
         try {
-            $response = $this->makeRequest(
+            $httpResponse = $this->makeHttpRequest(
                 "POST",
                 $this->buildStoriesEndpoint(),
                 [
                     "body" => json_encode(["story" => $storyData->toArray()]),
-                ],
-                dataClass: StoryData::class,
+                ]
             );
 
-            $this->logger->info('Story created successfully', [
-                'story_name' => $storyData->name(),
-            ]);
-            return $response;
+            return new StoryResponse($httpResponse);
 
         } catch (\Exception $exception) {
             if ($exception instanceof StoryblokApiException) {
-                $this->logger->error('Failed to create story', [
+
+                $this->logger->info('xxxFailed to create story', [
                     'status_code' => $exception->getCode(),
                     'error_message' => $exception->getMessage(),
                     'story_name' => $storyData->name(),
@@ -132,22 +133,20 @@ class StoryApi extends EndpointSpace
                 throw $exception;
             }
 
-            $this->logger->error('Unexpected error while creating story', [
+            if ($exception instanceof ClientException) {
+                $this->logger->info($exception->getResponse()->getContent(false), [
+                    'status_code' => $exception->getCode(),
+                    'error_message' => $exception->getMessage(),
+                    'story_name' => $storyData->name(),
+                ]);
+                throw $exception;
+            }
+
+            $this->logger->error($exception->getMessage(), [
                 'error' => $exception->getMessage(),
                 'story_name' => $storyData->name(),
             ]);
             throw $exception;
-            /*
-            new StoryblokApiException(
-                sprintf(
-                    'Failed to create story: %s (Status code: %d) Error: %s',
-                    $storyData->name(),
-                    $exception->getCode(),
-                    $exception->getMessage(),
-                ),
-                $exception->getCode(),
-            );*/
-
         }
     }
 
@@ -156,26 +155,26 @@ class StoryApi extends EndpointSpace
      *
      * @throws InvalidStoryDataException
      */
-    public function update(string $storyId, StoryData $storyData): StoryblokResponseInterface
+    public function update(string $storyId, Story $storyData): StoryResponse
     {
         $this->validateStoryId($storyId);
         //$this->validateStoryData($storyData);
 
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "PUT",
             $this->buildStoryEndpoint($storyId),
             [
                 "body" => json_encode(["story" => $storyData->toArray()]),
-            ],
-            dataClass: StoryData::class,
+            ]
         );
+        return new StoryResponse($httpResponse);
     }
 
     public function publish(
         string $storyId,
         int|string|null $release_id = null,
         string|null $language = null,
-    ): StoryblokResponseInterface {
+    ): StoryResponse {
         $this->validateStoryId($storyId);
         //$this->validateStoryData($storyData);
 
@@ -188,22 +187,22 @@ class StoryApi extends EndpointSpace
             $queryParams["lang"] = $language;
         }
 
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
             sprintf('%s/%s/publish', $this->buildStoriesEndpoint(), $storyId),
             [
 
                 "query" => $queryParams,
 
-            ],
-            dataClass: StoryData::class,
+            ]
         );
+        return new StoryResponse($httpResponse);
     }
 
     public function unpublish(
         string $storyId,
         string|null $language = null,
-    ): StoryblokResponseInterface {
+    ): StoryResponse {
         $this->validateStoryId($storyId);
         //$this->validateStoryData($storyData);
 
@@ -213,16 +212,16 @@ class StoryApi extends EndpointSpace
             $queryParams["lang"] = $language;
         }
 
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
             sprintf('%s/%s/unpublish', $this->buildStoriesEndpoint(), $storyId),
             [
 
                 "query" => $queryParams,
 
-            ],
-            dataClass: StoryData::class,
+            ]
         );
+        return new StoryResponse($httpResponse);
     }
 
     /**
@@ -258,7 +257,7 @@ class StoryApi extends EndpointSpace
      *
      * @throws InvalidStoryDataException
      */
-    private function validateStoryData(StoryData $storyData): void
+    private function validateStoryData(Story $storyData): void
     {
         if (!$storyData->isValid()) {
             throw new InvalidStoryDataException('Invalid story data provided');

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Storyblok\ManagementApi\Endpoints\StoryApi;
 use Storyblok\ManagementApi\ManagementApiClient;
-use Storyblok\ManagementApi\Data\StoryData;
+use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
@@ -23,7 +23,7 @@ test('Testing One Story, StoryData', function (): void {
     $storyApi = $mapiClient->storyApi("222");
 
     $storyblokResponse = $storyApi->get("111");
-    /** @var \Storyblok\ManagementApi\Data\StoryData $storyblokData */
+    /** @var \Storyblok\ManagementApi\Data\Story $storyblokData */
     $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("My third post")
@@ -78,7 +78,7 @@ test('Create story encodes data correctly as JSON', function (): void {
     $storyApi = $mapiClient->storyApi('222');
 
     // Create story data
-    $storyData = StoryData::make($expectedStoryData);
+    $storyData = Story::make($expectedStoryData);
 
     // Make the request
     $response = $storyApi->create($storyData);
@@ -87,7 +87,7 @@ test('Create story encodes data correctly as JSON', function (): void {
     expect($response->isOk())->toBeTrue();
     expect($response->getResponseStatusCode())->toBe(201);
 
-    /** @var StoryData $responseData */
+    /** @var Story $responseData */
     $responseData = $response->data();
     expect($responseData->name())->toBe('Test Story');
     expect($responseData->slug())->toBe('test-story');
@@ -198,7 +198,7 @@ test('Testing edit Story, StoryData', function (): void {
     $storyApi = new StoryApi($mapiClient, "222");
 
     $storyblokResponse = $storyApi->get("111");
-    /** @var \Storyblok\ManagementApi\Data\StoryData $storyblokData */
+
     $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("My third post")
@@ -224,7 +224,7 @@ test('Testing publishing Story, StoryData', function (): void {
     $storyApi = new StoryApi($mapiClient, "222");
 
     $storyblokResponse = $storyApi->publish("111", "1112", "en");
-    /** @var \Storyblok\ManagementApi\Data\StoryData $storyblokData */
+
     $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("My third post")
@@ -246,7 +246,7 @@ test('Testing unpublishing Story, StoryData', function (): void {
     $storyApi = new StoryApi($mapiClient, "222");
 
     $storyblokResponse = $storyApi->unpublish("111", "en");
-    /** @var \Storyblok\ManagementApi\Data\StoryData $storyblokData */
+
     $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("name"))
         ->toBe("My third post")

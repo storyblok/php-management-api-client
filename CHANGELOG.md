@@ -1,9 +1,10 @@
 # Changelog
 
 ## 0.1.0 - WIP
-- Refactor exception handling: Bubble up the exception
-- Refactor Space, Spaces and SpaceResponse
+- Refactoring exception handling: Bubble up the exception
+- Refactoring Space, Spaces and SpaceResponse
 - Adding some helper method to Space like region() and planLevel()
+- Refactoring Story / Stories , StoryResponse, StoriesResponse
 
 ## 0.0.7 - 2025-02-09
 
