@@ -12,7 +12,7 @@ trait IterableDataTrait
     {
         $current = current($this->data);
         if (is_array($current)) {
-            return new ($this->getDataClass())($current);
+            return ($this->getDataClass())::make($current);
         }
 
         return $current;

@@ -43,10 +43,16 @@ use Storyblok\ManagementApi\ManagementApiClient;
 /** @var ManagementApiClient $client */
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 ```
+
+### Setting the space region
+
 The second optional parameter is for setting the region.
+
+> If you are interested to know more about Storyblok regions, check this FAQ: <https://www.storyblok.com/faq/where-are-your-servers-or-aws-sites-located>
+
 We provide an Enum class to set the region. In this case, you can use the `Region` enum: `Region::US` or `Region::AP` or `Region::CA` or `Region::CN`.
 
-For example, for using the US region, you can use:
+For example, for using the **US** region, you can use:
 ```php
 
 use \Storyblok\ManagementApi\Data\Enum\Region;
@@ -90,7 +96,7 @@ The Storyblok **Management API Client** provides two main approaches for interac
 
 The `ManagementApi` class offers a flexible, generic interface for managing content. It includes methods to get, create, update, and delete content. With this approach, you can define the endpoint path and pass query string parameters as a generic array. The response is returned as a `StoryblokData` object, allowing you to access the JSON payload, status codes, and other details directly.
 
-Alternatively, you can leverage dedicated classes like `SpaceApi`, which are tailored to specific resources. For instance, the `SpaceApi` class provides methods for managing spaces and returns specialized data objects, such as `SpaceData` (for a single space) or `SpacesData` (for a collection of spaces). These classes simplify interactions with specific endpoints by offering resource-specific methods.
+Alternatively, you can leverage dedicated classes like `SpaceApi`, which are tailored to specific resources. For instance, the `SpaceApi` class provides methods for managing spaces and returns specialized data objects, such as `Space` (for a single space) or `Spaces` (for a collection of spaces). These classes simplify interactions with specific endpoints by offering resource-specific methods.
 
 If a dedicated API class like `SpaceApi` or `StoryApi` does not exist for your desired endpoint, you can always fall back to the more versatile `ManagementApi` class.
 
@@ -112,11 +118,14 @@ Let's start analyzing the specialized classes, like for example the `SpaceApi`.
 Fetch a list of all spaces associated with your account in the current region (the region is initialized in the `ManagementApiClient`):
 
 ```php
+
+$clientEU = new ManagementApiClient($accessToken);
+$spaceApi = new SpaceApi($clientEU);
 // Retrieve all spaces
 $response = $spaceApi->all();
-echo "STATUS CODE : " . $response->getResponseStatusCode() . PHP_EOL;
-echo "LAST URL    : " . $response->getLastCalledUrl() . PHP_EOL;
-$data = $response->data();
+// here you can access to `$response` method if you need
+$spaces = $response->data();
+// Here you can access to the list of spaces via `$spaces`
 ```
 
 ### Loop through the spaces
@@ -124,11 +133,23 @@ $data = $response->data();
 Iterate through the list of spaces to access their details:
 
 ```php
-foreach ($data as $key => $space) {
-    echo $space->get("region") . " " . $space->get("id") . " " . $space->get("name") . PHP_EOL;
-}
-echo "SPACE NAME  : " . $data->get("0.name") . PHP_EOL;
-echo "SPACES      : " . $data->count() . PHP_EOL;
+$clientEU = new ManagementApiClient($accessToken);
+
+$spaceApi = new SpaceApi($clientEU);
+$spaces = $spaceApi->all()->data();
+
+$spaces->forEach( function (Space $space) {
+    printf("SPACE : %s (%s) - %s - created at: %s as %s" ,
+        $space->id(),
+        $space->region(),
+        $space->name(),
+        $space->createdAt(),
+        $space->planDescription()
+    );
+    echo PHP_EOL;
+
+});
+
 ```
 
 ### Get one specific Space
@@ -136,11 +157,17 @@ echo "SPACES      : " . $data->count() . PHP_EOL;
 Retrieve detailed information about a specific space using its ID:
 
 ```php
-// Get details of a specific space
-$response = $spaceApi->get($spaceID);
-$space = $response->data();
-echo $space->get("name") . PHP_EOL;
-echo $space->get("plan") . " " . $space->get("plan_level") . PHP_EOL;
+$spaceID = "12345"
+$spaceId = "321388";
+$spaceApi = new SpaceApi($clientEU);
+$space = $spaceApi->get($spaceId)->data();
+
+printf(" The name for the Space id : %s is : %s . Plan: %s - %s" ,
+    $spaceId,
+    $space->name(),
+    $space->planLevel(),
+    $space->planDescription()
+);
 ```
 
 ### Triggering the backup

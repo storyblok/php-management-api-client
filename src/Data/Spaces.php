@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Data;
 
-class SpacesData extends StoryblokData
+class Spaces extends StoryblokData
 {
     #[\Override]
     public function getDataClass(): string
     {
-        return SpaceData::class;
+        return Space::class;
     }
 
     #[\Override]

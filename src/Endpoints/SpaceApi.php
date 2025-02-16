@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\ManagementApi\Data\SpaceData;
-use Storyblok\ManagementApi\Data\SpacesData;
+use Storyblok\ManagementApi\Data\Space;
+use Storyblok\ManagementApi\Data\Spaces;
 use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\Response\SpaceResponse;
 use Storyblok\ManagementApi\Response\SpacesResponse;
@@ -21,7 +21,7 @@ class SpaceApi extends EndpointBase
             "GET",
             '/v1/spaces',
         );
-        return new SpacesResponse($httpResponse, SpacesData::class);
+        return new SpacesResponse($httpResponse, Spaces::class);
     }
 
     /**
@@ -37,7 +37,7 @@ class SpaceApi extends EndpointBase
         return new SpaceResponse($httpResponse);
     }
 
-    public function create(StoryblokData $storyblokData): SpaceResponse
+    public function create(Space $spaceData): SpaceResponse
     {
 
         $httpResponse = $this->makeHttpRequest(
@@ -45,7 +45,7 @@ class SpaceApi extends EndpointBase
             "/v1/spaces",
             [
                 "body" => [
-                    "space" => $storyblokData->toArray(),
+                    "space" => $spaceData->toArray(),
                 ],
             ],
         );

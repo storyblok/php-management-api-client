@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0 - WIP
+- Refactor exception handling: Bubble up the exception
+- Refactor Space, Spaces and SpaceResponse
+- Adding some helper method to Space like region() and planLevel()
+
 ## 0.0.7 - 2025-02-09
 
 - AssetApi full coverage tests

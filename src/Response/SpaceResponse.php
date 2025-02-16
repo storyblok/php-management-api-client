@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Response;
 
-use Storyblok\ManagementApi\Data\SpaceData;
+use Storyblok\ManagementApi\Data\Space;
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -23,12 +23,12 @@ class SpaceResponse extends StoryblokResponse implements StoryblokResponseInterf
      * @throws ClientExceptionInterface
      */
     #[\Override]
-    public function data(): SpaceData
+    public function data(): Space
     {
         $key = "space";
         $array = $this->toArray();
         if (array_key_exists($key, $array)) {
-            return new SpaceData($array[$key]);
+            return Space::make($array[$key]);
         }
 
         throw new StoryblokFormatException(sprintf("Expected '%s' in the response.", $key));
