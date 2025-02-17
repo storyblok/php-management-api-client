@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Storyblok\ManagementApi\Data\AssetsData;
+use Storyblok\ManagementApi\Data\Assets;
 use Storyblok\ManagementApi\Endpoints\AssetApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\QueryParameters\AssetsParams;
@@ -57,7 +57,7 @@ test('Testing list of assets, AssetsData', function (): void {
 
     $storyblokResponse = $assetApi->page();
 
-    /** @var AssetsData $storyblokData */
+    /** @var Assets $storyblokData */
     $storyblokData = $storyblokResponse->data();
     foreach ($storyblokData as $asset) {
         expect($asset->id())->toBeGreaterThan(10);
@@ -81,8 +81,8 @@ test('Testing list of assets, AssetsData', function (): void {
     //expect($storyblokResponse->isOk())->toBeFalse() ;
     //expect($storyblokResponse->getErrorMessage())->toStartWith("404 - Not Found.") ;
 
-    $assetsData = AssetsData::make([]);
-    expect($assetsData)->toBeInstanceOf(AssetsData::class);
+    $assetsData = Assets::make([]);
+    expect($assetsData)->toBeInstanceOf(Assets::class);
 });
 
 test('Testing list of assets, Params', function (): void {
@@ -166,10 +166,10 @@ test('upload one asset', function (): void {
     $responses = [
         \mockResponse('upload-asset-signed-response', 200),
 
-        \mockResponse('one-asset', 200),
+        \mockResponse('one-uploaded-asset', 200),
     ];
     $responsesAsset = [
-        \mockResponse('one-asset', 200),
+        \mockResponse('one-uploaded-asset', 200),
     ];
 
     $httpClient = new MockHttpClient($responses);
@@ -188,7 +188,7 @@ test('upload one asset - failing', function (): void {
         \mockResponse('upload-asset-signed-response', 401),
     ];
     $responsesAsset = [
-        \mockResponse('one-asset', 200),
+        \mockResponse('one-uploaded-asset', 200),
     ];
 
     $httpClient = new MockHttpClient($responses);
@@ -207,7 +207,7 @@ test('upload one asset - failing on second step', function (): void {
         \mockResponse('upload-asset-signed-response', 200),
     ];
     $responsesAsset = [
-        \mockResponse('one-asset', 400),
+        \mockResponse('one-uploaded-asset', 400),
     ];
 
     $httpClient = new MockHttpClient($responses);

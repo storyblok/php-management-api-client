@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\ManagementApi\Data\AssetData;
-use Storyblok\ManagementApi\Data\AssetsData;
+use Storyblok\ManagementApi\Data\Asset;
+use Storyblok\ManagementApi\Data\Assets;
 use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\QueryParameters\AssetsParams;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
+use Storyblok\ManagementApi\Response\AssetResponse;
+use Storyblok\ManagementApi\Response\AssetsResponse;
+use Storyblok\ManagementApi\Response\AssetUploadResponse;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -20,7 +23,7 @@ class AssetApi extends EndpointSpace
      * @param PaginationParams $page
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function page(?AssetsParams $params = null, ?PaginationParams $page = null): StoryblokResponseInterface
+    public function page(?AssetsParams $params = null, ?PaginationParams $page = null): AssetsResponse
     {
         if (!$params instanceof \Storyblok\ManagementApi\QueryParameters\AssetsParams) {
             $params = new AssetsParams();
@@ -33,12 +36,13 @@ class AssetApi extends EndpointSpace
         $options = [
             'query' => array_merge($params->toArray(), $page->toArray()),
         ];
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
             '/v1/spaces/' . $this->spaceId . '/assets',
-            options: $options,
-            dataClass: AssetsData::class,
+            options: $options
         );
+
+        return new AssetsResponse($httpResponse);
     }
 
     /**
@@ -46,13 +50,13 @@ class AssetApi extends EndpointSpace
      * @link https://www.storyblok.com/docs/api/management/core-resources/assets/retrieve-one-asset
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
-    public function get(string|int $assetId): StoryblokResponseInterface
+    public function get(string|int $assetId): AssetResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
-            '/v1/spaces/' . $this->spaceId . '/assets/' . $assetId,
-            dataClass: AssetData::class,
+            '/v1/spaces/' . $this->spaceId . '/assets/' . $assetId
         );
+        return new AssetResponse($httpResponse);
     }
 
     /**
@@ -78,7 +82,7 @@ class AssetApi extends EndpointSpace
         return $payload;
     }
 
-    public function upload(string $filename, string|int|null $parent_id = null): StoryblokResponseInterface
+    public function upload(string $filename, string|int|null $parent_id = null): AssetUploadResponse
     {
         // =========== CREATE A SIGNED REQUEST
         $payload = $this->buildPayload($filename, $parent_id);
@@ -132,26 +136,26 @@ class AssetApi extends EndpointSpace
             throw new \Exception("Upload Asset, Upload call failed (Step 2) , " . $responseUpload->getStatusCode());
         }
 
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
             '/v1/spaces/' .
                 $this->spaceId .
                 '/assets/' .
                 $signedResponseData->getString('id') .
-                '/finish_upload',
-            dataClass: AssetData::class,
+                '/finish_upload'
         );
+        return new AssetUploadResponse($httpResponse);
     }
 
     /**
      * @param $assetId
      */
-    public function delete(string $assetId): StoryblokResponseInterface
+    public function delete(string $assetId): AssetResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            '/v1/spaces/' . $this->spaceId . '/assets/' . $assetId,
-            dataClass: AssetData::class,
+            '/v1/spaces/' . $this->spaceId . '/assets/' . $assetId
         );
+        return new AssetResponse($httpResponse);
     }
 }

@@ -424,7 +424,6 @@ To get the assets list you can use the `assetApi` and the `AssetsData`.
 ```php
 $assetApi = new AssetApi($client, $spaceId);
 $response = $assetApi->page();
-/** @var AssetsData $assets */
 $assets = $response->data();
 
 foreach ($assets as $key => $asset) {
@@ -461,7 +460,6 @@ To get a specific asset, you can use the `AssetApi` and the `AssetData` classes.
 
 ```php
 $response = $assetApi->get($assetId);
-/** @var AssetData $assets */
 $asset = $response->data();
 echo $asset->id() . PHP_EOL;
 echo $asset->contentType() . PHP_EOL;
@@ -481,14 +479,11 @@ $response = $assetApi->upload("image.png");
 echo $response->getLastCalledUrl() . PHP_EOL;
 echo $response->asJson() . PHP_EOL;
 echo $response->getResponseStatusCode() . PHP_EOL;
-if ($response->isOk()) {
-    $assetCreated = $response->data();
-    echo "Asset created, ID: " . $assetCreated->id() . PHP_EOL;
-    echo "         filename: " . $assetCreated->filename() . PHP_EOL;
-    echo "     filename CDN: " . $assetCreated->filenameCDN() . PHP_EOL;
-} else {
-    echo $response->getErrorMessage();
-}
+
+$assetCreated = $response->data();
+echo "Asset created, ID: " . $assetCreated->id() . PHP_EOL;
+echo "         filename: " . $assetCreated->filename() . PHP_EOL;
+echo "     filename CDN: " . $assetCreated->filenameCDN() . PHP_EOL;
 ```
 
 ### Deleting an Asset
@@ -500,7 +495,7 @@ $assetApi = new AssetApi($client, $spaceId);
 echo "DELETING " . $assetId . PHP_EOL;
 $response = $assetApi->delete($assetId);
 $deletedAsset = $response->data();
-echo "DELETED ASSET, ID : " . $deletedAsset->get("id") . PHP_EOL;
+echo "DELETED ASSET, ID : " . $deletedAsset->id() . PHP_EOL;
 ```
 
 ## Handling tags

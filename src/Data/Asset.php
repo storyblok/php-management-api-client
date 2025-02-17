@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Data;
 
-class AssetData extends StoryblokData
+class Asset extends StoryblokData
 {
     /*
      * The Asset data response payload doesn't have the typical

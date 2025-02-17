@@ -104,7 +104,7 @@ class StoryBulkApi extends EndpointSpace
             while (true) {
                 try {
                     $response = $this->api->create($storyData);
-
+                    $this->logger->warning('Story created ' . $response->getResponseStatusCode());
                     yield $response->data();
                     $retryCount = 0;
                     break;
