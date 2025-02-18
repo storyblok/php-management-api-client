@@ -557,9 +557,9 @@ if ($response->isOk()) {
 Now we want to upload a new image, and then create a new simple story that includes the new image.
 
 ```php
-use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\ManagementApiClient;
+use Storyblok\ManagementApi\Data\StoryComponent;
 
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
@@ -569,23 +569,20 @@ $assetApi = new AssetApi($client, $spaceId);
 
 echo "UPLOADING ASSET..." . PHP_EOL;
 $response = $assetApi->upload("image.png");
-/** @var AssetData $assetCreated */
 $assetCreated = $response->data();
 echo "Asset created, ID: " . $assetCreated->id() . PHP_EOL;
 
 echo "PREPARING STORY DATA..." . PHP_EOL;
-$content = new StoryblokData();
-$content->set("component", "article-page");
+$content = new StoryComponent("article-page");
 $content->set("title", "New Article");
 $content->set("body", "This is the content");
-$content->set("image.id", $assetCreated->id());
-$content->set("image.fieldtype", "asset");
-$content->set("image.filename",$assetCreated->filename());
+$content->setAsset("image", $assetCreated);
 
-$story = new Story();
-$story->setName("An Article");
-$story->setSlug("an-article-" . random_int(10000, 99999));
-$story->setContent($content->toArray());
+$story = new Story(
+    "An Article",
+    "an-article-" . random_int(10000, 99999),
+    $content
+);
 
 echo "CREATING STORY..." . PHP_EOL;
 $response = $storyApi->create($story);
