@@ -16,13 +16,13 @@ class Story extends BaseData
     public function __construct(
         string $name,
         string $slug,
-        string $contentType
+        StoryComponent $content,
     ) {
         $this->data = [];
         $this->data['name'] = $name;
         $this->data['slug'] = $slug;
-        $this->data['content'] = [];
-        $this->data['content']['component'] = $contentType;
+        $this->data['content'] = $content->toArray();
+
     }
 
     /**
@@ -36,10 +36,12 @@ class Story extends BaseData
             // is not valid
         }
 
+        $content = StoryComponent::make($dataObject->getArray("content"));
+
         $story = new Story(
             $dataObject->getString("name"),
             $dataObject->getString("slug"),
-            $dataObject->getString("content.component")
+            $content
         );
         $story->setData($dataObject->toArray());
         // validate
@@ -71,12 +73,15 @@ class Story extends BaseData
         $this->set('created_at', $createdAt);
     }
 
-    /**
-     * @param array<mixed> $content
-     */
-    public function setContent(array $content): void
+    public function setContent(StoryComponent $content): void
     {
-        $this->set('content', $content);
+        $this->set('content', $content->toArray());
+    }
+
+    public function content(): StoryComponent
+    {
+        $contentArray = $this->getArray('content');
+        return StoryComponent::make($contentArray);
     }
 
     public function name(): string

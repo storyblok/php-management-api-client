@@ -248,6 +248,11 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
         return json_encode($this->data, JSON_PRETTY_PRINT);
     }
 
+    public function dump(): void
+    {
+        echo $this->toJson();
+    }
+
     /**
      * Retrieves a value from the data by key. Supports dot notation for nested keys.
      *

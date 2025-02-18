@@ -25,7 +25,7 @@ The *Storyblok Management API PHP Client* library simplifies the integration wit
 Install the package via Composer:
 
 ```shell
-composer require storyblok/php-management-api-client
+composer require storyblok/php-management-api-client:dev-main
 ```
 
 Below is an example showcasing how to use the library to interact with the Management API.
@@ -325,10 +325,15 @@ echo $story->name() . PHP_EOL;
 To create a story, you can call the `create()` method provided by `StoryApi` and use the `StoryData` class. The `StoryData` class is specific for storing and handling story information. It also provides some nice methods for accessing some relevant Story fields.
 
 ```php
+$content = new StoryComponent("article-page");
+$content->set("title", "My New Article");
+$content->set("body", "This is the content");
+// $content->setAsset("image", $assetCreated);
+
 $story = new Story(
     name: "A Story",
     slug: "a-story",
-    contentType: "article-page"
+    content: $content
 );
 try{
     $storyCreated = $storyApi->create($story)->data();

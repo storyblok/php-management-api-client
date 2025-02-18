@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Storyblok\ManagementApi\Data\Stories;
 use Storyblok\ManagementApi\Data\Story;
+use Storyblok\ManagementApi\Data\StoryComponent;
 use Storyblok\ManagementApi\Exceptions\InvalidStoryDataException;
 use Storyblok\ManagementApi\Exceptions\StoryblokApiException;
 use Storyblok\ManagementApi\ManagementApiClient;
@@ -106,9 +107,7 @@ class StoryApi extends EndpointSpace
         $this->validateStoryData($storyData);
 
         if (!$storyData->hasKey("content")) {
-            $storyData->setContent([
-                "component" => $storyData->defaultContentType(),
-            ]);
+            $storyData->setContent(new StoryComponent($storyData->defaultContentType()));
         }
 
         try {

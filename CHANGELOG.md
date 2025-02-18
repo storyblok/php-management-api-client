@@ -5,6 +5,8 @@
 - Refactoring Space, Spaces and SpaceResponse
 - Adding some helper method to Space like region() and planLevel()
 - Refactoring Story / Stories , StoryResponse, StoriesResponse
+- Adding StoryComponent class
+- Refactoring Asset, Assets and AssetResponse
 
 ## 0.0.7 - 2025-02-09
 

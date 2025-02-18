@@ -4,18 +4,50 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Data;
 
-class Asset extends StoryblokData
+use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
+
+class Asset extends BaseData
 {
-    /*
+    public function __construct(
+        string $filename,
+    ) {
+        $this->data = [];
+        $this->data['filename'] = $filename;
+        $this->data['fieldtype'] = "asset";
+    }
+
+    /**
      * The Asset data response payload doesn't have the typical
      * "asset" attribute (like the story, the space etc)
-     * This is the reason why the makeFromResponse is not implemented here
+     * @param mixed[] $data
+     * @throws StoryblokFormatException
      */
-
-    #[\Override]
     public static function make(array $data = []): self
     {
-        return new self($data);
+        $dataObject = new StoryblokData($data);
+        if (! $dataObject->hasKey('fieldtype')) {
+            $dataObject->set("fieldtype", "asset");
+        }
+
+        if (!($dataObject->hasKey('filename') && $dataObject->hasKey('fieldtype'))) {
+            // is not valid
+        }
+
+        $asset = new Asset(
+            $dataObject->getString("filename")
+        );
+        $asset->setData($dataObject->toArray());
+        // validate
+        if (! $asset->isValid()) {
+            throw new StoryblokFormatException("Asset is not valid");
+        }
+
+        return $asset;
+    }
+
+    public function isValid(): bool
+    {
+        return $this->hasKey('filename');
     }
 
     public function id(): string
