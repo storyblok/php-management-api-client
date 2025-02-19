@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\ManagementApi\Data\TagData;
-use Storyblok\ManagementApi\Data\TagsData;
+use Storyblok\ManagementApi\Data\Tag;
+use Storyblok\ManagementApi\Data\Tags;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\TagResponse;
+use Storyblok\ManagementApi\Response\TagsResponse;
 
 class TagApi extends EndpointSpace
 {
-    public function page(int $page = 1, int $perPage = 25): StoryblokResponseInterface
+    public function page(int $page = 1, int $perPage = 25): TagsResponse
     {
         $options = [
             'query' => [
@@ -18,39 +20,44 @@ class TagApi extends EndpointSpace
                 'per_page' => $perPage,
             ],
         ];
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
             '/v1/spaces/' . $this->spaceId . '/tags',
-            options: $options,
-            dataClass: TagsData::class,
+            options: $options
         );
+        return new TagsResponse($httpResponse);
     }
 
-    public function get(string $name): StoryblokResponseInterface
+    /**
+     * @param string $name the tag name in string format
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function get(string $name): TagResponse
     {
 
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
-            '/v1/spaces/' . $this->spaceId . '/tags/' . $name,
-            dataClass: TagData::class,
+            '/v1/spaces/' . $this->spaceId . '/tags/' . $name
         );
+
+        return new TagResponse($httpResponse);
     }
 
     /**
      * @param $name
      */
-    public function delete(string $name): StoryblokResponseInterface
+    public function delete(string $name): TagResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            '/v1/spaces/' . $this->spaceId . '/tags/' . $name,
-            dataClass: TagData::class,
+            '/v1/spaces/' . $this->spaceId . '/tags/' . $name
         );
+        return new TagResponse($httpResponse);
     }
 
-    public function create(string $name): StoryblokResponseInterface
+    public function create(string $name): TagResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "POST",
             "/v1/spaces/" . $this->spaceId . '/tags',
             [
@@ -59,22 +66,22 @@ class TagApi extends EndpointSpace
                         "name" => $name,
                     ],
                 ],
-            ],
-            dataClass: TagData::class,
+            ]
         );
+        return new TagResponse($httpResponse);
     }
 
-    public function update(string $name, string $newName): StoryblokResponseInterface
+    public function update(string $name, string $newName): TagResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "POST",
             "/v1/spaces/" . $this->spaceId . '/tags/' . $name,
             [
                 "body" => [
                     "name" => $newName,
                 ],
-            ],
-            dataClass: TagData::class,
+            ]
         );
+        return new TagResponse($httpResponse);
     }
 }

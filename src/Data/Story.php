@@ -131,4 +131,26 @@ class Story extends BaseData
 
         return $this->hasKey('slug') && !in_array($this->getString('slug'), ['', '0'], true);
     }
+
+    /**
+     * Set tags for Story, from a `Tags` collection
+     * @return $this
+     */
+    public function setTags(Tags $tags): self
+    {
+
+        return $this->setTagsFromArray($tags->getTagsArray());
+
+    }
+
+    /**
+     * Set tags for Story, from a string of arrays like ["tag1", "tag2"]
+     * @param string[] $tagsArray
+     * @return $this
+     */
+    public function setTagsFromArray(array $tagsArray): self
+    {
+        $this->set("tag_list", $tagsArray);
+        return $this;
+    }
 }

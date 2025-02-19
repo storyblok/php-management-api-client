@@ -159,8 +159,7 @@ $spaces->forEach( function (Space $space) {
 Retrieve detailed information about a specific space using its ID:
 
 ```php
-$spaceID = "12345"
-$spaceId = "321388";
+$spaceId = "12345";
 $spaceApi = new SpaceApi($clientEU);
 $space = $spaceApi->get($spaceId)->data();
 
@@ -313,18 +312,15 @@ foreach ($stories as $story) {
 
 ```php
 $storyId= "1234";
-$response = $storyApi->get($storyId);
-
-echo "STATUS CODE : " . $response->getResponseStatusCode() . PHP_EOL;
-echo "LAST URL    : " . $response->getLastCalledUrl() . PHP_EOL;
-
-$story = $response->data();
+$story = $storyApi->get($storyId)->data();
 echo $story->name() . PHP_EOL;
+
 ```
 
 ### Creating a Story
 
-To create a story, you can call the `create()` method provided by `StoryApi` and use the `StoryData` class. The `StoryData` class is specific for storing and handling story information. It also provides some nice methods for accessing some relevant Story fields.
+To create a story, you can call the `create()` method provided by `StoryApi` and use the `Story` class. The `Story` class is specific for storing and handling story information. It also provides some nice methods for accessing some relevant Story fields.
+And because a story stores also the content, you can use the StoryComponent class to handle the fields in the content.
 
 ```php
 $content = new StoryComponent("article-page");
@@ -372,6 +368,13 @@ myslug-003;My Story 3 BULK;page
 Next, you can implement a script to load and parse the CSV file. In this case, we use `SplFileObject` and then call the `createStories` method to process the data:
 
 ```php
+
+use Storyblok\ManagementApi\Data\Story;
+use Storyblok\ManagementApi\Data\StoryComponent;
+use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
+use Storyblok\ManagementApi\ManagementApiClient;
+
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
 $storyBulkApi = new StoryBulkApi($client, $spaceId);
 $file = new SplFileObject("stories.csv");
 $file->setFlags(SplFileObject::READ_CSV);
@@ -379,7 +382,11 @@ $file->setCsvControl(separator: ";");
 $stories = [];
 foreach ($file as $row) {
     list($slug, $name, $contentType) = $row;
-    $story = new Story($name, $slug, $contentType);
+    $story = new Story(
+        $name,
+        $slug,
+        new StoryComponent($contentType)
+    );
     $stories[] = $story;
 }
 $createdStories = iterator_to_array($storyBulkApi->createStories($stories));
@@ -438,8 +445,7 @@ To get the assets list you can use the `assetApi` and the `AssetsData`.
 
 ```php
 $assetApi = new AssetApi($client, $spaceId);
-$response = $assetApi->page();
-$assets = $response->data();
+$assets = $assetApi->page()->data();
 
 foreach ($assets as $key => $asset) {
     echo $asset->id() . PHP_EOL;
@@ -463,7 +469,7 @@ $assets = $assetApi->page(
         search: "something"
     ),
     new PaginationParams(1,1000)
-);
+)->data();
 ```
 
 In the example above, we are filtering the deleted assets (`inFolder : -1`) and with the filename that contains the term `something`.
@@ -474,8 +480,7 @@ Additional info: using `PaginationParams` you can retrieve a specific page. The 
 To get a specific asset, you can use the `AssetApi` and the `AssetData` classes.
 
 ```php
-$response = $assetApi->get($assetId);
-$asset = $response->data();
+$asset = $assetApi->get($assetId)->data();
 echo $asset->id() . PHP_EOL;
 echo $asset->contentType() . PHP_EOL;
 echo $asset->contentLength() . PHP_EOL;
@@ -489,13 +494,8 @@ echo "---" . PHP_EOL;
 To upload an asset, you can use the `upload()` method:
 
 ```php
-$response = $assetApi->upload("image.png");
+$assetCreated = $assetApi->upload("image.png")->data();
 
-echo $response->getLastCalledUrl() . PHP_EOL;
-echo $response->asJson() . PHP_EOL;
-echo $response->getResponseStatusCode() . PHP_EOL;
-
-$assetCreated = $response->data();
 echo "Asset created, ID: " . $assetCreated->id() . PHP_EOL;
 echo "         filename: " . $assetCreated->filename() . PHP_EOL;
 echo "     filename CDN: " . $assetCreated->filenameCDN() . PHP_EOL;
@@ -508,8 +508,7 @@ To delete an asset, you can use the `delete()` method. The `delete()` method req
 ```php
 $assetApi = new AssetApi($client, $spaceId);
 echo "DELETING " . $assetId . PHP_EOL;
-$response = $assetApi->delete($assetId);
-$deletedAsset = $response->data();
+$deletedAsset = $assetApi->delete($assetId)-data();
 echo "DELETED ASSET, ID : " . $deletedAsset->id() . PHP_EOL;
 ```
 
@@ -593,22 +592,14 @@ $story = new Story(
     "an-article-" . random_int(10000, 99999),
     $content
 );
+$story->setTagsFromArray(["aaa", "bbb", "CCC"]);
 
 echo "CREATING STORY..." . PHP_EOL;
-$response = $storyApi->create($story);
+$storyCreated = $storyApi->create($story)->data();
+echo "Story created, ID: " . $storyCreated->id() . PHP_EOL;
+echo "             UUID: " . $storyCreated->uuid() . PHP_EOL;
+echo "             SLUG: " . $storyCreated->slug() . PHP_EOL;
 
-echo $response->getLastCalledUrl() . PHP_EOL;
-echo $response->asJson() . PHP_EOL;
-echo $response->getResponseStatusCode() . PHP_EOL;
-if ($response->isOk()) {
-  	/** @var Story $storyCreated */
-    $storyCreated = $response->data();
-    echo "Story created, ID: " . $storyCreated->id() . PHP_EOL;
-    echo "             UUID: " . $storyCreated->uuid() . PHP_EOL;
-    echo "             SLUG: " . $storyCreated->slug() . PHP_EOL;
-} else {
-    echo $response->getErrorMessage();
-}
 ```
 
 

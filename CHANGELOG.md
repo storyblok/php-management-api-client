@@ -7,6 +7,7 @@
 - Refactoring Story / Stories , StoryResponse, StoriesResponse
 - Adding StoryComponent class
 - Refactoring Asset, Assets and AssetResponse
+- Refactoring Tag, Tags and TagResponse
 
 ## 0.0.7 - 2025-02-09
 

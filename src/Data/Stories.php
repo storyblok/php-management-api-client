@@ -20,14 +20,6 @@ class Stories extends StoryblokData
         return new self($data);
     }
 
-    /**
-     * @param array<string, array<mixed>> $data
-     */
-    public static function makeFromResponse(array $data = []): self
-    {
-        return new self($data["stories"] ?? []);
-    }
-
     public function howManyStories(): int
     {
         return $this->count();
