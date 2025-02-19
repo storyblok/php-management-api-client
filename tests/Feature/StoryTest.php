@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Storyblok\ManagementApi\Data\StoryComponent;
 use Storyblok\ManagementApi\Endpoints\StoryApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\Data\Story;
@@ -40,6 +41,31 @@ test('Testing One Story, StoryData', function (): void {
 
     //expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
     //expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
+});
+test('Testing Creating story with error', function (): void {
+    $responses = [
+        \mockResponse("empty-story", 401),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $storyApi = $mapiClient->storyApi("222");
+
+    $storyblokResponse = $storyApi->create(
+        new Story(
+            "aa",
+            "aa",
+            new StoryComponent("aa")
+        )
+    );
+    expect($storyblokResponse->getResponseStatusCode())->toBe(401);
+    expect(function () use ($storyblokResponse): void {
+        $storyCreated = $storyblokResponse->data();
+    })->toThrow(
+        \Exception::class,
+        'HTTP 401 returned for "https://example.com/v1/spaces/222/stories'
+    );
+
 });
 
 test('Create story encodes data correctly as JSON', function (): void {

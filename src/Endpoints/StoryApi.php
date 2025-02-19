@@ -110,43 +110,16 @@ class StoryApi extends EndpointSpace
             $storyData->setContent(new StoryComponent($storyData->defaultContentType()));
         }
 
-        try {
-            $httpResponse = $this->makeHttpRequest(
-                "POST",
-                $this->buildStoriesEndpoint(),
-                [
-                    "body" => json_encode(["story" => $storyData->toArray()]),
-                ]
-            );
+        $httpResponse = $this->makeHttpRequest(
+            "POST",
+            $this->buildStoriesEndpoint(),
+            [
+                "body" => json_encode(["story" => $storyData->toArray()]),
+            ]
+        );
 
-            return new StoryResponse($httpResponse);
+        return new StoryResponse($httpResponse);
 
-        } catch (\Exception $exception) {
-            if ($exception instanceof StoryblokApiException) {
-
-                $this->logger->info('xxxFailed to create story', [
-                    'status_code' => $exception->getCode(),
-                    'error_message' => $exception->getMessage(),
-                    'story_name' => $storyData->name(),
-                ]);
-                throw $exception;
-            }
-
-            if ($exception instanceof ClientException) {
-                $this->logger->info($exception->getResponse()->getContent(false), [
-                    'status_code' => $exception->getCode(),
-                    'error_message' => $exception->getMessage(),
-                    'story_name' => $storyData->name(),
-                ]);
-                throw $exception;
-            }
-
-            $this->logger->error($exception->getMessage(), [
-                'error' => $exception->getMessage(),
-                'story_name' => $storyData->name(),
-            ]);
-            throw $exception;
-        }
     }
 
     /**

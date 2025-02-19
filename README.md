@@ -569,6 +569,8 @@ Now we want to upload a new image, and then create a new simple story that inclu
 use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\Data\StoryComponent;
+use Storyblok\ManagementApi\Endpoints\StoryApi;
+use Storyblok\ManagementApi\Endpoints\AssetApi;
 
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
@@ -577,16 +579,16 @@ $storyApi = new StoryApi($client, $spaceId);
 $assetApi = new AssetApi($client, $spaceId);
 
 echo "UPLOADING ASSET..." . PHP_EOL;
-$response = $assetApi->upload("image.png");
-$assetCreated = $response->data();
+$assetCreated = $assetApi->upload("image.png")->data();
 echo "Asset created, ID: " . $assetCreated->id() . PHP_EOL;
 
-echo "PREPARING STORY DATA..." . PHP_EOL;
+echo "PREPARING STORY CONTENT DATA..." . PHP_EOL;
 $content = new StoryComponent("article-page");
 $content->set("title", "New Article");
 $content->set("body", "This is the content");
 $content->setAsset("image", $assetCreated);
 
+echo "INITIALIZING STORY OBJECT..." . PHP_EOL;
 $story = new Story(
     "An Article",
     "an-article-" . random_int(10000, 99999),
