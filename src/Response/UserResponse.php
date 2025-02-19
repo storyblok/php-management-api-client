@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Response;
 
-use Storyblok\ManagementApi\Data\UserData;
+use Storyblok\ManagementApi\Data\User;
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -23,12 +23,12 @@ class UserResponse extends StoryblokResponse implements StoryblokResponseInterfa
      * @throws ClientExceptionInterface
      */
     #[\Override]
-    public function data(): UserData
+    public function data(): User
     {
         $key = "user";
         $array = $this->toArray();
         if (array_key_exists($key, $array)) {
-            return new UserData($array[$key]);
+            return new User($array[$key]);
         }
 
         throw new StoryblokFormatException(sprintf("Expected '%s' in the response.", $key));

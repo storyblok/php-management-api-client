@@ -91,7 +91,8 @@ $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 The Storyblok **Management API Client** provides two main approaches for interacting with the API:
 
-- Using specific API classes (like `StoryApi` or `SpaceApi` or `AssetApi` or `TagApi`)
+- Using specific API classes (like `StoryApi` or `SpaceApi` or `AssetApi` or `TagApi` or `UserApi`)
+- Using specific API classes for handling bulk data (like `StoryBulkApi`)
 - Using the `ManagementApi` class
 
 The `ManagementApi` class offers a flexible, generic interface for managing content. It includes methods to get, create, update, and delete content. With this approach, you can define the endpoint path and pass query string parameters as a generic array. The response is returned as a `StoryblokData` object, allowing you to access the JSON payload, status codes, and other details directly.
@@ -102,10 +103,11 @@ If a dedicated API class like `SpaceApi` or `StoryApi` does not exist for your d
 
 In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi` and `AssetApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
 
-- **`SpaceApi`** focuses on managing space-level operations, such as retrieving space information, performing backup etc.
-- **`StoryApi`** specializes in handling stories and their content, including creating, updating, retrieving, and deleting stories. This class also provides methods that deal with the structure and fields specific to stories.
-- **`AssetApi`** designed to manage assets like images, files, and other media. It provides methods to upload, retrieve, and manage assets, offering features specific to media management.
-- **`TagApi`** designed to manage tags.
+- `SpaceApi` focuses on managing space-level operations, such as retrieving space information, performing backup etc.
+- `StoryApi` specializes in handling stories and their content, including creating, updating, retrieving, and deleting stories. This class also provides methods that deal with the structure and fields specific to stories.
+- `AssetApi` designed to manage assets like images, files, and other media. It provides methods to upload, retrieve, and manage assets, offering features specific to media management.
+- `TagApi` designed to manage tags.
+- `UserApi` designed to handle the current user. "Current" means the user related to the access token used for instancing the `ManagementApiClient` object.
 
 These specialized classes extend the functionality of the `ManagementApi` class, offering more precise control and optimized methods for interacting with specific resource types in your Storyblok space.
 
@@ -387,26 +389,34 @@ $createdStories = iterator_to_array($storyBulkApi->createStories($stories));
 
 ### Getting the current user
 
-To get the current user, owner of the Personal access token used you can use the userApi and the UserData.
+To get the current user, owner of the Personal access token used you can use the `UserApi` class for calling endpoints and the `User` for accessing to returned data object properties.
+For example, here we want to retrieve the current user (via the `me()` method) and obtaining the `User` object via `data()`.
 
 ```php
+use Storyblok\ManagementApi\Endpoints\UserApi;
+use Storyblok\ManagementApi\ManagementApiClient;
 
-$response = new UserApi($client)->me();
- /** @var UserData $currentUser */
-$currentUser = $response->data();
+$client = new ManagementApiClient(getAccessToken());
+
+$currentUser = (new UserApi($client))->me()->data();
 // "User ID"
-echo $currentUser->id();
+echo $currentUser->id() . PHP_EOL;
 // "User identifier"
-echo $currentUser->userid();
+echo $currentUser->userid() . PHP_EOL;
 // "User email"
-echo $currentUser->email());
+echo $currentUser->email() . PHP_EOL;
 // "User has Organization"
-echo $currentUser->hasOrganization() ? " HAS ORG" : "NO ORG";
-// "User Organization"
-echo $currentUser->orgName();
+echo ($currentUser->hasOrganization() ? " HAS ORG:" . $currentUser->orgName() : "NO ORG") . PHP_EOL;
 // "User has Partner"
-echo $currentUser->hasPartner() ? " HAS PARTNER" : "NO PARTNER";
+echo ($currentUser->hasPartner() ? " HAS PARTNER" : "NO PARTNER") . PHP_EOL;;
+
 ```
+
+
+Typically, all the data object provides you some helper methods like:
+- `toArray()` to obtain the data in a PHP array;
+- `toJson()` to obtain a JSON string;
+- `dump()` for debugging purposes, it prints on standard output the indented JSON.
 
 ## Handling assets
 

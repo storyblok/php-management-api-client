@@ -20,7 +20,7 @@ test('Testing current user', function (): void {
     $storyblokResponse = $userApi->me();
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*users.*/');
-    /* @var \Storyblok\ManagementApi\Data\UserData $userData */
+    /* @var \Storyblok\ManagementApi\Data\User $userData */
     $userData = $storyblokResponse->data();
     expect($userData->firstname())->toBe("John");
     expect($userData->lastname())->toBe("Doe");
@@ -40,8 +40,8 @@ test('Testing current user', function (): void {
     expect($userData->avatarUrl())->toBe("https://img2.storyblok.com/72x72/avatars/118830/01290bd7fa/myimage.JPG");
     expect($userData->avatarUrl(null))->toBe("https://img2.storyblok.com/avatars/118830/01290bd7fa/myimage.JPG");
 
-    $userData = \Storyblok\ManagementApi\Data\UserData::make([]);
-    expect($userData)->toBeInstanceOf(\Storyblok\ManagementApi\Data\UserData::class);
+    $userData = \Storyblok\ManagementApi\Data\User::make([]);
+    expect($userData)->toBeInstanceOf(\Storyblok\ManagementApi\Data\User::class);
 
     $userApi = new UserApi($mapiClient);
     expect($userApi)->toBeInstanceOf(UserApi::class);

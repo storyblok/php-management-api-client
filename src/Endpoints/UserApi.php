@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Endpoints;
 
-use Storyblok\ManagementApi\Data\UserData;
+use Storyblok\ManagementApi\Data\User;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 use Storyblok\ManagementApi\Response\UserResponse;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;

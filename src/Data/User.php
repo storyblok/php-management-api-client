@@ -6,7 +6,7 @@ namespace Storyblok\ManagementApi\Data;
 
 use Storyblok\ManagementApi\StoryblokUtils;
 
-class UserData extends StoryblokData
+class User extends StoryblokData
 {
     /**
      * @param array<string, array<mixed>> $data
