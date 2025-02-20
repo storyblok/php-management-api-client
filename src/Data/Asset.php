@@ -88,4 +88,21 @@ class Asset extends BaseData
     {
         return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
     }
+
+    public static function emptyAsset(): Asset
+    {
+        return self::make([
+            "id" => null,
+            "alt"=> null,
+            "name"=> "",
+            "focus"=> null,
+            "title"=> null,
+            "source"=> null,
+            "filename"=> "",
+            "copyright"=> null,
+            "fieldtype"=> "asset",
+            "meta_data"=> [],
+        ]);
+
+    }
 }
