@@ -87,4 +87,12 @@ class StoryComponent extends BaseData
         $this->set($field, $asset->toArray());
         return $this;
     }
+
+    public function addBlock(string $field, StoryComponent $component): self
+    {
+        $blocks =$this->getArray($field);
+        $blocks[] = $component->toArray();
+        $this->set($field, $blocks);
+        return $this;
+    }
 }
