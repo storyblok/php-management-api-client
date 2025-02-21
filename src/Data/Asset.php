@@ -89,13 +89,14 @@ class Asset extends BaseData
         return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
     }
 
-    public function setExternalUrl($url): self
+    public function setExternalUrl(string $url): self
     {
 
         $this->set("filename", $url);
         $this->set("is_external_url", true);
         return $this;
     }
+
     public static function emptyAsset(): Asset
     {
         return self::make([
