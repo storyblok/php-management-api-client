@@ -956,11 +956,8 @@ Feel free to open issues or submit pull requests to improve the package.
 
 This SDK is licensed under the MIT License. See the LICENSE file for details.
 
-## TODO List
-- [ ] removing ManagementApiClient::xxxApi() for using new xxxApi($client)
-- [ ] add validation in StoryApi for the content section in creating and updating story
-- [ ] bubble up the Symfony HTTP Client exception
-- [ ] create the specific Responses for each endpoint (like SpaceResponse and SpacesResponse)
+## Next implementations
+
 - [ ] define LocalizedPath class to allow to handle the localized path in setting the Story for creating and update the story
 - [ ] add the set method for localized field (for example set("heading", $value, "de")) for setting the `heading__i18n__de` field
 
