@@ -604,6 +604,81 @@ echo "             SLUG: " . $storyCreated->slug() . PHP_EOL;
 
 ```
 
+## Another Example with a Nested Component
+
+Now that we've seen how to programmatically create a story (content) with fields like title, body, and image, let's dive deeper into handling nested components.
+
+### Scenario
+
+You have a `default-page` content type that includes a *Blok* field. The *Blok* field allows you to nest components within your content. This means you can add a *Hero Section* component, followed by an *Image Text Section* component, and so on.
+
+### Goal
+The objective is to:
+
+- Set up a *Hero Section* component.
+- Set up an *Image Text Section* component.
+- Add these components to a story.
+
+To demonstrate deeper levels of nesting, we will also set up a *Button* component and nest it within the *Image Text Section* component.
+
+```php
+
+$client = new ManagementApiClient("yourpersonalaccesstoken");
+$spaceId = "yourspaceid";
+$storyApi = new StoryApi($client, $spaceId);
+
+// Setting up the hero-section
+$heroSection = new StoryComponent("hero-section");
+$heroSection->set("headline", "Hello World");
+// We are going to setup an external image as background
+$heroSection->setAsset("background_image", Asset::emptyAsset()->setExternalUrl("https://images.pexels.com/photos/18853169/pexels-photo-18853169/free-photo-of-tower-old-north-church-mirroring-in-puddle.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"));
+$heroSection->setAsset("background_video", Asset::emptyAsset());
+$heroSection->set("text_color", "light");
+$heroSection->set("vertical_alignment", "center");
+$heroSection->set("horizontal_alignment", "center");
+
+// Setting up the Button
+$button = new StoryComponent("button");
+$button->set("label", "Click here");
+$button->set("style", "default");
+$button->set("background_color", "primary");
+$button->set("text_color", "light");
+$button->set("size", "small");
+$button->set("border_radius", "small");
+
+
+// Setting up the Image Text Section
+$imageTextSection = new StoryComponent("image-text-section");
+$imageTextSection->set("headline", "Hello World");
+$imageTextSection->setAsset("image", Asset::emptyAsset());
+// Adding the Button to the Image Text Section (field name `button`)
+$imageTextSection->addBlock("button", $button);
+
+// Let's create the content type `default-page`
+$page = new StoryComponent("default-page");
+// Adding the Hero Section and the Image Text Section to the `body` field
+$page->addBlock("body", $heroSection);
+$page->addBlock("body", $imageTextSection);
+
+$random = random_int(1_000_000, 9_999_999);
+$story = new Story(
+    "Landing " . $random,
+    "landing-" . $random,
+    $page
+);
+
+$storyCreated = $storyApi->create($story)->data();
+echo "Story created with ID   : " . $storyCreated->id();
+echo PHP_EOL;
+$storyCreated->dump();
+echo PHP_EOL;
+// If we want to publish the story immediately ...
+$storyPublished = $storyApi->publish($storyCreated->id())->data();
+echo "Story published with ID : " . $storyPublished->id();
+echo PHP_EOL;
+echo "Story published at      : " . $storyPublished->publishedAt();
+echo PHP_EOL;
+```
 
 ## Handling Workflows
 
