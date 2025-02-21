@@ -89,9 +89,14 @@ class Story extends BaseData
         return $this->getString('name');
     }
 
-    public function createdAt(): null|string
+    public function createdAt(string $format = "Y-m-d"): null|string
     {
-        return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
+        return $this->getFormattedDateTime('created_at', "", format: $format);
+    }
+
+    public function publishedAt(string $format = "Y-m-d"): null|string
+    {
+        return $this->getFormattedDateTime('published_at', "", format: $format);
     }
 
     public function updatedAt(): null|string
