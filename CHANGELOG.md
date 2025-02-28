@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.0 - WIP
+- Releasing v 1.0.0
+
 ## 0.1.0 - 2025-02-21
 - Refactoring exception handling: Bubble up the exception
 - Refactoring Space, Spaces and SpaceResponse
@@ -8,7 +11,7 @@
 - Adding StoryComponent class
 - Refactoring Asset, Assets and AssetResponse
 - Refactoring Tag, Tags and TagResponse
-- Adding `setExternalUrl()` to `Asset` data class, you can set an external URL for an asset
+  - Adding `setExternalUrl()` to `Asset` data class, you can set an external URL for an asset
 - Adding `publishedAt()` method to `Story` data class, you can retrieve the published at field (with formatting options, default is "Y-m-d")
 - Adding `addBlok()` method to `StoryComponent` data class, so you can easily add nested component to your content
 - Readme: A new example for nesting components
