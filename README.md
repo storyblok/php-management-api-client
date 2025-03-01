@@ -18,14 +18,13 @@
 
 The *Storyblok Management API PHP Client* library simplifies the integration with Storyblok's Management API in PHP applications. With easy-to-use methods, you can interact with your Storyblok space effectively.
 
-> ⚠️ This is just a version 0.x, we expect to refactor classes and change interface before the version 1. Essentially it is a Work In Progress. We are adding more endpoint coverage, specific Response Data, etc.
 
 ## Installation
 
 Install the package via Composer:
 
 ```shell
-composer require storyblok/php-management-api-client:dev-main
+composer require storyblok/php-management-api-client
 ```
 
 Below is an example showcasing how to use the library to interact with the Management API.
@@ -960,4 +959,3 @@ This SDK is licensed under the MIT License. See the LICENSE file for details.
 
 - [ ] define LocalizedPath class to allow to handle the localized path in setting the Story for creating and update the story
 - [ ] add the set method for localized field (for example set("heading", $value, "de")) for setting the `heading__i18n__de` field
-
