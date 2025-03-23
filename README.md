@@ -43,6 +43,12 @@ use Storyblok\ManagementApi\ManagementApiClient;
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 ```
 
+For using the `ManagementApiClient` class you have to import:
+
+```php
+use Storyblok\ManagementApi\ManagementApiClient;
+```
+
 ### Setting the space region
 
 The second optional parameter is for setting the region.
@@ -113,6 +119,18 @@ These specialized classes extend the functionality of the `ManagementApi` class,
 Let's start analyzing the specialized classes, like for example the `SpaceApi`.
 
 ## Handling Spaces
+
+For using the `SpaceApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\SpaceApi;
+```
+
+For using the `Space` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\Space;
+```
 
 ### Retrieve all the spaces
 
@@ -189,6 +207,18 @@ try {
 ```
 
 ## Handling Stories
+
+For using the `StoryApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\StoryApi;
+```
+
+For using the `Story` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\Story;
+```
 
 ### Getting the StoryApi instance
 
@@ -393,6 +423,19 @@ $createdStories = iterator_to_array($storyBulkApi->createStories($stories));
 
 ## Handling users
 
+For using the `UserApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\UserApi;
+```
+
+For using the `User` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\User;
+```
+
+
 ### Getting the current user
 
 To get the current user, owner of the Personal access token used you can use the `UserApi` class for calling endpoints and the `User` for accessing to returned data object properties.
@@ -425,6 +468,18 @@ Typically, all the data object provides you some helper methods like:
 - `dump()` for debugging purposes, it prints on standard output the indented JSON.
 
 ## Handling assets
+
+For using the `AssetApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\AssetApi;
+```
+
+For using the `Asset` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\Asset;
+```
 
 ### Getting the AssetApi instance
 
@@ -512,6 +567,18 @@ echo "DELETED ASSET, ID : " . $deletedAsset->id() . PHP_EOL;
 ```
 
 ## Handling tags
+
+For using the `TagApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\TagApi;
+```
+
+For using the `Tag` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\Tag;
+```
 
 ### Getting the `TagApi` instance
 
@@ -682,6 +749,18 @@ echo PHP_EOL;
 ## Handling Workflows
 
 If you need to handle workflows (retrieving workflows or create new custom workflow - in the case you have a proper plan - ) you can use the `WorkflowApi` class.
+
+For using the `WorkflowApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\WorkflowApi;
+```
+
+For using the `Workflow` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\Workflow;
+```
 
 ### Retrieving workflows
 
