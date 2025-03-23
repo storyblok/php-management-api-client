@@ -1,4 +1,8 @@
-# Storyblok Management API PHP Client
+<div align="center">
+    <img src="assets/php-management-api-client-github-repository.png" alt="Storyblok Management API PHP Client" align="center" />
+    <h1 align="center">Storyblok Management API PHP Client</h1>
+    <p align="center">Co-created with <a href="https://sensiolabs.com/">SensioLabs</a>, the creators of Symfony.</p>
+</div>
 
 <p align=center>
     <a href="https://packagist.org/packages/storyblok/php-management-api-client">
