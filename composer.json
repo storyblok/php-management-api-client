@@ -26,6 +26,7 @@
         "pestphp/pest": "^3.7"
     },
     "scripts": {
+        "license-check": "php license-checker.php",
         "static-code": "vendor/bin/phpstan analyse",
         "style-fix-code": "export PHP_CS_FIXER_IGNORE_ENV=1; vendor/bin/php-cs-fixer fix",
         "style-check-code": "export PHP_CS_FIXER_IGNORE_ENV=1; vendor/bin/php-cs-fixer check",
