@@ -22,6 +22,7 @@
 
 The *Storyblok Management API PHP Client* library simplifies the integration with Storyblok's Management API in PHP applications. With easy-to-use methods, you can interact with your Storyblok space effectively.
 
+For the Content API PHP Client, see [storyblok/php-content-api-client](https://github.com/storyblok/php-content-api-client).
 
 ## Installation
 
