@@ -27,15 +27,22 @@ class StoryblokUtils
             1,"1" => 'Standard Space',
             1000, "1000" => 'Development',
             100, "100" => 'Community',
+            1100, "1100" => 'Starter (Plan 1)',
             200, "200" => 'Entry',
+            999, "999" => 'Development Plan',
+            1200, "1200" => "Growth (Plan 2i)",
+            1300, "1300" => "Growth Plus (Plan 2ii)",
             300, "300" => 'Teams',
             301, "301" => 'Business',
+            1400, "1400" => "Premium (Plan 3)",
+            1401, "1401" => "Premium CN (Plan 3 CN)",
+            1500, "1500" => "Elite (Plan 4)",
+            1501, "1501" => "Elite CN (Plan 4 CN)",
             400, "400" => 'Enterprise',
             500, "500" => 'Enterprise Plus',
             501, "501" => 'Enterprise Essentials',
             502, "502" => 'Enterprise Scale',
             503, "503" => 'Enterprise Ultimate',
-
             default => $planLevel,
         };
 

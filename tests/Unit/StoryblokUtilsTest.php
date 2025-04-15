@@ -20,3 +20,17 @@ test('Testing baseUriFromRegionForMapi', function ($region, $baseUri): void {
     ['NOTVALID', 'https://mapi.storyblok.com'],
 
 ]);
+
+test('Testing getPlanDescription', function ($code, $description): void {
+    expect(StoryblokUtils::getPlanDescription($code))->toBe($description);
+})->with([
+    ['999', 'Development Plan'],
+    [999, 'Development Plan'],
+    [12345, '12345'], // not listed, returning just the code
+    [1200, 'Growth (Plan 2i)'],
+    [1300, 'Growth Plus (Plan 2ii)'],
+    [1400, 'Premium (Plan 3)'],
+    [1401, 'Premium CN (Plan 3 CN)'],
+    [1500, 'Elite (Plan 4)'],
+    [1501, 'Elite CN (Plan 4 CN)'],
+]);
