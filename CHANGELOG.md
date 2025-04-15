@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 - WIP
+- Adding new plans in `StoryblokUtils::getPlanDescription()` method
+- Reviewing README
+- Adding dependecies license checker
+
 ## 1.0.0 - 2025-03-14
 - Releasing v 1.0.0
 
