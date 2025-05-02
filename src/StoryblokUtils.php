@@ -16,7 +16,6 @@ class StoryblokUtils
 
     public static function getRegionFromSpaceId(string|int $spaceId): string
     {
-        //return ($spaceId >= 1_000_000) ? "US" : "EU";
         foreach (self::ALL_REGION_RANGES as $region => [$min, $max]) {
             if ($spaceId >= $min && $spaceId < $max) {
                 return $region;
