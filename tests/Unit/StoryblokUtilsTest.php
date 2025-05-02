@@ -9,7 +9,7 @@ test('Testing getRegionFromSpaceId', function ($spaceId, $region): void {
 })->with([
     ['1000', 'EU'],
     ['10000', 'EU'],
-    [100_000_000, 'US'],
+    [1_000_000, 'US'],
 ]);
 
 test('Testing baseUriFromRegionForMapi', function ($region, $baseUri): void {
