@@ -6,9 +6,24 @@ namespace Storyblok\ManagementApi;
 
 class StoryblokUtils
 {
+    private const array ALL_REGION_RANGES = [
+        'EU' => [0, 999_999],
+        // 'CN' => [0, 1_000_000],
+        'US' => [1_000_000, 1_999_999],
+        'CA' => [2_000_000, 2_999_999],
+        'AP' => [3_000_000, 3_999_999],
+    ];
+
     public static function getRegionFromSpaceId(string|int $spaceId): string
     {
-        return ($spaceId >= 1_000_000) ? "US" : "EU";
+        //return ($spaceId >= 1_000_000) ? "US" : "EU";
+        foreach (self::ALL_REGION_RANGES as $region => [$min, $max]) {
+            if ($spaceId >= $min && $spaceId < $max) {
+                return $region;
+            }
+        }
+
+        return 'EU'; // fallback in case the ID doesn't match any range
     }
 
     /**
