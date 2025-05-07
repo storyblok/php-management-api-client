@@ -6,7 +6,7 @@ namespace Storyblok\ManagementApi\Data;
 
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 
-class StoryItem extends BaseData
+class StoryCollectionItem extends BaseData
 {
     public function __construct()
     {
@@ -25,7 +25,7 @@ class StoryItem extends BaseData
             // is not valid
         }
 
-        $storyItem = new StoryItem();
+        $storyItem = new StoryCollectionItem();
         $storyItem->setData($dataObject->toArray());
         // validate
         if (! $storyItem->isValid()) {
