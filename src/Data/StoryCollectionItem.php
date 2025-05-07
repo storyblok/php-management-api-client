@@ -6,6 +6,19 @@ namespace Storyblok\ManagementApi\Data;
 
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 
+/**
+ * Represents a lightweight story item as returned by the Storyblok "multiple stories" API endpoint.
+ *
+ * Unlike the full `Story` object returned by the single story endpoint, this class does not contain
+ * the actual content of the story. Instead, it holds metadata and system-related information such as
+ * the story's name, slug, ID, UUID, and timestamps for creation, update, and publication.
+ *
+ * `StoryCollectionItem` is typically used when retrieving a list of stories, for purposes like displaying
+ * overviews or selecting stories for further processing. Since it does not support content data or modification
+ * operations, it is read-only in nature and optimized for listing or filtering operations.
+ *
+ * For creating or updating stories, or when full content access is required, the full `Story` class should be used instead.
+ */
 class StoryCollectionItem extends BaseData
 {
     public function __construct()
