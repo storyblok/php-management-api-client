@@ -11,7 +11,7 @@ class Stories extends StoryblokData
     #[\Override]
     public function getDataClass(): string
     {
-        return Story::class;
+        return StoryCollectionItem::class;
     }
 
     #[\Override]

@@ -1,6 +1,7 @@
 # Changelog
 
 ## 1.0.1 - WIP
+- Fixing getting list of Stories. Issue #10
 - Adding new plans in `StoryblokUtils::getPlanDescription()` method
 - Reviewing README
 - Adding dependecies license checker
