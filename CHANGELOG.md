@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.1 - WIP
+## 1.0.1 - 2025-05-09
 - Fixing getting list of Stories. Issue #10
 - Adding new plans in `StoryblokUtils::getPlanDescription()` method
 - Reviewing README
