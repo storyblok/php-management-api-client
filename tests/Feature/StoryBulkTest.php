@@ -63,7 +63,7 @@ test('StoryApi works with custom logger', function (): void {
     // Verify that logs were recorded
     expect($mockLogger->logs)->not->toBeEmpty()
         ->and($mockLogger->logs[0]['level'])->toBe('error')
-        ->and($mockLogger->logs[0]['message'])->toBe('Error fetching stories');
+        ->and($mockLogger->logs[0]['message'])->toBe('API error');
 });
 
 test('Testing list of stories, Params', function (): void {

@@ -31,7 +31,7 @@ class SpaceApi extends EndpointBase
     {
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            '/v1/spaces/' . $spaceId,
+            self::buildSpacesEndpoint($spaceId),
         );
 
         return new SpaceResponse($httpResponse);
@@ -95,5 +95,10 @@ class SpaceApi extends EndpointBase
             ],
         );
         return new SpaceResponse($httpResponse);
+    }
+
+    private function buildSpacesEndpoint(string $spaceId): string
+    {
+        return sprintf('/v1/spaces/%s/', $spaceId);
     }
 }
