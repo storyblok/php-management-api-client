@@ -426,6 +426,73 @@ foreach ($file as $row) {
 $createdStories = iterator_to_array($storyBulkApi->createStories($stories));
 ```
 
+## Handling components
+
+You can use the `ComponentApi` class to fetch all components from a specific space:
+
+```php
+
+use Storyblok\ManagementApi\ManagementApiClient;
+use Storyblok\ManagementApi\Api\ComponentApi;
+use Psr\Log\NullLogger;
+
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
+
+// Define your space ID
+$spaceId = "335141";
+
+// Initialize the Component API
+$componentApi = new ComponentApi($client, $spaceId, new NullLogger());
+
+// Retrieve all components
+$componentsResponse = $componentApi->all();
+$components = $componentsResponse->data();
+
+// Loop through and print component names and IDs
+foreach ($components as $component) {
+    echo $component->name() . " - " . $component->id() . PHP_EOL;
+}
+
+```
+With the same response you can retrieve the component folders.
+You can use the `dataFolders()` method:
+
+```php
+$folders = $componentsResponse->dataFolders();
+```
+
+
+### Creating a new component
+
+You can programmatically create a new component in a space:
+
+```php
+// Define a new component
+$component = new Component("my-component-1234567");
+$component->setDisplayName("My Component");
+$component->setRoot(); // Mark as a root component
+$component->setPreviewField("title");
+
+// Add fields
+$component->setField("title", ["type" => "text"]);
+$component->setField("headline", ["type" => "text"]);
+$component->setField("image", ["type" => "asset"]);
+
+try {
+    // Create the component in Storyblok
+    $componentResponse = $componentApi->create($component);
+    $newComponent = $componentResponse->data();
+
+    // Output the new component's ID
+    echo "Component created with ID: " . $newComponent->id() . PHP_EOL;
+
+    // Dump full component details (for debugging)
+    $newComponent->dump();
+} catch (Exception $e) {
+    echo "Error creating component: " . $e->getMessage();
+}
+```
+
 ## Handling users
 
 For using the `UserApi` class you have to import:
@@ -471,6 +538,7 @@ Typically, all the data object provides you some helper methods like:
 - `toArray()` to obtain the data in a PHP array;
 - `toJson()` to obtain a JSON string;
 - `dump()` for debugging purposes, it prints on standard output the indented JSON.
+
 
 ## Handling assets
 

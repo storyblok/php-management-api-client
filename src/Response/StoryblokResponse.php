@@ -109,10 +109,14 @@ class StoryblokResponse implements StoryblokResponseInterface
             return "No error detected, HTTP Status Code: " . $this->getResponseStatusCode();
         }
 
-        $data = $this->data();
-        $message = $data->getString("error");
-        if ($message !== '' && $message !== '0') {
-            return $message;
+        try {
+            $data = $this->data();
+            $message = $data->getString("error");
+            if ($message !== '' && $message !== '0') {
+                return $message;
+            }
+        } catch (\Exception) {
+
         }
 
         $message = match ($this->getResponseStatusCode()) {

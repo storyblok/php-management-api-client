@@ -6,6 +6,7 @@ namespace Storyblok\ManagementApi;
 
 use Storyblok\ManagementApi\Data\Enum\Region;
 use Storyblok\ManagementApi\Endpoints\AssetApi;
+use Storyblok\ManagementApi\Endpoints\ComponentApi;
 use Storyblok\ManagementApi\Endpoints\ManagementApi;
 use Storyblok\ManagementApi\Endpoints\SpaceApi;
 use Storyblok\ManagementApi\Endpoints\StoryApi;
@@ -128,6 +129,15 @@ class ManagementApiClient
     public function workflowStageApi(string|int $spaceId): WorkflowStageApi
     {
         return new WorkflowStageApi($this, $spaceId);
+    }
+
+    public function componentApi(string|int $spaceId, ?LoggerInterface $logger = null): ComponentApi
+    {
+        return new ComponentApi(
+            $this,
+            $spaceId,
+            $logger ?? new NullLogger(),
+        );
     }
 
     public function managementApi(): ManagementApi
