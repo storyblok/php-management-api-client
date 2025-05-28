@@ -305,4 +305,15 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
 
         return $defaultValue;
     }
+
+    public function getStringNullable(mixed $key, string|null $defaultValue = null, string $charNestedKey = "."): string|null
+    {
+        $returnValue = $this->get($key, $defaultValue, $charNestedKey);
+
+        if (is_scalar($returnValue)) {
+            return strval($returnValue);
+        }
+
+        return $defaultValue;
+    }
 }
