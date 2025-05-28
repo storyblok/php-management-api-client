@@ -15,11 +15,13 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class SpaceApi extends EndpointBase
 {
+    protected const string API_PATH_SPACE_PREFIX_V1 = "/v1/spaces";
+
     public function all(): SpacesResponse
     {
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            '/v1/spaces',
+            self::API_PATH_SPACE_PREFIX_V1,
         );
         return new SpacesResponse($httpResponse, Spaces::class);
     }
@@ -42,7 +44,7 @@ class SpaceApi extends EndpointBase
 
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces",
+            self::API_PATH_SPACE_PREFIX_V1,
             [
                 "body" => [
                     "space" => $spaceData->toArray(),
@@ -56,7 +58,7 @@ class SpaceApi extends EndpointBase
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces",
+            self::API_PATH_SPACE_PREFIX_V1,
             [
                 "body" => [
                     "dup_id" => $duplicateId,
@@ -76,7 +78,7 @@ class SpaceApi extends EndpointBase
     {
         $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            '/v1/spaces/' . $spaceId,
+            self::API_PATH_SPACE_PREFIX_V1 . '/' . $spaceId,
         );
         return new SpaceResponse($httpResponse);
     }
@@ -88,7 +90,7 @@ class SpaceApi extends EndpointBase
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            sprintf('/v1/spaces/%s/backups', $spaceId),
+            sprintf('%s/%s/backups', self::API_PATH_SPACE_PREFIX_V1, $spaceId),
             [
                 "body" => [
                 ],
@@ -99,6 +101,6 @@ class SpaceApi extends EndpointBase
 
     private function buildSpacesEndpoint(string $spaceId): string
     {
-        return sprintf('/v1/spaces/%s/', $spaceId);
+        return sprintf('%s/%s/', self::API_PATH_SPACE_PREFIX_V1, $spaceId);
     }
 }
