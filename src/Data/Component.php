@@ -28,7 +28,7 @@ class Component extends BaseData
     {
         $dataObject = new StoryblokData($data);
         if (!($dataObject->hasKey('name'))) {
-            // is not valid
+            throw new StoryblokFormatException("Component is not valid, missing the name");
         }
 
         $component = new Component(
@@ -37,7 +37,11 @@ class Component extends BaseData
         $component->setData($dataObject->toArray());
         // validate
         if (! $component->isValid()) {
-            throw new StoryblokFormatException("Component is not valid");
+            if ($dataObject->getString("name") === "") {
+                throw new StoryblokFormatException("Component is not valid, missing the name");
+            }
+
+            throw new StoryblokFormatException("Component <" . $dataObject->getString("name") . "> is not valid");
         }
 
         return $component;

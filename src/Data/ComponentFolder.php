@@ -28,7 +28,7 @@ class ComponentFolder extends BaseData
     {
         $dataObject = new StoryblokData($data);
         if (!($dataObject->hasKey('name'))) {
-            // is not valid
+            throw new StoryblokFormatException("Component Folder is not valid, missing the name");
         }
 
         $componentFolder = new ComponentFolder(
@@ -38,7 +38,11 @@ class ComponentFolder extends BaseData
         $componentFolder->setData($dataObject->toArray());
         // validate
         if (! $componentFolder->isValid()) {
-            throw new StoryblokFormatException("Component Folder is not valid");
+            if ($dataObject->getString("name") === "") {
+                throw new StoryblokFormatException("Component Folder is not valid");
+            }
+
+            throw new StoryblokFormatException("Component Folder <" . $dataObject->getString("name") . "> is not valid");
         }
 
         return $componentFolder;
