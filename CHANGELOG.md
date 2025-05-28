@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.2 - WIP
+## 1.0.2 - 2025-05-28
 - Implementing ComponentApi class for handling components
 
 ## 1.0.1 - 2025-05-09
