@@ -431,7 +431,6 @@ $createdStories = iterator_to_array($storyBulkApi->createStories($stories));
 You can use the `ComponentApi` class to fetch all components from a specific space:
 
 ```php
-
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\Api\ComponentApi;
 use Psr\Log\NullLogger;
@@ -439,7 +438,7 @@ use Psr\Log\NullLogger;
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 // Define your space ID
-$spaceId = "335141";
+$spaceId = "YOUR_SPACE_ID";
 
 // Initialize the Component API
 $componentApi = new ComponentApi($client, $spaceId, new NullLogger());
@@ -533,12 +532,10 @@ echo ($currentUser->hasPartner() ? " HAS PARTNER" : "NO PARTNER") . PHP_EOL;;
 
 ```
 
-
 Typically, all the data object provides you some helper methods like:
 - `toArray()` to obtain the data in a PHP array;
 - `toJson()` to obtain a JSON string;
 - `dump()` for debugging purposes, it prints on standard output the indented JSON.
-
 
 ## Handling assets
 
@@ -584,6 +581,7 @@ foreach ($assets as $key => $asset) {
 ```
 
 ### Filtering assets
+
 Using the `AssetsParams` class you can set up filters for filtering the assets.
 
 ```php
