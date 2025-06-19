@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.3 - WIP
+- Adding new parameter for duplicating space (for adding the space in the organization)
+
 ## 1.0.2 - 2025-05-28
 - Implementing ComponentApi class for handling components
 
