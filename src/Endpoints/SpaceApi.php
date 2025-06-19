@@ -54,18 +54,23 @@ class SpaceApi extends EndpointBase
         return new SpaceResponse($httpResponse);
     }
 
-    public function duplicate(string|int $duplicateId, string $name): SpaceResponse
+    public function duplicate(string|int $duplicateId, string $name, bool $inOrg = false): SpaceResponse
     {
+        $body = [
+            "dup_id" => $duplicateId,
+            "space" => [
+                "name" => $name,
+            ],
+        ];
+        if ($inOrg) {
+            $body["in_org"] = true;
+        }
+
         $httpResponse = $this->makeHttpRequest(
             "POST",
             self::API_PATH_SPACE_PREFIX_V1,
             [
-                "body" => [
-                    "dup_id" => $duplicateId,
-                    "space" => [
-                        "name" => $name,
-                    ],
-                ],
+                "body" => $body,
             ],
         );
         return new SpaceResponse($httpResponse);
