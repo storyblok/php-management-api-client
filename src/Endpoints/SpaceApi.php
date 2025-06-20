@@ -54,6 +54,7 @@ class SpaceApi extends EndpointBase
         return new SpaceResponse($httpResponse);
     }
 
+
     public function update(string $spaceId, Space $spaceData): SpaceResponse
     {
         $this->validateSpaceId($spaceId);

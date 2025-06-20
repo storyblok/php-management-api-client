@@ -4,6 +4,7 @@
 - Adding new parameter for duplicating space (for adding the space in the organization)
 - Adding `update()` method for Space endpoint
 
+
 ## 1.0.2 - 2025-05-28
 - Implementing ComponentApi class for handling components
 
