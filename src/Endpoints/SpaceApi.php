@@ -54,6 +54,21 @@ class SpaceApi extends EndpointBase
         return new SpaceResponse($httpResponse);
     }
 
+    public function update(string $spaceId, Space $spaceData): SpaceResponse
+    {
+        $this->validateSpaceId($spaceId);
+        //$this->validateSpaceData($spaceData);
+        echo $spaceData->toJson();
+        $httpResponse = $this->makeHttpRequest(
+            "PUT",
+            $this->buildSpacesEndpoint($spaceId),
+            [
+                "body" => json_encode(["space" => $spaceData->toArray()]),
+            ]
+        );
+        return new SpaceResponse($httpResponse);
+    }
+
     public function duplicate(string|int $duplicateId, string $name, bool $inOrg = false): SpaceResponse
     {
         $body = [
@@ -106,6 +121,18 @@ class SpaceApi extends EndpointBase
 
     private function buildSpacesEndpoint(string $spaceId): string
     {
-        return sprintf('%s/%s/', self::API_PATH_SPACE_PREFIX_V1, $spaceId);
+        return sprintf('%s/%s', self::API_PATH_SPACE_PREFIX_V1, $spaceId);
+    }
+
+    /**
+     * Validates space ID
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function validateSpaceId(string $spaceId): void
+    {
+        if ($spaceId === '' || $spaceId === '0') {
+            throw new \InvalidArgumentException('Space ID cannot be empty');
+        }
     }
 }
