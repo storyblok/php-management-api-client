@@ -192,6 +192,49 @@ printf(" The name for the Space id : %s is : %s . Plan: %s - %s" ,
     $space->planDescription()
 );
 ```
+### Update Space settings
+
+You can edit space settings using the `update()` method.
+In this basic example you can get information from a space and then set up the changes you want to apply (`$editSpace`):
+
+```php
+$spaceId="your-space-id";
+$spaceApi = new SpaceApi($client);
+
+// Getting a space
+$space = $spaceApi->get($spaceId)->data();
+echo "Current domain: " . $space->get("domain") . PHP_EOL;
+echo "Current token: " . $space->get("first_token") . PHP_EOL;
+// Getting the current environments and the languages
+/** @var StoryblokData $environments */
+$environments = $space->get("environments");
+/** @var StoryblokData $languages */
+$languages = $space->get("languages");
+
+// Now, let's start collecting data you want to change
+$editSpace = new Space("Your new space name");
+$editSpace->set("id", $spaceId);
+// you can set the domain for preview URL
+$editSpace->set("domain", "https://your-preview-domain/");
+// you can add new preview URLs (for example the localhost)
+if ($environments->count() === 0 ) {
+    $editSpace->set("environments.0.name", "Demo Local Development");
+    $editSpace->set("environments.0.location", "https://localhost:3000/");
+}
+// You can add languages programmatically
+if ($languages->count() === 0 ) {
+    $editSpace->set("languages.0.code", "it");
+    $editSpace->set("languages.0.name", "Italian");
+    $editSpace->set("languages.1.code", "de");
+    $editSpace->set("languages.1.name", "German");
+}
+
+try {
+    $spaceApi->update($spaceId, $editSpace);
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+```
 
 ### Triggering the backup
 
