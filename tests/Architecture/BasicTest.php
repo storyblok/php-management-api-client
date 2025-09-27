@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 arch()
-    ->expect('Storyblok\Mapi\Endpoints')
+    ->expect('Storyblok\ManagementApi')
     ->toUseStrictTypes()
-    ->not->toUse(['die', 'dd', 'dump', 'echo', 'print_r']);
+    ->not->toUse(['die', 'dd', 'var_dump', 'dump', 'echo', 'print_r']);
 
 arch()->preset()->php();
