@@ -47,7 +47,7 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
         $this->data = $data;
     }
 
-    public function getInt(mixed $key, int|null $defaultValue = null, string $charNestedKey = "."): int|null
+    public function getInt(int|string $key, int|null $defaultValue = null, string $charNestedKey = "."): int|null
     {
         $returnValue = $this->get($key, null, $charNestedKey);
 
@@ -58,7 +58,7 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
         return $defaultValue;
     }
 
-    public function getBoolean(mixed $key, bool $defaultValue = false, string $charNestedKey = "."): bool
+    public function getBoolean(int|string $key, bool $defaultValue = false, string $charNestedKey = "."): bool
     {
         $returnValue = $this->get($key, $defaultValue, $charNestedKey);
 
@@ -73,7 +73,7 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
      * @param mixed[] $defaultValue
      * @return mixed[]
      */
-    public function getArray(mixed $key, array $defaultValue = [], string $charNestedKey = "."): array
+    public function getArray(int|string $key, array $defaultValue = [], string $charNestedKey = "."): array
     {
         $returnValue = $this->get($key, $defaultValue, $charNestedKey);
 
@@ -89,7 +89,7 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
     }
 
     public function getFormattedDateTime(
-        mixed $key,
+        int|string $key,
         string $defaultValue = "",
         string $charNestedKey = ".",
         string $format = "Y-m-d H:i:s",
@@ -256,13 +256,13 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
     /**
      * Retrieves a value from the data by key. Supports dot notation for nested keys.
      *
-     * @param mixed $key The key to retrieve the value for. Can use dot notation for nested keys.
+     * @param int|string $key The key to retrieve the value for. Can use dot notation for nested keys.
      * @param mixed|null $defaultValue The default value to return if the key does not exist.
      * @param string $charNestedKey The character used for separating nested keys (default: ".").
      * @param bool $raw Whether to return raw data or cast it into StoryblokData if applicable.
      * @return mixed The value associated with the key, or the default value if the key does not exist.
      */
-    public function get(mixed $key, mixed $defaultValue = null, string $charNestedKey = ".", bool $raw = false): mixed
+    public function get(int|string $key, mixed $defaultValue = null, string $charNestedKey = ".", bool $raw = false): mixed
     {
         if (is_string($key)) {
             if ($charNestedKey === "") {
@@ -295,7 +295,7 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
 
     }
 
-    public function getString(mixed $key, string $defaultValue = "", string $charNestedKey = "."): string
+    public function getString(int|string $key, string $defaultValue = "", string $charNestedKey = "."): string
     {
         $returnValue = $this->get($key, "", $charNestedKey);
 
@@ -306,7 +306,7 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
         return $defaultValue;
     }
 
-    public function getStringNullable(mixed $key, string|null $defaultValue = null, string $charNestedKey = "."): string|null
+    public function getStringNullable(int|string $key, string|null $defaultValue = null, string $charNestedKey = "."): string|null
     {
         $returnValue = $this->get($key, $defaultValue, $charNestedKey);
 

@@ -6,7 +6,7 @@ namespace Storyblok\ManagementApi\Data;
 
 interface StoryblokDataInterface
 {
-    public function get(mixed $key, mixed $defaultValue = null, string $charNestedKey = ".", bool $raw = false): mixed;
+    public function get(int|string $key, mixed $defaultValue = null, string $charNestedKey = ".", bool $raw = false): mixed;
 
-    public function getString(mixed $key, string $defaultValue = "", string $charNestedKey = "."): string;
+    public function getString(int|string $key, string $defaultValue = "", string $charNestedKey = "."): string;
 }
