@@ -58,7 +58,6 @@ class SpaceApi extends EndpointBase
     {
         $this->validateSpaceId($spaceId);
         //$this->validateSpaceData($spaceData);
-        echo $spaceData->toJson();
         $httpResponse = $this->makeHttpRequest(
             "PUT",
             $this->buildSpacesEndpoint($spaceId),

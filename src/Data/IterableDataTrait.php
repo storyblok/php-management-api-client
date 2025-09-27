@@ -52,7 +52,6 @@ trait IterableDataTrait
 
     public function offsetGet(mixed $offset): mixed
     {
-        echo __METHOD__ . PHP_EOL;
         return $this->get($offset);
     }
 
