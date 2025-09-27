@@ -300,7 +300,7 @@ test('createBulk throws exception when max retries is reached', function (): voi
         ->and($hasErrorLog)->toBeTrue();
 
     // Verify the last log context contains story information
-    $lastErrorLog = array_filter($mockLogger->logs, fn($log): bool => $log['level'] === 'error');
+    $lastErrorLog = array_filter($mockLogger->logs, fn(array $log): bool => $log['level'] === 'error');
     $lastErrorLog = end($lastErrorLog);
 
     expect($lastErrorLog['context'])->toHaveKey('story_name')
