@@ -19,7 +19,7 @@ use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
  *
  * For creating or updating stories, or when full content access is required, the full `Story` class should be used instead.
  */
-class StoryCollectionItem extends BaseData
+class StoryCollectionItem extends StoryBaseData
 {
     public function __construct()
     {
@@ -47,11 +47,6 @@ class StoryCollectionItem extends BaseData
 
         return $storyItem;
 
-    }
-
-    public function slug(): string
-    {
-        return $this->getString('slug');
     }
 
     public function name(): string
