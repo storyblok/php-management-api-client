@@ -28,8 +28,8 @@
     "scripts": {
         "license-check": "php license-checker.php",
         "static-code": "vendor/bin/phpstan analyse",
-        "style-fix-code": "export PHP_CS_FIXER_IGNORE_ENV=1; vendor/bin/php-cs-fixer fix",
-        "style-check-code": "export PHP_CS_FIXER_IGNORE_ENV=1; vendor/bin/php-cs-fixer check",
+        "style-fix-code": "vendor/bin/php-cs-fixer fix",
+        "style-check-code": "vendor/bin/php-cs-fixer check",
         "test-code": "vendor/bin/pest",
         "test-code-ci": "vendor/bin/pest -c . --ci --cache-directory ./tmp",
         "refactor-check-code": "vendor/bin/rector --dry-run",

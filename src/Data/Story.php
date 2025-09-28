@@ -6,7 +6,7 @@ namespace Storyblok\ManagementApi\Data;
 
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 
-class Story extends BaseData
+class Story extends StoryBaseData
 {
     private string $defaultContentType = "";
 
@@ -61,11 +61,6 @@ class Story extends BaseData
     public function setSlug(string $slug): void
     {
         $this->set('slug', $slug);
-    }
-
-    public function slug(): string
-    {
-        return $this->getString('slug');
     }
 
     public function setCreatedAt(string $createdAt): void
