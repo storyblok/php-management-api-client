@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.3 - WIP
+## 1.0.3 - 2025-09-29
 - Adding new parameter for duplicating space (for adding the space in the organization)
 - Adding `update()` method for Space endpoint
 - Implementing `hasWorkflowStage()` method for Stories
