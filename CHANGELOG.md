@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.4 - WIP
+- Adding `hasTags()`, `tagListAsString()`, `tagListAsArray()` methods for stories
+
 ## 1.0.3 - 2025-09-29
 - Adding new parameter for duplicating space (for adding the space in the organization)
 - Adding `update()` method for Space endpoint
