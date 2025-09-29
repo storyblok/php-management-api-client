@@ -13,7 +13,7 @@
         "full_slug": "posts/my-third-post",
         "sort_by_date": null,
         "position": 0,
-        "tag_list": [],
+        "tag_list": ["tag1","tag2"],
         "is_startpage": false,
         "parent_id": 440448337,
         "meta_data": null,

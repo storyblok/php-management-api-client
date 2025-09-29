@@ -30,6 +30,8 @@ test('Testing One Story, StoryData', function (): void {
         ->toBe("My third post")
         ->and($storyblokData->name())->toBe("My third post")
         ->and($storyblokData->createdAt())->toBe("2024-02-08")
+        ->and($storyblokData->tagListAsArray())->toBe(["tag1", "tag2"])
+        ->and($storyblokData->tagListAsString())->toBe("tag1, tag2")
         ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
 
     expect(function () use ($storyApi): void {
