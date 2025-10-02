@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.4 - WIP
+## 1.0.4 - 2025-10-02
 - Adding `hasTags()`, `tagListAsString()`, `tagListAsArray()` methods for stories
 - Adding `ownerId()`, `updatedAt()` methods to Space class
 
