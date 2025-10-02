@@ -68,6 +68,11 @@ class Space extends BaseData
         return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
     }
 
+    public function updatedAt(): null|string
+    {
+        return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
+    }
+
     public function planLevel(): string
     {
         return $this->getString('plan_level');
