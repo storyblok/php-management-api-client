@@ -2,7 +2,7 @@
 
 ## 1.0.4 - WIP
 - Adding `hasTags()`, `tagListAsString()`, `tagListAsArray()` methods for stories
-- Adding `ownerId()` method to Space class
+- Adding `ownerId()`, `updatedAt()` methods to Space class
 
 ## 1.0.3 - 2025-09-29
 - Adding new parameter for duplicating space (for adding the space in the organization)

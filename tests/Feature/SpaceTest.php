@@ -43,6 +43,7 @@ test('Testing One space, Space', function (): void {
         ->and($storyblokData->ownerId())->toBe("1114")
         ->and($storyblokData->id())->toBe("680")
         ->and($storyblokData->createdAt())->toBe("2018-11-10")
+        ->and($storyblokData->updatedAt())->toBe("2018-11-11")
         ->and($storyblokData->planDescription())->toBe("Starter (Trial)")
     ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
 
