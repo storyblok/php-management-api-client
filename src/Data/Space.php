@@ -77,4 +77,9 @@ class Space extends BaseData
     {
         return StoryblokUtils::getPlanDescription($this->planLevel());
     }
+
+    public function ownerId(): string
+    {
+        return $this->getString('owner_id', "");
+    }
 }

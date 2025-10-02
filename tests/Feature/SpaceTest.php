@@ -40,6 +40,7 @@ test('Testing One space, Space', function (): void {
     expect($storyblokData->get("name"))
         ->toBe("Example Space")
         ->and($storyblokData->name())->toBe("Example Space")
+        ->and($storyblokData->ownerId())->toBe("1114")
         ->and($storyblokData->id())->toBe("680")
         ->and($storyblokData->createdAt())->toBe("2018-11-10")
         ->and($storyblokData->planDescription())->toBe("Starter (Trial)")
@@ -198,7 +199,9 @@ test('Testing multiple spaces, Space', function (): void {
         ->and($storyblokResponse->getResponseStatusCode())->toBe(200);
     foreach ($storyblokData as $spaceItem) {
         expect($spaceItem->name())
-            ->toBeString();
+            ->toBeString()
+            ->and($spaceItem->ownerId())->toBe("1114");
+
     }
 
     expect($storyblokData->howManySpaces())->toBe(2);
