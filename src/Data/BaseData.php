@@ -20,7 +20,11 @@ use Iterator;
  * @implements ArrayAccess<int|string, mixed>
  * @implements Iterator<int|string, mixed>
  */
-abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess, Countable
+abstract class BaseData implements
+    StoryblokDataInterface,
+    Iterator,
+    ArrayAccess,
+    Countable
 {
     use IterableDataTrait;
 
@@ -47,8 +51,11 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
         $this->data = $data;
     }
 
-    public function getInt(int|string $key, int|null $defaultValue = null, string $charNestedKey = "."): int|null
-    {
+    public function getInt(
+        int|string $key,
+        int|null $defaultValue = null,
+        string $charNestedKey = ".",
+    ): int|null {
         $returnValue = $this->get($key, null, $charNestedKey);
 
         if (is_scalar($returnValue)) {
@@ -58,8 +65,11 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
         return $defaultValue;
     }
 
-    public function getBoolean(int|string $key, bool $defaultValue = false, string $charNestedKey = "."): bool
-    {
+    public function getBoolean(
+        int|string $key,
+        bool $defaultValue = false,
+        string $charNestedKey = ".",
+    ): bool {
         $returnValue = $this->get($key, $defaultValue, $charNestedKey);
 
         if (is_scalar($returnValue)) {
@@ -73,12 +83,15 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
      * @param mixed[] $defaultValue
      * @return mixed[]
      */
-    public function getArray(int|string $key, array $defaultValue = [], string $charNestedKey = "."): array
-    {
+    public function getArray(
+        int|string $key,
+        array $defaultValue = [],
+        string $charNestedKey = ".",
+    ): array {
         $returnValue = $this->get($key, $defaultValue, $charNestedKey);
 
         if (is_scalar($returnValue)) {
-            return [strval($returnValue) ];
+            return [strval($returnValue)];
         }
 
         if ($returnValue instanceof StoryblokData) {
@@ -118,8 +131,11 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
      * @param string $charNestedKey The character used for separating nested keys (default: ".").
      * @return $this The current instance for method chaining.
      */
-    public function set(int|string $key, mixed $value, string $charNestedKey = "."): self
-    {
+    public function set(
+        int|string $key,
+        mixed $value,
+        string $charNestedKey = ".",
+    ): self {
         if (is_string($key)) {
             $array = &$this->data;
             if ($charNestedKey === "") {
@@ -180,7 +196,6 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
         }
 
         return new StoryblokData([]);
-
     }
 
     /**
@@ -262,8 +277,12 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
      * @param bool $raw Whether to return raw data or cast it into StoryblokData if applicable.
      * @return mixed The value associated with the key, or the default value if the key does not exist.
      */
-    public function get(int|string $key, mixed $defaultValue = null, string $charNestedKey = ".", bool $raw = false): mixed
-    {
+    public function get(
+        int|string $key,
+        mixed $defaultValue = null,
+        string $charNestedKey = ".",
+        bool $raw = false,
+    ): mixed {
         if (is_string($key)) {
             if ($charNestedKey === "") {
                 $charNestedKey = ".";
@@ -273,7 +292,10 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
             if (str_contains($keyString, $charNestedKey)) {
                 $nestedValue = $this->data;
                 foreach (explode($charNestedKey, $keyString) as $nestedKey) {
-                    if (is_array($nestedValue) && array_key_exists($nestedKey, $nestedValue)) {
+                    if (
+                        is_array($nestedValue) &&
+                        array_key_exists($nestedKey, $nestedValue)
+                    ) {
                         $nestedValue = $nestedValue[$nestedKey];
                     } elseif ($nestedValue instanceof StoryblokData) {
                         $nestedValue = $nestedValue->get($nestedKey);
@@ -285,18 +307,23 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
                 return $this->returnData($nestedValue, $raw);
             }
 
-            if (! array_key_exists($key, $this->data)) {
+            if (!array_key_exists($key, $this->data)) {
                 return $defaultValue;
             }
+        }
 
+        if (is_numeric($key) && !array_key_exists($key, $this->data)) {
+            return $defaultValue;
         }
 
         return $this->returnData($this->data[$key], $raw) ?? $defaultValue;
-
     }
 
-    public function getString(int|string $key, string $defaultValue = "", string $charNestedKey = "."): string
-    {
+    public function getString(
+        int|string $key,
+        string $defaultValue = "",
+        string $charNestedKey = ".",
+    ): string {
         $returnValue = $this->get($key, "", $charNestedKey);
 
         if (is_scalar($returnValue)) {
@@ -306,8 +333,11 @@ abstract class BaseData implements StoryblokDataInterface, Iterator, ArrayAccess
         return $defaultValue;
     }
 
-    public function getStringNullable(int|string $key, string|null $defaultValue = null, string $charNestedKey = "."): string|null
-    {
+    public function getStringNullable(
+        int|string $key,
+        string|null $defaultValue = null,
+        string $charNestedKey = ".",
+    ): string|null {
         $returnValue = $this->get($key, $defaultValue, $charNestedKey);
 
         if (is_scalar($returnValue)) {
