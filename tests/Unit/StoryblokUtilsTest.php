@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Storyblok\ManagementApi\StoryblokUtils;
 
-test('Testing getRegionFromSpaceId', function ($spaceId, $region): void {
+test('Testing getRegionFromSpaceId', function (string|int $spaceId, $region): void {
     expect(StoryblokUtils::getRegionFromSpaceId($spaceId))->toBe($region);
 })->with([
     ['1000', 'EU'],
@@ -12,7 +12,7 @@ test('Testing getRegionFromSpaceId', function ($spaceId, $region): void {
     [1_000_000, 'US'],
 ]);
 
-test('Testing baseUriFromRegionForMapi', function ($region, $baseUri): void {
+test('Testing baseUriFromRegionForMapi', function (string $region, $baseUri): void {
     expect(StoryblokUtils::baseUriFromRegionForMapi($region))->toBe($baseUri);
 })->with([
     ['EU', 'https://mapi.storyblok.com'],
@@ -21,7 +21,7 @@ test('Testing baseUriFromRegionForMapi', function ($region, $baseUri): void {
 
 ]);
 
-test('Testing getPlanDescription', function ($code, $description): void {
+test('Testing getPlanDescription', function (int|string $code, $description): void {
     expect(StoryblokUtils::getPlanDescription($code))->toBe($description);
 })->with([
     ['999', 'Development Plan'],

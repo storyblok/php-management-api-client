@@ -7,9 +7,13 @@ namespace Storyblok\ManagementApi\Data\Enum;
 enum Region: string
 {
     case EU = 'EU';
+
     case US = 'US';
+
     case AP = 'AP';
+
     case CA = 'CA';
+
     case CN = 'CN';
 
     /**
