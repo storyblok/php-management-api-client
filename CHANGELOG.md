@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5 - 2025-12-03
+- Added `AssetField` class
+- Fix `setAsset()`, accepting an `Asset` object for Asset Msanagement and converting into an `AssetField`
+
 ## 1.0.4 - 2025-10-02
 - Adding `hasTags()`, `tagListAsString()`, `tagListAsArray()` methods for stories
 - Adding `ownerId()`, `updatedAt()` methods to Space class
