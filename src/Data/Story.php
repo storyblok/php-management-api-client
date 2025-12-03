@@ -17,12 +17,14 @@ class Story extends StoryBaseData
         string $name,
         string $slug,
         StoryComponent $content,
+        array $properties = [],
     ) {
         $this->data = [];
         $this->data['name'] = $name;
         $this->data['slug'] = $slug;
         $this->data['content'] = $content->toArray();
-
+        unset($properties['name'], $properties['slug'], $properties['content']);
+        $this->data = [...$this->data, ...$properties];
     }
 
     /**
