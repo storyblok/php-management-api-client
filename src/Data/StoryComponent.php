@@ -81,7 +81,8 @@ class StoryComponent extends BaseData
 
     public function setAsset(string $field, Asset $asset): self
     {
-        $this->set($field, $asset->toArray());
+        $this->setAssetField($field, AssetField::makeFromAsset($asset));
+        ///$this->set($field, $asset->toArray());
         return $this;
     }
 

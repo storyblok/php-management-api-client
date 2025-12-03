@@ -214,7 +214,7 @@ test("upload one asset - failing on second step", function (): void {
     expect($data->id())->toBe("111");
 })->throws(Exception::class);
 
-test("Testing Loading asset, maging Asset Field", function (): void {
+test("Testing Loading asset, handling Asset Field", function (): void {
     $responses = [
         \mockResponse("one-asset", 200),
         \mockResponse("empty-asset", 404),
@@ -234,4 +234,33 @@ test("Testing Loading asset, maging Asset Field", function (): void {
         ->toBe("https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg")
         ->and($assetField->getString("title"))
         ->toBe("");
+});
+
+test("Testing Loading asset, using setAsset in components", function (): void {
+    $responses = [
+        \mockResponse("one-asset", 200),
+        \mockResponse("empty-asset", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $assetApi = new AssetApi($mapiClient, "222");
+
+    $storyblokResponse = $assetApi->get("111");
+
+    $asset = $storyblokResponse->data();
+
+    expect($asset->id())->toBe("111");
+
+    $content = new StoryComponent("article-page");
+    $content->set("title", "My New Article");
+    $content->setAsset("image", $asset);
+
+    expect($content->get("id"))->toBeNull();
+    //expect($content->id())->toBeNull();
+    expect($content->get("image.filename"))->toBe(
+        "https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg",
+    );
+    expect($content->get("image.fieldtype"))->toBe("asset");
+    expect($content->get("title"))->toBe("My New Article");
 });

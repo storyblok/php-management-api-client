@@ -6,10 +6,12 @@ namespace Storyblok\ManagementApi\Data\Fields;
 
 use Storyblok\ManagementApi\Data\Asset;
 use Storyblok\ManagementApi\Data\BaseData;
-use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
+use Storyblok\ManagementApi\Data\Traits\AssetMethods;
 
 class AssetField extends BaseData
 {
+    use AssetMethods;
+
     public function __construct(string $filename = "")
     {
         $this->data = [
@@ -50,5 +52,10 @@ class AssetField extends BaseData
         $field->set("is_external_url", false);
         $field->set("meta_data", (object) $asset->getArray("meta_data"));
         return $field;
+    }
+
+    public function isExternalUrl(): bool
+    {
+        return $this->getBoolean("is_external_url", false);
     }
 }

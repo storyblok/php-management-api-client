@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Data;
 
+use Storyblok\ManagementApi\Data\Traits\AssetMethods;
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 
 class Asset extends BaseData
 {
+    use AssetMethods;
+
     public function __construct(string $filename)
     {
         $this->data = [];
@@ -52,11 +55,6 @@ class Asset extends BaseData
         return $this->hasKey("filename");
     }
 
-    public function id(): string
-    {
-        return $this->getString("id", "");
-    }
-
     public function filenameCDN(): string
     {
         return str_replace(
@@ -64,11 +62,6 @@ class Asset extends BaseData
             "https://a.storyblok.com",
             $this->filename(),
         );
-    }
-
-    public function filename(): string
-    {
-        return $this->getString("filename", "");
     }
 
     public function contentType(): string
