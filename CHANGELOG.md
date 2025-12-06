@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.6 - WIP
+## 1.0.6 - 2025-12-06
 - Bulk retrieval: Calling `all()` now applies the retry mechanism to the first page as well. Fixes #23.
 - Testing: Added extensive test cases covering bulk retrieval and pagination.
 
