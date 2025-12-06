@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.6 - 2025-12-06
+- Bulk retrieval: Calling `all()` now applies the retry mechanism to the first page as well. Fixes #23.
+- Testing: Added extensive test cases covering bulk retrieval and pagination.
+
+## 1.0.5 - 2025-12-03
+- Added `AssetField` class
+- Fix `setAsset()`, accepting an `Asset` object for Asset Msanagement and converting into an `AssetField`
+
 ## 1.0.4 - 2025-10-02
 - Adding `hasTags()`, `tagListAsString()`, `tagListAsArray()` methods for stories
 - Adding `ownerId()`, `updatedAt()` methods to Space class

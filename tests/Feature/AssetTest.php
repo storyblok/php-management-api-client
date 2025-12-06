@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Storyblok\ManagementApi\Data\Assets;
+use Storyblok\ManagementApi\Data\Fields\AssetField;
+use Storyblok\ManagementApi\Data\StoryComponent;
 use Storyblok\ManagementApi\Endpoints\AssetApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\QueryParameters\AssetsParams;
@@ -11,7 +13,7 @@ use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
-test('Testing One asset, AssetData', function (): void {
+test("Testing One asset, AssetData", function (): void {
     $responses = [
         \mockResponse("one-asset", 200),
         \mockResponse("empty-asset", 404),
@@ -26,28 +28,34 @@ test('Testing One asset, AssetData', function (): void {
     $storyblokData = $storyblokResponse->data();
     expect($storyblokData->get("id"))
         ->toBe(111)
-        ->and($storyblokData->filenameCDN())->toBe("https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg")
-        ->and($storyblokResponse->getResponseStatusCode())->toBe(200)
-        ->and($storyblokData->contentType())->toBe("image/jpeg")
-        ->and($storyblokData->contentLength())->toBe(3094788)
-        ->and($storyblokData->createdAt())->toBe('2025-01-18')
-        ->and($storyblokData->updatedAt())->toBe('2025-01-19');
+        ->and($storyblokData->filenameCDN())
+        ->toBe("https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg")
+        ->and($storyblokResponse->getResponseStatusCode())
+        ->toBe(200)
+        ->and($storyblokData->contentType())
+        ->toBe("image/jpeg")
+        ->and($storyblokData->contentLength())
+        ->toBe(3094788)
+        ->and($storyblokData->createdAt())
+        ->toBe("2025-01-18")
+        ->and($storyblokData->updatedAt())
+        ->toBe("2025-01-19");
 
-    expect(
-        function () use ($assetApi, $storyblokData): void {
-            $storyblokResponse = $assetApi->get("111notexists");
-        }
-    )->toThrow(Exception::class, 'HTTP 404 returned for "https://example.com/v1/spaces/222/assets/111notexists');
+    expect(function () use ($assetApi): void {
+        $storyblokResponse = $assetApi->get("111notexists");
+    })->toThrow(
+        Exception::class,
+        'HTTP 404 returned for "https://example.com/v1/spaces/222/assets/111notexists',
+    );
 
     //$storyblokResponse = $assetApi->get("111notexists");
     //expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
     //expect($storyblokResponse->asJson())->toBe('["This record could not be found"]');
-
 });
 
-test('Testing list of assets, AssetsData', function (): void {
+test("Testing list of assets, AssetsData", function (): void {
     $responses = [
-        \mockResponse("list-assets", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("list-assets", 200, ["total" => 2, "per-page" => 25]),
         \mockResponse("empty-asset", 404),
     ];
 
@@ -64,16 +72,21 @@ test('Testing list of assets, AssetsData', function (): void {
     }
 
     expect($storyblokResponse->getResponseStatusCode())->toBe(200);
-    expect($storyblokResponse->getErrorMessage())->toBe("No error detected, HTTP Status Code: 200") ;
+    expect($storyblokResponse->getErrorMessage())->toBe(
+        "No error detected, HTTP Status Code: 200",
+    );
     expect($storyblokResponse->total())->toBe(2);
     expect($storyblokResponse->perPage())->toBe(25);
 
-    expect(function () use ($assetApi, $storyblokData): void {
-        $storyblokResponse = $assetApi->page(page: new \Storyblok\ManagementApi\QueryParameters\PaginationParams(page: 100000));
-
+    expect(function () use ($assetApi): void {
+        $storyblokResponse = $assetApi->page(
+            page: new \Storyblok\ManagementApi\QueryParameters\PaginationParams(
+                page: 100000,
+            ),
+        );
     })->toThrow(
         \Symfony\Component\HttpClient\Exception\ClientException::class,
-        'HTTP 404 returned for "https://example.com/v1/spaces/222/assets?page=100000&per_page=25'
+        'HTTP 404 returned for "https://example.com/v1/spaces/222/assets?page=100000&per_page=25',
     );
 
     //expect($storyblokResponse->getResponseStatusCode())->toBe(404) ;
@@ -85,11 +98,11 @@ test('Testing list of assets, AssetsData', function (): void {
     expect($assetsData)->toBeInstanceOf(Assets::class);
 });
 
-test('Testing list of assets, Params', function (): void {
+test("Testing list of assets, Params", function (): void {
     $responses = [
-        \mockResponse("list-assets", 200, ["total"=>2, "per-page" => 25 ]),
-        \mockResponse("list-assets", 200, ["total"=>200, "per-page" => 25 ]),
-        \mockResponse("list-assets", 200, ["total"=>200, "per-page" => 25 ]),
+        \mockResponse("list-assets", 200, ["total" => 2, "per-page" => 25]),
+        \mockResponse("list-assets", 200, ["total" => 200, "per-page" => 25]),
+        \mockResponse("list-assets", 200, ["total" => 200, "per-page" => 25]),
         \mockResponse("empty-asset", 404),
     ];
 
@@ -97,42 +110,36 @@ test('Testing list of assets, Params', function (): void {
     $mapiClient = ManagementApiClient::initTest($client);
     $assetApi = $mapiClient->assetApi("222");
 
-    $storyblokResponse = $assetApi->page(params: new AssetsParams(
-        inFolder: -1
-    ));
+    $storyblokResponse = $assetApi->page(
+        params: new AssetsParams(inFolder: -1),
+    );
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*in_folder=-1.*$/');
     expect($string)->toMatch('/.*page=1&per_page=25.*$/');
 
     $storyblokResponse = $assetApi->page(
-        params: new AssetsParams(
-            inFolder: -1
-        ),
-        page: new PaginationParams(5, 30)
+        params: new AssetsParams(inFolder: -1),
+        page: new PaginationParams(5, 30),
     );
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*in_folder=-1.*$/');
     expect($string)->toMatch('/.*page=5&per_page=30.*$/');
 
     $storyblokResponse = $assetApi->page(
-        params: new AssetsParams(
-            search: "something",
-            withTags: "aaa"
-        ),
-        page: new PaginationParams(5, 30)
+        params: new AssetsParams(search: "something", withTags: "aaa"),
+        page: new PaginationParams(5, 30),
     );
     $string = $storyblokResponse->getLastCalledUrl();
     expect($string)->toMatch('/.*search=something.*$/');
     expect($string)->toMatch('/.*with_tags=aaa.*$/');
     expect($string)->toMatch('/.*page=5&per_page=30.*$/');
-
 });
 
-test('testing asset payload', function (): void {
+test("testing asset payload", function (): void {
     $responses = [
-        \mockResponse("list-assets", 200, ["total"=>2, "per-page" => 25 ]),
-        \mockResponse("list-assets", 200, ["total"=>200, "per-page" => 25 ]),
-        \mockResponse("list-assets", 200, ["total"=>200, "per-page" => 25 ]),
+        \mockResponse("list-assets", 200, ["total" => 2, "per-page" => 25]),
+        \mockResponse("list-assets", 200, ["total" => 200, "per-page" => 25]),
+        \mockResponse("list-assets", 200, ["total" => 200, "per-page" => 25]),
         \mockResponse("empty-asset", 404),
     ];
 
@@ -146,9 +153,9 @@ test('testing asset payload', function (): void {
     expect($payload)->toHaveKey("filename");
 });
 
-test('delete one asset', function (): void {
+test("delete one asset", function (): void {
     $responses = [
-        \mockResponse("one-asset", 200, ["total"=>2, "per-page" => 25 ]),
+        \mockResponse("one-asset", 200, ["total" => 2, "per-page" => 25]),
         \mockResponse("empty-asset", 404),
     ];
 
@@ -159,18 +166,15 @@ test('delete one asset', function (): void {
     $response = $assetApi->delete($assetId);
     $data = $response->data();
     expect($data->id())->toBe("111");
-
 });
 
-test('upload one asset', function (): void {
+test("upload one asset", function (): void {
     $responses = [
-        \mockResponse('upload-asset-signed-response', 200),
+        \mockResponse("upload-asset-signed-response", 200),
 
-        \mockResponse('one-uploaded-asset', 200),
+        \mockResponse("one-uploaded-asset", 200),
     ];
-    $responsesAsset = [
-        \mockResponse('one-uploaded-asset', 200),
-    ];
+    $responsesAsset = [\mockResponse("one-uploaded-asset", 200)];
 
     $httpClient = new MockHttpClient($responses);
     $httpAssetClient = new MockHttpClient($responsesAsset);
@@ -180,16 +184,11 @@ test('upload one asset', function (): void {
     $response = $assetApi->upload("./tests/Feature/Data/image-test.png");
     $data = $response->data();
     expect($data->id())->toBe("111");
-
 });
 
-test('upload one asset - failing', function (): void {
-    $responses = [
-        \mockResponse('upload-asset-signed-response', 401),
-    ];
-    $responsesAsset = [
-        \mockResponse('one-uploaded-asset', 200),
-    ];
+test("upload one asset - failing", function (): void {
+    $responses = [\mockResponse("upload-asset-signed-response", 401)];
+    $responsesAsset = [\mockResponse("one-uploaded-asset", 200)];
 
     $httpClient = new MockHttpClient($responses);
     $httpAssetClient = new MockHttpClient($responsesAsset);
@@ -199,16 +198,11 @@ test('upload one asset - failing', function (): void {
     $response = $assetApi->upload("./tests/Feature/Data/image-test.png");
     $data = $response->data();
     expect($data->id())->toBe("111");
-
 })->throws(Exception::class);
 
-test('upload one asset - failing on second step', function (): void {
-    $responses = [
-        \mockResponse('upload-asset-signed-response', 200),
-    ];
-    $responsesAsset = [
-        \mockResponse('one-uploaded-asset', 400),
-    ];
+test("upload one asset - failing on second step", function (): void {
+    $responses = [\mockResponse("upload-asset-signed-response", 200)];
+    $responsesAsset = [\mockResponse("one-uploaded-asset", 400)];
 
     $httpClient = new MockHttpClient($responses);
     $httpAssetClient = new MockHttpClient($responsesAsset);
@@ -218,5 +212,55 @@ test('upload one asset - failing on second step', function (): void {
     $response = $assetApi->upload("./tests/Feature/Data/image-test.png");
     $data = $response->data();
     expect($data->id())->toBe("111");
-
 })->throws(Exception::class);
+
+test("Testing Loading asset, handling Asset Field", function (): void {
+    $responses = [
+        \mockResponse("one-asset", 200),
+        \mockResponse("empty-asset", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $assetApi = new AssetApi($mapiClient, "222");
+
+    $storyblokResponse = $assetApi->get("111");
+
+    $asset = $storyblokResponse->data();
+    $assetField = AssetField::makeFromAsset($asset);
+    expect($assetField->get("id"))
+        ->toBe(111)
+        ->and($assetField->get("filename"))
+        ->toBe("https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg")
+        ->and($assetField->getString("title"))
+        ->toBe("");
+});
+
+test("Testing Loading asset, using setAsset in components", function (): void {
+    $responses = [
+        \mockResponse("one-asset", 200),
+        \mockResponse("empty-asset", 404),
+    ];
+
+    $client = new MockHttpClient($responses);
+    $mapiClient = ManagementApiClient::initTest($client);
+    $assetApi = new AssetApi($mapiClient, "222");
+
+    $storyblokResponse = $assetApi->get("111");
+
+    $asset = $storyblokResponse->data();
+
+    expect($asset->id())->toBe("111");
+
+    $content = new StoryComponent("article-page");
+    $content->set("title", "My New Article");
+    $content->setAsset("image", $asset);
+
+    expect($content->get("id"))->toBeNull();
+    //expect($content->id())->toBeNull();
+    expect($content->get("image.filename"))->toBe(
+        "https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg",
+    );
+    expect($content->get("image.fieldtype"))->toBe("asset");
+    expect($content->get("title"))->toBe("My New Article");
+});

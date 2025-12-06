@@ -1,13 +1,13 @@
 {
     "stories": [
         {
-            "name": "My third post",
+            "name": "My first post",
             "created_at": "2024-02-08T16:26:24.425Z",
             "published_at": "2024-02-08T16:27:05.705Z",
             "id": 440448565,
             "uuid": "e656e146-f4ed-44a2-8017-013e5a9d9395",
-            "slug": "my-third-post",
-            "full_slug": "posts/my-third-post",
+            "slug": "my-first-post",
+            "full_slug": "posts/my-first-post",
             "sort_by_date": null,
             "position": 0,
             "tag_list": [],
@@ -22,38 +22,38 @@
             "alternates": [
                 {
                     "id": 440452827,
-                    "name": "Mein dritter Beitrag",
-                    "slug": "mein-dritter-beitrag",
+                    "name": "aaa",
+                    "slug": "bbb",
                     "published": true,
-                    "full_slug": "beitraege/mein-dritter-beitrag",
+                    "full_slug": "bbb",
                     "is_folder": false,
                     "parent_id": 440452826
                 }
             ],
-            "default_full_slug": "posts/my-third-post",
+            "default_full_slug": "posts/my-first-post",
             "translated_slugs": [
                 {
-                    "path": "posts/my-third-post",
+                    "path": "posts/my-first-post-fr",
                     "name": null,
                     "lang": "fr",
                     "published": null
                 },
                 {
-                    "path": "posts/mein-dritter-beitrag",
-                    "name": "Mein dritter Beitrag",
+                    "path": "posts/my-first-post-de",
+                    "name": "My First post in DE",
                     "lang": "de",
                     "published": true
                 }
             ]
         },
         {
-            "name": "My third post",
+            "name": "My second post",
             "created_at": "2024-02-08T16:26:24.425Z",
             "published_at": "2024-02-08T16:27:05.705Z",
             "id": 440448565,
             "uuid": "e656e146-f4ed-44a2-8017-013e5a9d9395",
-            "slug": "my-third-post",
-            "full_slug": "posts/my-third-post",
+            "slug": "my-second-post",
+            "full_slug": "posts/my-second-post",
             "sort_by_date": null,
             "position": 0,
             "tag_list": [],
@@ -68,25 +68,25 @@
             "alternates": [
                 {
                     "id": 440452827,
-                    "name": "Mein dritter Beitrag",
-                    "slug": "mein-dritter-beitrag",
+                    "name": "aaa",
+                    "slug": "bbb",
                     "published": true,
-                    "full_slug": "beitraege/mein-dritter-beitrag",
+                    "full_slug": "aaa",
                     "is_folder": false,
                     "parent_id": 440452826
                 }
             ],
-            "default_full_slug": "posts/my-third-post",
+            "default_full_slug": "posts/my-second-post",
             "translated_slugs": [
                 {
-                    "path": "posts/my-third-post",
+                    "path": "posts/my-second-post-fr",
                     "name": null,
                     "lang": "fr",
                     "published": null
                 },
                 {
-                    "path": "posts/mein-dritter-beitrag",
-                    "name": "Mein dritter Beitrag",
+                    "path": "posts/my-second-post-de",
+                    "name": "Second post in DE",
                     "lang": "de",
                     "published": true
                 }
