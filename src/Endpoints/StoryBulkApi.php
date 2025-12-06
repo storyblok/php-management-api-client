@@ -55,9 +55,11 @@ class StoryBulkApi extends EndpointSpace
      * @return \Generator<Story>
      * @throws StoryblokApiException
      */
-    public function all(?StoriesParams $params = null, ?QueryFilters $filters = null, int $itemsPerPage = self::DEFAULT_ITEMS_PER_PAGE): \Generator
-    {
-
+    public function all(
+        ?StoriesParams $params = null,
+        ?QueryFilters $filters = null,
+        int $itemsPerPage = self::DEFAULT_ITEMS_PER_PAGE,
+    ): \Generator {
         $totalPages = null;
         $retryCount = 0;
         $page = new PaginationParams(self::DEFAULT_PAGE, $itemsPerPage);
@@ -71,7 +73,11 @@ class StoryBulkApi extends EndpointSpace
                 );
 
                 if ($response->isOk()) {
-                    $totalPages = $this->handleSuccessfulResponse($response, $totalPages, $itemsPerPage);
+                    $totalPages = $this->handleSuccessfulResponse(
+                        $response,
+                        $totalPages,
+                        $itemsPerPage,
+                    );
                     yield from $this->getStoriesFromResponse($response);
                     $page->incrementPage();
                     $retryCount = 0;
@@ -80,13 +86,17 @@ class StoryBulkApi extends EndpointSpace
                     ++$retryCount;
                 }
             } catch (\Exception $e) {
-                $this->logger->error('Error fetching stories', [
-                    'error' => $e->getMessage(),
-                    'page' => $page->page(),
+                $this->logger->error("Error fetching stories", [
+                    "error" => $e->getMessage(),
+                    "page" => $page->page(),
                 ]);
-                throw new StoryblokApiException('Failed to fetch stories: ' . $e->getMessage(), 0, $e);
+                throw new StoryblokApiException(
+                    "Failed to fetch stories: " . $e->getMessage(),
+                    0,
+                    $e,
+                );
             }
-        } while ($page->page() <= $totalPages);
+        } while ($totalPages === null || $page->page() <= $totalPages);
     }
 
     /**
@@ -104,27 +114,35 @@ class StoryBulkApi extends EndpointSpace
             while (true) {
                 try {
                     $response = $this->api->create($storyData);
-                    $this->logger->warning('Story created ' . $response->getResponseStatusCode());
+                    $this->logger->warning(
+                        "Story created " . $response->getResponseStatusCode(),
+                    );
                     yield $response->data();
                     $retryCount = 0;
                     break;
                 } catch (\Exception $e) {
                     if ($e->getCode() === self::RATE_LIMIT_STATUS_CODE) {
                         if ($retryCount >= self::MAX_RETRIES) {
-                            $this->logger->error('Max retries reached while creating story', [
-                                'story_name' => $storyData->name(),
-                            ]);
+                            $this->logger->error(
+                                "Max retries reached while creating story",
+                                [
+                                    "story_name" => $storyData->name(),
+                                ],
+                            );
                             throw new StoryblokApiException(
-                                'Rate limit exceeded maximum retries',
+                                "Rate limit exceeded maximum retries",
                                 self::RATE_LIMIT_STATUS_CODE,
                             );
                         }
 
-                        $this->logger->warning('Rate limit reached while creating story, retrying...', [
-                            'retry_count' => $retryCount + 1,
-                            'max_retries' => self::MAX_RETRIES,
-                            'story_name' => $storyData->name(),
-                        ]);
+                        $this->logger->warning(
+                            "Rate limit reached while creating story, retrying...",
+                            [
+                                "retry_count" => $retryCount + 1,
+                                "max_retries" => self::MAX_RETRIES,
+                                "story_name" => $storyData->name(),
+                            ],
+                        );
 
                         $this->handleRateLimit();
                         ++$retryCount;
@@ -146,9 +164,8 @@ class StoryBulkApi extends EndpointSpace
         int $itemsPerPage,
     ): int {
         if ($totalPages === null) {
-
             $totalPages = (int) ceil($response->total() / $itemsPerPage);
-            $this->logger->info('Total stories found: ' . $response->total());
+            $this->logger->info("Total stories found: " . $response->total());
         }
 
         return $totalPages;
@@ -159,18 +176,24 @@ class StoryBulkApi extends EndpointSpace
      *
      * @throws StoryblokApiException
      */
-    private function handleErrorResponse(StoryblokResponseInterface $response, int $retryCount): void
-    {
-        if ($response->getResponseStatusCode() === self::RATE_LIMIT_STATUS_CODE) {
+    private function handleErrorResponse(
+        StoryblokResponseInterface $response,
+        int $retryCount,
+    ): void {
+        if (
+            $response->getResponseStatusCode() === self::RATE_LIMIT_STATUS_CODE
+        ) {
             if ($retryCount < self::MAX_RETRIES) {
                 $this->handleRateLimit();
             } else {
-                throw new StoryblokApiException('Rate limit exceeded maximum retries');
+                throw new StoryblokApiException(
+                    "Rate limit exceeded maximum retries",
+                );
             }
         } else {
-            $this->logger->error('API error', [
-                'status' => $response->getResponseStatusCode(),
-                'message' => $response->getErrorMessage(),
+            $this->logger->error("API error", [
+                "status" => $response->getResponseStatusCode(),
+                "message" => $response->getErrorMessage(),
             ]);
             throw new StoryblokApiException($response->getErrorMessage());
         }
@@ -181,7 +204,7 @@ class StoryBulkApi extends EndpointSpace
      */
     protected function handleRateLimit(): void
     {
-        $this->logger->warning('Rate limit reached, waiting before retry...');
+        $this->logger->warning("Rate limit reached, waiting before retry...");
         sleep(self::RETRY_DELAY);
     }
 
@@ -190,8 +213,9 @@ class StoryBulkApi extends EndpointSpace
      *
      * @return \Generator<int, Story>
      */
-    private function getStoriesFromResponse(StoryblokResponseInterface $response): \Generator
-    {
+    private function getStoriesFromResponse(
+        StoryblokResponseInterface $response,
+    ): \Generator {
         /** @var Stories $stories */
         $stories = $response->data();
         foreach ($stories as $story) {

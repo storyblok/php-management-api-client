@@ -22,10 +22,10 @@
             "alternates": [
                 {
                     "id": 440452827,
-                    "name": "Mein dritter Beitrag",
-                    "slug": "mein-dritter-beitrag",
+                    "name": "aaa",
+                    "slug": "bbb",
                     "published": true,
-                    "full_slug": "beitraege/mein-dritter-beitrag",
+                    "full_slug": "bbb",
                     "is_folder": false,
                     "parent_id": 440452826
                 }
@@ -33,27 +33,27 @@
             "default_full_slug": "posts/my-third-post",
             "translated_slugs": [
                 {
-                    "path": "posts/my-third-post",
+                    "path": "posts/my-third-post-fr",
                     "name": null,
                     "lang": "fr",
                     "published": null
                 },
                 {
-                    "path": "posts/mein-dritter-beitrag",
-                    "name": "Mein dritter Beitrag",
+                    "path": "posts/my-third-post-de",
+                    "name": "My third post in DE",
                     "lang": "de",
                     "published": true
                 }
             ]
         },
         {
-            "name": "My third post",
+            "name": "My fourth post",
             "created_at": "2024-02-08T16:26:24.425Z",
             "published_at": "2024-02-08T16:27:05.705Z",
             "id": 440448565,
             "uuid": "e656e146-f4ed-44a2-8017-013e5a9d9395",
-            "slug": "my-third-post",
-            "full_slug": "posts/my-third-post",
+            "slug": "my-fourth-post",
+            "full_slug": "posts/my-fourth-post",
             "sort_by_date": null,
             "position": 0,
             "tag_list": [],
@@ -68,25 +68,25 @@
             "alternates": [
                 {
                     "id": 440452827,
-                    "name": "Mein dritter Beitrag",
-                    "slug": "mein-dritter-beitrag",
+                    "name": "aaa",
+                    "slug": "bbb",
                     "published": true,
-                    "full_slug": "beitraege/mein-dritter-beitrag",
+                    "full_slug": "aaa",
                     "is_folder": false,
                     "parent_id": 440452826
                 }
             ],
-            "default_full_slug": "posts/my-third-post",
+            "default_full_slug": "posts/my-fourth-post",
             "translated_slugs": [
                 {
-                    "path": "posts/my-third-post",
+                    "path": "posts/my-fourth-post-fr",
                     "name": null,
                     "lang": "fr",
                     "published": null
                 },
                 {
-                    "path": "posts/mein-dritter-beitrag",
-                    "name": "Mein dritter Beitrag",
+                    "path": "posts/my-fourth-post-de",
+                    "name": "fourth post in DE",
                     "lang": "de",
                     "published": true
                 }
