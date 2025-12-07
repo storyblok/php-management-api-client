@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.7 - 2025-12-07
+- Added support for creating workflow stage changes via the Management API.
+
 ## 1.0.6 - 2025-12-06
 - Bulk retrieval: Calling `all()` now applies the retry mechanism to the first page as well. Fixes #23.
 - Testing: Added extensive test cases covering bulk retrieval and pagination.
