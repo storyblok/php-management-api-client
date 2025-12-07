@@ -766,7 +766,7 @@ echo "PREPARING STORY CONTENT DATA..." . PHP_EOL;
 $content = new StoryComponent("article-page");
 $content->set("title", "New Article");
 $content->set("body", "This is the content");
-$content->setAssetField("image", AssetField::makeFromAsset($assetCreated));
+$content->setAsset("image", $assetCreated);
 
 
 echo "INITIALIZING STORY OBJECT..." . PHP_EOL;
@@ -992,7 +992,8 @@ foreach ($changes as $key => $change) {
 
 ### Creating a new workflow stage change
 
-To create a new workflow stage change, you can use the `create` method:
+If you need to move a story to a specific workflow stage (using the workflow stage identifier), you must create a new stage change, for example, when moving a story from *Drafting* to *Reviewing*. To create a new workflow stage change, you can use the `create()` method:
+
 ```php
 $storyId = 12345;
 $workflowStageId = 54321;
@@ -1006,6 +1007,11 @@ $changeDataResponse = $changesApi->create(
     notify: true,
 );
 ```
+
+According to the structure of the Management API, when creating a new workflow stage change you can set the following parameters directly in the create method.
+- `WorkflowStageChange::makeFromParams()`: defines the stage change payload, including the story ID, target workflow stage ID, and optional attributes such as a due date.
+- `commentMessage`: a text message added to the stage change, useful for providing context or reviewer instructions.
+- `notify`: a boolean indicating whether Storyblok should send notifications to users associated with the workflow stage.
 
 ## Using the `ManagementApi` class
 
