@@ -766,7 +766,8 @@ echo "PREPARING STORY CONTENT DATA..." . PHP_EOL;
 $content = new StoryComponent("article-page");
 $content->set("title", "New Article");
 $content->set("body", "This is the content");
-$content->setAsset("image", $assetCreated);
+$content->setAssetField("image", AssetField::makeFromAsset($assetCreated));
+
 
 echo "INITIALIZING STORY OBJECT..." . PHP_EOL;
 $story = new Story(
@@ -939,6 +940,72 @@ $workflowStageData->setWorkflowId($workflowId);
 $response = $workflowStageApi->create($workflowStageData);
 ```
 
+## Handling workflow stage changes
+
+This endpoint provides programmatic control over workflow state transitions, enabling clients to update an entry’s workflow stage via the Management API with explicit metadata and transition rules.
+
+For using the `WorkflowStageChangeApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\WorkflowStageChangeApi;
+```
+
+For using the `WorkflowStageChange` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\WorkflowStageChange;
+```
+
+### Getting the `WorkflowStageChangeApi` instance
+
+To handle workflow stage transitions—such as retrieving or creating, stage-change records—you can start by getting an instance of `WorkflowStageChangeApi`, which provides access to all methods for managing workflow stage changes.
+
+
+```php
+use Storyblok\ManagementApi\ManagementApiClient;
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
+
+$spaceId = "spaceid";
+$changeApi = new WorkflowStageChangeApi($client, $spaceId);
+```
+
+### Getting the workflow stage changes list
+
+To get the workflow stage changes list you can use the `page` method from `WorkflowStageChangeApi` class and obtaining the `WorkflowStageChange` object.
+
+```php
+$pageNumber=1;
+$itemsPerPage= 5;
+$storyId = 12345; // use a valid Story identifier
+$response = $changeApi->page($storyId);
+// if you want, you can set page number and items per page (optionals, default are page 1 and 5 per page)
+// $response = $changeApi->page($storyId, $pageNumber, $itemsPerPage);
+echo "Total Workflow Stage Changes: " . $response->total() . PHP_EOL;
+$changes = $response->data();
+foreach ($changes as $key => $change) {
+    echo $change->id() . PHP_EOL;
+    echo $change->userId() . PHP_EOL;
+    echo $change->workflowStageId() . PHP_EOL;
+    echo "---" . PHP_EOL;
+}
+```
+
+### Creating a new workflow stage change
+
+To create a new workflow stage change, you can use the `create` method:
+```php
+$storyId = 12345;
+$workflowStageId = 54321;
+$changeDataResponse = $changesApi->create(
+    WorkflowStageChange::makeFromParams(
+        $storyId,
+        $workflowStageId
+        dueDate: date("Y-m-d H:i:s", strtotime("+3 days")),
+    ),
+    commentMessage: "Comment for stage",
+    notify: true,
+);
+```
 
 ## Using the `ManagementApi` class
 

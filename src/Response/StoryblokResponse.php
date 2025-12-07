@@ -23,7 +23,6 @@ class StoryblokResponse implements StoryblokResponseInterface
         ResponseInterface $response,
         string $dataClass = StoryblokData::class,
     ): StoryblokResponse {
-
         return new self($response, $dataClass);
     }
 
@@ -34,9 +33,8 @@ class StoryblokResponse implements StoryblokResponseInterface
 
     public function data(): StoryblokDataInterface
     {
-
         if (method_exists($this->dataClass, "makeFromResponse")) {
-            return ($this->dataClass)::makeFromResponse($this->toArray());
+            return $this->dataClass::makeFromResponse($this->toArray());
         }
 
         return $this->dataClass::make($this->toArray());
@@ -57,11 +55,13 @@ class StoryblokResponse implements StoryblokResponseInterface
         try {
             $headers = $this->response->getHeaders();
 
-            if (array_key_exists($headerName, $headers) && array_key_exists(0, $headers[$headerName])) {
+            if (
+                array_key_exists($headerName, $headers) &&
+                array_key_exists(0, $headers[$headerName])
+            ) {
                 return $headers[$headerName][0];
             }
         } catch (ClientExceptionInterface) {
-
         }
 
         return null;
@@ -75,7 +75,7 @@ class StoryblokResponse implements StoryblokResponseInterface
 
     public function total(): int|null
     {
-        return  $this->getHeaderInt("total");
+        return $this->getHeaderInt("total");
     }
 
     public function perPage(): int|null
@@ -90,43 +90,51 @@ class StoryblokResponse implements StoryblokResponseInterface
 
     public function getLastCalledUrl(): string
     {
-        if (is_scalar($this->response->getInfo('url'))) {
-            return strval($this->response->getInfo('url'));
+        if (is_scalar($this->response->getInfo("url"))) {
+            return strval($this->response->getInfo("url"));
         }
 
         return "";
-
     }
 
     public function isOk(): bool
     {
-        return $this->getResponseStatusCode() >= 200 && $this->getResponseStatusCode() < 300;
+        return $this->getResponseStatusCode() >= 200 &&
+            $this->getResponseStatusCode() < 300;
     }
 
     public function getErrorMessage(): string
     {
         if ($this->isOk()) {
-            return "No error detected, HTTP Status Code: " . $this->getResponseStatusCode();
+            return "No error detected, HTTP Status Code: " .
+                $this->getResponseStatusCode();
         }
 
         try {
             $data = $this->data();
             $message = $data->getString("error");
-            if ($message !== '' && $message !== '0') {
+            if ($message !== "" && $message !== "0") {
                 return $message;
             }
         } catch (\Exception) {
-
         }
 
         $message = match ($this->getResponseStatusCode()) {
-            400 => "Bad Request. Wrong format was sent (eg. XML instead of JSON).",
+            400
+                => "Bad Request. Wrong format was sent (eg. XML instead of JSON).",
             401 => "Unauthorized. No valid API key provided.",
             403 => "Forbidden. Insufficient permissions.",
-            404 => "Not Found. The requested resource doesn't exist (perhaps due to not yet published content entries).",
-            422 => "Unprocessable Entity. The request cannot be processed because it is invalid, for example, due to a missing required parameter or a duplicate key.",
-            429 => "Too many requests. Too many requests hit the API too quickly. We recommend an exponential backoff (throttling) of your requests.",
-            500, 502, 503, 504 => "Server error. We are unable to process your request.",
+            404
+                => "Not Found. The requested resource doesn't exist (perhaps due to not yet published content entries).",
+            422
+                => "Unprocessable Entity. The request cannot be processed because it is invalid, for example, due to a missing required parameter or a duplicate key.",
+            429
+                => "Too many requests. Too many requests hit the API too quickly. We recommend an exponential backoff (throttling) of your requests.",
+            500,
+            502,
+            503,
+            504
+                => "Server error. We are unable to process your request.",
             default => "Unknown error",
         };
         return $this->getResponseStatusCode() . " - " . $message;
@@ -147,7 +155,6 @@ class StoryblokResponse implements StoryblokResponseInterface
      */
     public function toArray(): array
     {
-
         return $this->response->toArray();
     }
 }

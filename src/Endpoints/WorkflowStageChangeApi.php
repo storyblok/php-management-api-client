@@ -5,58 +5,84 @@ declare(strict_types=1);
 namespace Storyblok\ManagementApi\Endpoints;
 
 use Storyblok\ManagementApi\Data\StoryblokData;
+use Storyblok\ManagementApi\Data\WorkflowStageChange;
+use Storyblok\ManagementApi\Data\WorkflowStageChanges;
 use Storyblok\ManagementApi\Data\WorkflowStageData;
 use Storyblok\ManagementApi\Data\WorkflowStagesData;
+use Storyblok\ManagementApi\QueryParameters\WorkflowStageChangesParams;
 use Storyblok\ManagementApi\QueryParameters\WorkflowStagesParams;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\WorkflowStageChangeResponse;
+use Storyblok\ManagementApi\Response\WorkflowStageChangesResponse;
 
 class WorkflowStageChangeApi extends EndpointSpace
 {
     /**
-     * @param string|string[]|null $byIds
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * Returns the WorkflowStageChangesResponse object with the list of workflow stage change objects.
      */
-    public function list(
-        string|int|null $withStory = null,
-    ): StoryblokResponseInterface {
+    public function page(
+        string|int $withStory,
+        int $page = 1,
+        int $perPage = 5,
+    ): WorkflowStageChangesResponse {
         $options = [];
-        $params = new WorkflowStageChangesParams(
-            $withStory,
-        );
-
+        $params = new WorkflowStageChangesParams($withStory);
+        $paramsArray = $params->toArray();
+        $paramsArray["page"] = $page;
+        $paramsArray["per_page"] = $perPage;
         $options = [
-            'query' => $params->toArray(),
+            "query" => $paramsArray,
         ];
-
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
-            '/v1/spaces/' . $this->spaceId . '/workflow_stage_changes',
+            "/v1/spaces/" . $this->spaceId . "/workflow_stage_changes",
             options: $options,
-            dataClass: WorkflowStageChangesData::class,
         );
+
+        return new WorkflowStageChangesResponse($httpResponse);
     }
 
-
-
+    /**
+     *
+     * @param int|int[] $assignSpaceRoleIds
+     * @param int|int[] $assignUserIds
+     */
     public function create(
-        StoryblokData $storyblokData,
-        string|int $release_id = null,
-        bool $notify = false,
+        WorkflowStageChange $workflowStageChange,
+        string|int|null $releaseId = "0",
+        ?bool $notify = false,
+        ?string $commentMessage = "",
+        int|array $assignSpaceRoleIds = [],
+        int|array $assignUserIds = [],
+    ): WorkflowStageChangeResponse {
+        $body = [
+            "workflow_stage_change" => $workflowStageChange->toArray(),
+        ];
+        if (!is_null($releaseId)) {
+            $body["release_id"] = $releaseId;
+        }
 
+        if (!is_null($notify)) {
+            $body["notify"] = $notify;
+        }
 
-    ): StoryblokResponseInterface
-    {
-        return $this->makeRequest(
+        if (!is_null($commentMessage)) {
+            $body["comment"] = [];
+            $body["comment"]["message"] = $commentMessage;
+        }
+
+        $body["assign"] = [];
+        $body["assign"]["space_role_ids"] = $assignSpaceRoleIds;
+        $body["assign"]["user_ids"] = $assignUserIds;
+
+        $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . '/workflow_stage_changes',
+            "/v1/spaces/" . $this->spaceId . "/workflow_stage_changes",
             [
-                "body" => [
-                    "workflow_stage_change" => $storyblokData->toArray(),
-                ],
+                "body" => $body,
             ],
-            dataClass: WorkflowStageChangeData::class,
         );
+
+        return new WorkflowStageChangeResponse($httpResponse);
     }
-
-
 }
