@@ -1,0 +1,20 @@
+{
+    "workflow_stage_changes": [
+        {
+            "id": 120237307933055,
+            "workflow_stage_id": 119522102426879,
+            "created_at": "2025-12-06T18:06:51.506Z",
+            "user_id": 118830,
+            "workflow_id": 119522102316113,
+            "due_date": "2025-12-06T23:00:00.000Z"
+        },
+        {
+            "id": 119522166831681,
+            "workflow_stage_id": 119522102377726,
+            "created_at": "2025-12-04T17:36:56.510Z",
+            "user_id": 118830,
+            "workflow_id": 119522102316113,
+            "due_date": null
+        }
+    ]
+}
