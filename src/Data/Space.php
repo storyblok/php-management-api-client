@@ -16,7 +16,7 @@ class Space extends BaseData
     public function __construct(string $name)
     {
         $this->data = [];
-        $this->data['name'] = $name;
+        $this->data["name"] = $name;
     }
 
     /**
@@ -35,47 +35,70 @@ class Space extends BaseData
         }
 
         return $space;
-
     }
 
     public function setName(string $name): void
     {
-        $this->set('name', $name);
+        $this->set("name", $name);
     }
 
     public function setDomain(string $domain): void
     {
-        $this->set('domain', $domain);
+        $this->set("domain", $domain);
     }
 
     public function name(): string
     {
-        return $this->getString('name', "");
+        return $this->getString("name", "");
     }
 
     public function region(): string
     {
-        return $this->getString('region', "");
+        return $this->getString("region", "");
     }
 
     public function id(): string
     {
-        return $this->getString('id', "");
+        return $this->getString("id", "");
+    }
+
+    /**
+     * Retrieves the domain associated with the Space.
+     *
+     * Returns the value stored under the "domain" key as a string.
+     *
+     * @return string The domain name.
+     */
+    public function domain(): string
+    {
+        return $this->getString("domain");
+    }
+
+    /**
+     * Retrieves the first token associated with the Space.
+     *
+     * Returns the value stored under the "first_token" key.
+     *
+     * @return string The first token, or an empty string if none is defined.
+     */
+    public function firstToken(): string
+    {
+        return $this->getString("first_token", "");
     }
 
     public function createdAt(): null|string
     {
-        return $this->getFormattedDateTime('created_at', "", format: "Y-m-d");
+        return $this->getFormattedDateTime("created_at", "", format: "Y-m-d");
     }
 
     public function updatedAt(): null|string
     {
-        return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
+        return $this->getFormattedDateTime("updated_at", "", format: "Y-m-d");
     }
 
     public function planLevel(): string
     {
-        return $this->getString('plan_level');
+        return $this->getString("plan_level");
     }
 
     public function planDescription(): null|string
@@ -85,6 +108,31 @@ class Space extends BaseData
 
     public function ownerId(): string
     {
-        return $this->getString('owner_id', "");
+        return $this->getString("owner_id", "");
+    }
+
+    /**
+     * Determines whether the current entity is owned by the given user.
+     *
+     * Compares the space's owner ID with the ID of the provided user instance.
+     *
+     * @param User $user The user to check ownership against.
+     * @return bool True if the user owns the entity, false otherwise.
+     */
+    public function isOwnedByUser(User $user): bool
+    {
+        return $this->ownerId() === $user->id();
+    }
+
+    /**
+     * Checks whether the entity is marked as a demo instance.
+     *
+     * Retrieves the `is_demo` flag and returns its boolean value.
+     *
+     * @return bool True if the entity is marked as a demo, false otherwise.
+     */
+    public function isDemo(): bool
+    {
+        return $this->getBoolean("is_demo", false);
     }
 }

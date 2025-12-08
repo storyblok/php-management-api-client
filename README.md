@@ -185,13 +185,23 @@ $spaceId = "12345";
 $spaceApi = new SpaceApi($clientEU);
 $space = $spaceApi->get($spaceId)->data();
 
-printf(" The name for the Space id : %s is : %s . Plan: %s - %s" ,
+printf(
+    "Space ID: %s\n
+    Name: %s\n
+    Plan: %s (%s)\n
+    Domain: %s\n
+    Is Demo: %s\n
+    First Token: %s\n",
     $spaceId,
     $space->name(),
     $space->planLevel(),
-    $space->planDescription()
+    $space->planDescription(),
+    $space->domain(),
+    $space->isDemo() ? "yes" : "no",
+    $space->firstToken()
 );
 ```
+
 ### Update Space settings
 
 You can edit space settings using the `update()` method.
