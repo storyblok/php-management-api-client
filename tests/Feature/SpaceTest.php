@@ -62,7 +62,7 @@ test("Testing One space, Space", function (): void {
         ->toBeFalse()
         ->and($storyblokResponse->getResponseStatusCode())
         ->toBe(200);
-
+    expect($storyblokData->environments())->toHaveCount(0);
     expect(function () use ($spaceApi): void {
         $storyblokResponse = $spaceApi->get("111notexists");
     })->toThrow(

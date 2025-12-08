@@ -86,6 +86,21 @@ class Space extends BaseData
         return $this->getString("first_token", "");
     }
 
+    public function environments(): SpaceEnvironments
+    {
+        return SpaceEnvironments::make($this->getArray("environments"));
+    }
+
+    public function addEnvironment(
+        SpaceEnvironment $spaceEnvironment,
+    ): SpaceEnvironments {
+        $environments = $this->getArray("environments");
+        $environments[] = $spaceEnvironment->toArray();
+        $this->set("environments", $environments);
+
+        return SpaceEnvironments::make($environments);
+    }
+
     public function createdAt(): null|string
     {
         return $this->getFormattedDateTime("created_at", "", format: "Y-m-d");
@@ -134,5 +149,13 @@ class Space extends BaseData
     public function isDemo(): bool
     {
         return $this->getBoolean("is_demo", false);
+    }
+
+    /**
+     * Remove the Demo mode flag
+     */
+    public function removeDemoMode(): void
+    {
+        $this->set("is_demo", false);
     }
 }

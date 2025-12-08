@@ -202,6 +202,37 @@ printf(
 );
 ```
 
+### Environments / Preview URLs
+
+Preview URLs allow you to define multiple environments (domains or locations) for quickly switching between different preview targets inside the story editor—such as local development, staging, or production.
+
+#### Listing Environments
+
+You can retrieve all configured environments for a space and iterate through them:
+
+```php
+foreach ($space->environments() as $key => $environment) {
+    echo "Name: " . $environment->name() . PHP_EOL;
+    echo "Location: " . $environment->location() . PHP_EOL;
+}
+```
+
+#### Adding a New Environment (Preview URL)
+
+To add a new preview environment, create a `SpaceEnvironment` instance and attach it to the space:
+
+```php
+$previewEnvironment = new SpaceEnvironment(
+    "Local Development",
+    $previewURLlocalhost
+);
+
+$editSpace->addEnvironment($previewEnvironment);
+```
+
+You can repeat this for any number of environments—such as staging, QA, production—allowing editors to switch preview contexts seamlessly.
+
+
 ### Update Space settings
 
 You can edit space settings using the `update()` method.
