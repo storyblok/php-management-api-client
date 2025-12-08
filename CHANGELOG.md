@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8 - 2025-12-08
+- Space class improvement, added some helper methos like `isOwnedByUser()`, `domain()`, `isDemo()`, `fistToken()`, `removeDemoMode()`
+- Added Space methods for handling environments/Preview URLs
+
 ## 1.0.7 - 2025-12-07
 - Added support for creating workflow stage changes via the Management API.
 
