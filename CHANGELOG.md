@@ -2,9 +2,9 @@
 
 ## 1.0.9 - 2025-12-10
 - Story management improvements:
-    - Adding `publish` parameter in `create()` method for publishing the story immediatly
+    - Adding `publish` parameter in `create()` method for publishing the story immediately
     - Adding `releaseId` parameter in the `create()` method for creating the story in a specific release
-    - Adding getter and setter method for parent folder in Story. `setFolderId()` and `folderId()`
+    - Adding getter and setter methods for the parent folder in Story. `setFolderId()` and `folderId()`
 
 
 ## 1.0.8 - 2025-12-08

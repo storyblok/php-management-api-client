@@ -463,7 +463,7 @@ try{
 echo PHP_EOL;
 ```
 
-If you want to publish a story immediatly while you are creating it, you can set as `true` the second parameter (`publish`) of the `create()` method:
+If you want to publish a story immediately while you are creating it, you can set the second parameter (`publish`) of the `create()` method to `true`:
 
 ```php
 $storyCreated = $storyApi->create($story, true)->data();
