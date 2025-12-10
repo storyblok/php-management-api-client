@@ -19,10 +19,9 @@ class Story extends StoryBaseData
         StoryComponent $content,
     ) {
         $this->data = [];
-        $this->data['name'] = $name;
-        $this->data['slug'] = $slug;
-        $this->data['content'] = $content->toArray();
-
+        $this->data["name"] = $name;
+        $this->data["slug"] = $slug;
+        $this->data["content"] = $content->toArray();
     }
 
     /**
@@ -32,7 +31,14 @@ class Story extends StoryBaseData
     public static function make(array $data = []): self
     {
         $dataObject = new StoryblokData($data);
-        if (!($dataObject->hasKey('name') && $dataObject->hasKey('slug') && $dataObject->hasKey('content') && $dataObject->hasKey('content.component'))) {
+        if (
+            !(
+                $dataObject->hasKey("name") &&
+                $dataObject->hasKey("slug") &&
+                $dataObject->hasKey("content") &&
+                $dataObject->hasKey("content.component")
+            )
+        ) {
             // is not valid
         }
 
@@ -41,62 +47,71 @@ class Story extends StoryBaseData
         $story = new Story(
             $dataObject->getString("name"),
             $dataObject->getString("slug"),
-            $content
+            $content,
         );
         $story->setData($dataObject->toArray());
         // validate
-        if (! $story->isValid()) {
+        if (!$story->isValid()) {
             throw new StoryblokFormatException("Story is not valid");
         }
 
         return $story;
-
     }
 
     public function setName(string $name): void
     {
-        $this->set('name', $name);
+        $this->set("name", $name);
     }
 
     public function setSlug(string $slug): void
     {
-        $this->set('slug', $slug);
+        $this->set("slug", $slug);
     }
 
     public function setCreatedAt(string $createdAt): void
     {
-        $this->set('created_at', $createdAt);
+        $this->set("created_at", $createdAt);
     }
 
     public function setContent(StoryComponent $content): void
     {
-        $this->set('content', $content->toArray());
+        $this->set("content", $content->toArray());
     }
 
     public function content(): StoryComponent
     {
-        $contentArray = $this->getArray('content');
+        $contentArray = $this->getArray("content");
         return StoryComponent::make($contentArray);
     }
 
     public function name(): string
     {
-        return $this->getString('name');
+        return $this->getString("name");
+    }
+
+    /**
+     * Get the folder id for the Story.
+     *
+     * @return int the identifier of the parent folder, 0 if the story is stored at the root level
+     */
+    public function folderId(): int
+    {
+        return (int) $this->getInt("parent_id", 0);
     }
 
     public function createdAt(string $format = "Y-m-d"): null|string
     {
-        return $this->getFormattedDateTime('created_at', "", format: $format);
+        return $this->getFormattedDateTime("created_at", "", format: $format);
     }
 
     public function publishedAt(string $format = "Y-m-d"): null|string
     {
-        return $this->getFormattedDateTime('published_at', "", format: $format);
+        return $this->getFormattedDateTime("published_at", "", format: $format);
     }
 
     public function updatedAt(): null|string
     {
-        return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
+        return $this->getFormattedDateTime("updated_at", "", format: "Y-m-d");
     }
 
     public function setContentType(string $componentName): self
@@ -112,12 +127,12 @@ class Story extends StoryBaseData
 
     public function id(): string
     {
-        return $this->getString('id');
+        return $this->getString("id");
     }
 
     public function uuid(): string
     {
-        return $this->getString('uuid');
+        return $this->getString("uuid");
     }
 
     /**
@@ -125,11 +140,15 @@ class Story extends StoryBaseData
      */
     public function isValid(): bool
     {
-        if (!$this->hasKey('name') || in_array($this->getString('name'), ['', '0'], true)) {
+        if (
+            !$this->hasKey("name") ||
+            in_array($this->getString("name"), ["", "0"], true)
+        ) {
             return false;
         }
 
-        return $this->hasKey('slug') && !in_array($this->getString('slug'), ['', '0'], true);
+        return $this->hasKey("slug") &&
+            !in_array($this->getString("slug"), ["", "0"], true);
     }
 
     /**
@@ -138,9 +157,7 @@ class Story extends StoryBaseData
      */
     public function setTags(Tags $tags): self
     {
-
         return $this->setTagsFromArray($tags->getTagsArray());
-
     }
 
     /**
@@ -151,6 +168,18 @@ class Story extends StoryBaseData
     public function setTagsFromArray(array $tagsArray): self
     {
         $this->set("tag_list", $tagsArray);
+        return $this;
+    }
+
+    /**
+     * Set the folder for the Story.
+     *
+     * @param int|string $folderId identifier of the Folder where to store the story
+     * @return $this
+     */
+    public function setFolderId(int|string $folderId): self
+    {
+        $this->set("parent_id", (int) $folderId);
         return $this;
     }
 }

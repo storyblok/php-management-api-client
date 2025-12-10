@@ -63,7 +63,7 @@ class StoryApi extends EndpointSpace
         $this->validatePaginationParams($page);
 
         $options = [
-            'query' => array_merge(
+            "query" => array_merge(
                 $params->toArray(),
                 $queryFilters->toArray(),
                 $page->toArray(),
@@ -73,7 +73,7 @@ class StoryApi extends EndpointSpace
         $httpResponse = $this->makeHttpRequest(
             "GET",
             $this->buildStoriesEndpoint(),
-            options: $options
+            options: $options,
         );
         return new StoriesResponse($httpResponse);
     }
@@ -92,34 +92,44 @@ class StoryApi extends EndpointSpace
             $this->buildStoryEndpoint($storyId),
         );
         return new StoryResponse($httpResponse);
-
     }
 
     /**
      * Creates a new story
-     *
-     * @throws InvalidStoryDataException
-     * @throws StoryblokApiException
-     * @throws TransportExceptionInterface
+     * @param bool $publish set as true if you want to publish the story immediatly
+     * @param int $releaseId set the release id if you want to create the story in a specific release
      */
-    public function create(Story $storyData): StoryResponse
-    {
+    public function create(
+        Story $storyData,
+        bool $publish = false,
+        int $releaseId = 0,
+    ): StoryResponse {
         $this->validateStoryData($storyData);
 
         if (!$storyData->hasKey("content")) {
-            $storyData->setContent(new StoryComponent($storyData->defaultContentType()));
+            $storyData->setContent(
+                new StoryComponent($storyData->defaultContentType()),
+            );
+        }
+
+        $payload = ["story" => $storyData->toArray()];
+        if ($publish) {
+            $payload["publish"] = 1;
+        }
+
+        if ($releaseId > 0) {
+            $payload["release_id"] = $releaseId;
         }
 
         $httpResponse = $this->makeHttpRequest(
             "POST",
             $this->buildStoriesEndpoint(),
             [
-                "body" => json_encode(["story" => $storyData->toArray()]),
-            ]
+                "body" => json_encode($payload),
+            ],
         );
 
         return new StoryResponse($httpResponse);
-
     }
 
     /**
@@ -137,7 +147,7 @@ class StoryApi extends EndpointSpace
             $this->buildStoryEndpoint($storyId),
             [
                 "body" => json_encode(["story" => $storyData->toArray()]),
-            ]
+            ],
         );
         return new StoryResponse($httpResponse);
     }
@@ -161,12 +171,10 @@ class StoryApi extends EndpointSpace
 
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            sprintf('%s/%s/publish', $this->buildStoriesEndpoint(), $storyId),
+            sprintf("%s/%s/publish", $this->buildStoriesEndpoint(), $storyId),
             [
-
                 "query" => $queryParams,
-
-            ]
+            ],
         );
         return new StoryResponse($httpResponse);
     }
@@ -186,12 +194,10 @@ class StoryApi extends EndpointSpace
 
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            sprintf('%s/%s/unpublish', $this->buildStoriesEndpoint(), $storyId),
+            sprintf("%s/%s/unpublish", $this->buildStoriesEndpoint(), $storyId),
             [
-
                 "query" => $queryParams,
-
-            ]
+            ],
         );
         return new StoryResponse($httpResponse);
     }
@@ -204,11 +210,15 @@ class StoryApi extends EndpointSpace
     private function validatePaginationParams(PaginationParams $page): void
     {
         if ($page->page() < 1) {
-            throw new \InvalidArgumentException('Page number must be greater than 0');
+            throw new \InvalidArgumentException(
+                "Page number must be greater than 0",
+            );
         }
 
         if ($page->perPage() < 1) {
-            throw new \InvalidArgumentException('Items per page must be greater than 0');
+            throw new \InvalidArgumentException(
+                "Items per page must be greater than 0",
+            );
         }
     }
 
@@ -219,8 +229,8 @@ class StoryApi extends EndpointSpace
      */
     private function validateStoryId(string $storyId): void
     {
-        if ($storyId === '' || $storyId === '0') {
-            throw new \InvalidArgumentException('Story ID cannot be empty');
+        if ($storyId === "" || $storyId === "0") {
+            throw new \InvalidArgumentException("Story ID cannot be empty");
         }
     }
 
@@ -232,7 +242,7 @@ class StoryApi extends EndpointSpace
     private function validateStoryData(Story $storyData): void
     {
         if (!$storyData->isValid()) {
-            throw new InvalidStoryDataException('Invalid story data provided');
+            throw new InvalidStoryDataException("Invalid story data provided");
         }
     }
 
@@ -241,7 +251,7 @@ class StoryApi extends EndpointSpace
      */
     private function buildStoriesEndpoint(): string
     {
-        return sprintf('/v1/spaces/%s/stories', $this->spaceId);
+        return sprintf("/v1/spaces/%s/stories", $this->spaceId);
     }
 
     /**
@@ -249,6 +259,6 @@ class StoryApi extends EndpointSpace
      */
     private function buildStoryEndpoint(string $storyId): string
     {
-        return sprintf('%s/%s', $this->buildStoriesEndpoint(), $storyId);
+        return sprintf("%s/%s", $this->buildStoriesEndpoint(), $storyId);
     }
 }
