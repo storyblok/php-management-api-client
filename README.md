@@ -463,6 +463,18 @@ try{
 echo PHP_EOL;
 ```
 
+If you want to publish a story immediatly while you are creating it, you can set as `true` the second parameter (`publish`) of the `create()` method:
+
+```php
+$storyCreated = $storyApi->create($story, true)->data();
+```
+
+If you want to create a story in a specific release, you can set the third parameter (`releaseId`) of the `create()` method:
+
+```php
+$storyCreated = $storyApi->create($story, releaseId: $releaseId)->data();
+```
+
 ### Publishing a story
 
 For publishing a story by the story identifier you can use the `publish` method:
