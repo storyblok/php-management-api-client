@@ -20,6 +20,7 @@ use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Component\HttpClient\Retry\GenericRetryStrategy;
 use Symfony\Component\HttpClient\RetryableHttpClient;
 
 /**
@@ -46,7 +47,10 @@ class ManagementApiClient
             StoryblokUtils::baseUriFromRegionForMapi($region->value);
         $httpClient = HttpClient::create();
         if ($shouldRetry) {
-            $httpClient = new RetryableHttpClient($httpClient);
+            $httpClient = new RetryableHttpClient(
+                $httpClient,
+                new GenericRetryStrategy([429]),
+            );
         }
 
         $this->httpClient = $httpClient->withOptions([
