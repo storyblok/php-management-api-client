@@ -20,6 +20,8 @@ use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Symfony\Component\HttpClient\Retry\GenericRetryStrategy;
+use Symfony\Component\HttpClient\RetryableHttpClient;
 
 /**
  * Class MapiClient
@@ -38,18 +40,27 @@ class ManagementApiClient
         string $personalAccessToken,
         Region $region = Region::EU,
         ?string $baseUri = null,
+        bool $shouldRetry = false,
     ) {
-        $baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region->value);
-        $this->httpClient = HttpClient::create()
-            ->withOptions([
-                'base_uri' => $baseUriMapi,
-                'headers' =>
-                    [
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json',
-                        'Authorization' => $personalAccessToken,
-                    ],
-            ]);
+        $baseUriMapi =
+            $baseUri ??
+            StoryblokUtils::baseUriFromRegionForMapi($region->value);
+        $httpClient = HttpClient::create();
+        if ($shouldRetry) {
+            $httpClient = new RetryableHttpClient(
+                $httpClient,
+                new GenericRetryStrategy([429]),
+            );
+        }
+
+        $this->httpClient = $httpClient->withOptions([
+            "base_uri" => $baseUriMapi,
+            "headers" => [
+                "Accept" => "application/json",
+                "Content-Type" => "application/json",
+                "Authorization" => $personalAccessToken,
+            ],
+        ]);
         $this->httpAssetClient = HttpClient::create();
     }
 
@@ -68,19 +79,20 @@ class ManagementApiClient
         HttpClientInterface $httpClient,
         ?HttpClientInterface $httpAssetClient = null,
     ): self {
-
         $client = new self("");
         //$baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region);
 
         $client->httpClient = $httpClient;
-        if ($httpAssetClient instanceof \Symfony\Contracts\HttpClient\HttpClientInterface) {
+        if (
+            $httpAssetClient instanceof
+            \Symfony\Contracts\HttpClient\HttpClientInterface
+        ) {
             $client->httpAssetClient = $httpAssetClient;
         } else {
             $client->httpAssetClient = new MockHttpClient();
         }
 
         return $client;
-
     }
 
     public function httpClient(): HttpClientInterface
@@ -93,22 +105,18 @@ class ManagementApiClient
         return $this->httpAssetClient;
     }
 
-    public function storyApi(string|int $spaceId, ?LoggerInterface $logger = null): StoryApi
-    {
-        return new StoryApi(
-            $this,
-            $spaceId,
-            $logger ?? new NullLogger(),
-        );
+    public function storyApi(
+        string|int $spaceId,
+        ?LoggerInterface $logger = null,
+    ): StoryApi {
+        return new StoryApi($this, $spaceId, $logger ?? new NullLogger());
     }
 
-    public function storyBulkApi(string|int $spaceId, ?LoggerInterface $logger = null): StoryBulkApi
-    {
-        return new StoryBulkApi(
-            $this,
-            $spaceId,
-            $logger ?? new NullLogger(),
-        );
+    public function storyBulkApi(
+        string|int $spaceId,
+        ?LoggerInterface $logger = null,
+    ): StoryBulkApi {
+        return new StoryBulkApi($this, $spaceId, $logger ?? new NullLogger());
     }
 
     public function assetApi(string|int $spaceId): AssetApi
@@ -131,13 +139,11 @@ class ManagementApiClient
         return new WorkflowStageApi($this, $spaceId);
     }
 
-    public function componentApi(string|int $spaceId, ?LoggerInterface $logger = null): ComponentApi
-    {
-        return new ComponentApi(
-            $this,
-            $spaceId,
-            $logger ?? new NullLogger(),
-        );
+    public function componentApi(
+        string|int $spaceId,
+        ?LoggerInterface $logger = null,
+    ): ComponentApi {
+        return new ComponentApi($this, $spaceId, $logger ?? new NullLogger());
     }
 
     public function managementApi(): ManagementApi

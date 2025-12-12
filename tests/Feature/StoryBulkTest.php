@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use Pest\Logging\TeamCity\TeamCityLogger;
-use PHPUnit\Logging\JUnit\JunitXmlLogger;
-use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
@@ -12,7 +9,6 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Psr\Log\NullLogger;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 
 // This is a mock class to eliminate the sleep from the rate limit handling
 class TestStoryBulkApi extends \Storyblok\ManagementApi\Endpoints\StoryBulkApi
