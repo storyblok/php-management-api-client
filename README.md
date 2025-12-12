@@ -44,7 +44,6 @@ require 'vendor/autoload.php';
 
 use Storyblok\ManagementApi\ManagementApiClient;
 
-/** @var ManagementApiClient $client */
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
 ```
 
@@ -53,6 +52,33 @@ For using the `ManagementApiClient` class you have to import:
 ```php
 use Storyblok\ManagementApi\ManagementApiClient;
 ```
+
+### Automatic 429 retry handling
+
+The `ManagementApiClient` supports automatic retry handling when the API returns *HTTP 429 – Too Many Requests*.
+
+To enable this behavior, pass the `shouldRetry` flag when creating the client.
+Under the hood, this activates Symfony’s `RetriableHttpClient`, which automatically retries failed requests using a backoff strategy.
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Storyblok\ManagementApi\ManagementApiClient;
+
+$client = new ManagementApiClient(
+    token: $storyblokPersonalAccessToken,
+    shouldRetry: true
+);
+```
+
+When enabled:
+
+- Requests returning **429** are retried automatically
+- Backoff logic is handled internally by the Symfony HTTP Client
+- No custom retry code is required in your application
+
+This feature helps maintain stability when hitting Storyblok API rate limits and reduces the need for manual retry logic.
 
 ### Setting the space region
 

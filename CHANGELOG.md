@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.10 - 2025-12-12
+- Introduce `shouldRetry` flag for automatic 429 retry handling
+
 ## 1.0.9 - 2025-12-10
 - Story management improvements:
     - Adding `publish` parameter in `create()` method for publishing the story immediately
