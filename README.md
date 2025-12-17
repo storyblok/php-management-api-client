@@ -513,8 +513,6 @@ $storyApi->publish($storyId);
 ### Creating stories from large CSV files (streamed, memory-efficient)
 When importing stories from a CSV file, especially very large ones, one of the approaches is to stream the CSV file using generators and create stories one by one using the Management API client. This keeps memory usage low and allows the client’s built-in retry logic to gracefully handle potential 429 Too Many Requests responses, which can occur multiple times when processing large CSV files.
 
-A better approach is to stream the CSV file using generators and create stories one by one using the Management API client. This keeps memory usage low and allows the client’s built-in retry logic to gracefully handle potential `429 Too Many Requests` responses, something that can happen multiple times when processing huge CSV files.
-
 Example CSV file (`stories.csv`):
 
 ```csv
