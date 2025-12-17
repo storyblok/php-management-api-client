@@ -510,10 +510,12 @@ $storyApi->publish($storyId);
 ```
 
 
-### Creating stories in bulk
-You can create multiple stories using the `createStories()` method (in the `StoryBulkApi` class), which processes an array of stories while managing rate limits through a retry mechanism that respects the '429' status code.
+### Creating stories from large CSV files (streamed, memory-efficient)
+When importing stories from a CSV file, especially very large ones, loading all rows into memory and sending them in one bulk request can be inefficient and error-prone.
 
-For example, if you have a CSV file containing content for new stories, you can use this method to efficiently create them.
+A better approach is to stream the CSV file using generators and create stories one by one using the Management API client. This keeps memory usage low and allows the client’s built-in retry logic to gracefully handle potential `429 Too Many Requests` responses, something that can happen multiple times when processing huge CSV files.
+
+Example CSV file (`stories.csv`):
 
 ```csv
 myslug-001;My Story 1 BULK;page
@@ -521,32 +523,110 @@ myslug-002;My Story 2 BULK;page
 myslug-003;My Story 3 BULK;page
 ```
 
-Next, you can implement a script to load and parse the CSV file. In this case, we use `SplFileObject` and then call the `createStories` method to process the data:
+#### Streaming the CSV file with a generator
+
+Instead of reading the entire file into an array, we use a generator to yield one row at a time:
 
 ```php
+function csvGenerator(string $filePath, string $delimiter = ";"): Generator
+{
+    $file = new SplFileObject($filePath);
+    $file->setFlags(
+        SplFileObject::READ_CSV |
+            SplFileObject::SKIP_EMPTY |
+            SplFileObject::DROP_NEW_LINE,
+    );
+    $file->setCsvControl($delimiter, escape: "\\");
+
+    foreach ($file as $row) {
+        if (!$row || count($row) < 3) {
+            continue;
+        }
+
+        yield $row;
+    }
+}
+
+```
+
+#### Creating stories line-by-line
+
+Each CSV row is converted into a `Story` and sent immediately to the Storyblok Management API. This avoids large in-memory arrays and ensures that retries for `429` responses are handled cleanly per request.
+
+```php
+<?php
 
 use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\Data\StoryComponent;
-use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
+use Storyblok\ManagementApi\Endpoints\StoryApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 
-$client = new ManagementApiClient($storyblokPersonalAccessToken);
-$storyBulkApi = new StoryBulkApi($client, $spaceId);
-$file = new SplFileObject("stories.csv");
-$file->setFlags(SplFileObject::READ_CSV);
-$file->setCsvControl(separator: ";");
-$stories = [];
-foreach ($file as $row) {
-    list($slug, $name, $contentType) = $row;
-    $story = new Story(
-        $name,
-        $slug,
-        new StoryComponent($contentType)
+require "./vendor/autoload.php";
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+$storyblokPersonalAccessToken = $_ENV["SECRET_KEY"];
+
+// `shouldRetry` helps to automatically manage 429 - Rate Limits
+$client = new ManagementApiClient(
+    personalAccessToken: $storyblokPersonalAccessToken,
+    shouldRetry: true,
+);
+
+$spaceId = "your-space-id";
+$storyApi = new StoryApi($client, $spaceId);
+
+function csvGenerator(string $filePath, string $delimiter = ";"): Generator
+{
+    $file = new SplFileObject($filePath);
+    $file->setFlags(
+        SplFileObject::READ_CSV |
+            SplFileObject::SKIP_EMPTY |
+            SplFileObject::DROP_NEW_LINE,
     );
-    $stories[] = $story;
+    $file->setCsvControl($delimiter, escape: "\\");
+
+    foreach ($file as $row) {
+        if (!$row || count($row) < 3) {
+            continue;
+        }
+
+        yield $row;
+    }
 }
-$createdStories = iterator_to_array($storyBulkApi->createStories($stories));
+
+foreach (csvGenerator("stories.csv") as $row) {
+    [$slug, $name, $contentType] = $row;
+
+    try {
+        $story = new Story(
+            name: $name,
+            slug: $slug,
+            content: new StoryComponent($contentType),
+        );
+
+        // Create the story immediately
+        $storyApi->create($story);
+
+        echo "Created story: {$slug}\n";
+    } catch (Throwable $e) {
+        // Continue processing even if a single row fails
+        echo "Failed to create story '{$slug}': {$e->getMessage()}\n";
+    }
+}
+
 ```
+
+#### Benefits of this approach
+
+- **Low memory footprint**
+   The CSV file is streamed line-by-line, making this approach suitable for very large imports.
+- **Better resilience to rate limits**
+   Each request is handled individually, allowing the Management API client to retry automatically when `429 Too Many Requests` responses occur — even multiple times during large imports.
+- **Improved fault tolerance**
+   A single invalid row or API error does not stop the entire import process (handling try and catch and logging).
+
+This approach is recommended when working with large datasets or when reliability and controlled API usage are critical.
 
 ## Handling components
 
