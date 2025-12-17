@@ -511,7 +511,7 @@ $storyApi->publish($storyId);
 
 
 ### Creating stories from large CSV files (streamed, memory-efficient)
-When importing stories from a CSV file, especially very large ones, loading all rows into memory and sending them in one bulk request can be inefficient and error-prone.
+When importing stories from a CSV file, especially very large ones, one of the approaches is to stream the CSV file using generators and create stories one by one using the Management API client. This keeps memory usage low and allows the client’s built-in retry logic to gracefully handle potential 429 Too Many Requests responses, which can occur multiple times when processing large CSV files.
 
 A better approach is to stream the CSV file using generators and create stories one by one using the Management API client. This keeps memory usage low and allows the client’s built-in retry logic to gracefully handle potential `429 Too Many Requests` responses, something that can happen multiple times when processing huge CSV files.
 
@@ -521,11 +521,12 @@ Example CSV file (`stories.csv`):
 myslug-001;My Story 1 BULK;page
 myslug-002;My Story 2 BULK;page
 myslug-003;My Story 3 BULK;page
+...
 ```
 
 #### Streaming the CSV file with a generator
 
-Instead of reading the entire file into an array, we use a generator to yield one row at a time:
+Instead of reading the entire file into an array, you can use a generator to yield one row at a time:
 
 ```php
 function csvGenerator(string $filePath, string $delimiter = ";"): Generator
@@ -622,9 +623,9 @@ foreach (csvGenerator("stories.csv") as $row) {
 - **Low memory footprint**
    The CSV file is streamed line-by-line, making this approach suitable for very large imports.
 - **Better resilience to rate limits**
-   Each request is handled individually, allowing the Management API client to retry automatically when `429 Too Many Requests` responses occur — even multiple times during large imports.
-- **Improved fault tolerance**
-   A single invalid row or API error does not stop the entire import process (handling try and catch and logging).
+   Each request is handled individually, allowing the Management API client to retry automatically when `429 Too Many Requests` responses occur, even multiple times during large imports.
+- **Better flow control**
+   Better control of the flow, which can be stopped or continued, if a single invalid row or API error occurs.
 
 This approach is recommended when working with large datasets or when reliability and controlled API usage are critical.
 
