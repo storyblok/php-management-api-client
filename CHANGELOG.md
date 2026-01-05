@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.11 - 2026-01-05
+- Adding parameters for updating a story
+
 ## 1.0.10 - 2025-12-12
 - Introduce `shouldRetry` flag for automatic 429 retry handling
 
