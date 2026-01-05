@@ -133,20 +133,77 @@ class StoryApi extends EndpointSpace
     }
 
     /**
-     * Updates an existing story
+     * Updates an existing story.
+     *
+     * @param string $storyId
+     *   The ID of the story to update.
+     *
+     * @param Story $storyData
+     *   The Story object containing the updated content and metadata.
+     *
+     * @param string $groupId
+     *   Optional. Group ID (UUID string) shared between stories defined as alternates.
+     *
+     * @param string $forceUpdate
+     *   Optional. Set to "1" to force an update of a locked story.
+     *   A story is locked when another user edits it. Forcing an update may cause
+     *   a content conflict. This parameter has no effect if the story is locked
+     *   due to a workflow stage.
+     *
+     * @param int $releaseId
+     *   Optional. Numeric ID of the release in which the story should be updated.
+     *
+     * @param bool $publish
+     *   Optional. Set to true to publish the story immediately after updating it.
+     *
+     * @param string $lang
+     *   Optional. Language code to update or publish the story individually.
+     *   The language must be enabled in Settings → Internationalization.
+     *
+     * @return StoryResponse
+     *   The response containing the updated story data.
      *
      * @throws InvalidStoryDataException
+     *   Thrown when the provided story data is invalid.
      */
-    public function update(string $storyId, Story $storyData): StoryResponse
-    {
+    public function update(
+        string $storyId,
+        Story $storyData,
+        string $groupId = "",
+        string $forceUpdate = "",
+        int $releaseId = 0,
+        bool $publish = false,
+        string $lang = "",
+    ): StoryResponse {
         $this->validateStoryId($storyId);
         //$this->validateStoryData($storyData);
+        $payload = ["story" => $storyData->toArray()];
+
+        if ($groupId !== "") {
+            $payload["group_id"] = $groupId;
+        }
+
+        if ($forceUpdate !== "") {
+            $payload["force_update"] = $forceUpdate;
+        }
+
+        if ($releaseId > 0) {
+            $payload["release_id"] = $releaseId;
+        }
+
+        if ($publish) {
+            $payload["publish"] = 1;
+        }
+
+        if ($lang !== "") {
+            $payload["lang"] = $lang;
+        }
 
         $httpResponse = $this->makeHttpRequest(
             "PUT",
             $this->buildStoryEndpoint($storyId),
             [
-                "body" => json_encode(["story" => $storyData->toArray()]),
+                "body" => json_encode($payload),
             ],
         );
         return new StoryResponse($httpResponse);

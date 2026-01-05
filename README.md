@@ -509,6 +509,89 @@ For publishing a story by the story identifier you can use the `publish` method:
 $storyApi->publish($storyId);
 ```
 
+### Update a Story
+
+Updates an existing story using the Storyblok Management API.
+
+#### Method Signature
+
+```php
+$storyApi->update(
+    string $storyId,
+    Story $storyData,
+    string $groupId = "",
+    string $forceUpdate = "",
+    int $releaseId = 0,
+    bool $publish = false,
+    string $lang = ""
+): StoryResponse
+```
+
+#### Parameters
+
+- **`storyId`** (`string`)
+  The ID of the story to update.
+
+- **`storyData`** (`Story`)
+  The Story object containing updated content and metadata.
+
+- **`groupId`** (`string`, optional)
+  Group ID (UUID string) shared between stories defined as alternates.
+
+- **`forceUpdate`** (`string`, optional)
+  Set to `"1"` to force an update of a locked story.
+  A story is locked when another user edits it. Forcing an update may cause content conflicts and has no effect if the story is locked due to a workflow stage.
+
+- **`releaseId`** (`int`, optional)
+  Numeric ID of the release in which the story should be updated.
+
+- **`publish`** (`bool`, optional)
+  Set to `true` to publish the story immediately after updating it.
+
+- **`lang`** (`string`, optional)
+  Language code to update or publish the story individually.
+  The language must be enabled in **Settings → Internationalization**.                           |
+
+#### Examples
+
+Update a story:
+
+```php
+$storyApi->update(
+    storyId: '123456',
+    storyData: $story
+);
+```
+
+Update and publish immediately:
+
+```php
+$storyApi->update(
+    storyId: '123456',
+    storyData: $story,
+    publish: true
+);
+```
+
+Update a specific language:
+
+```php
+$storyApi->update(
+    storyId: '123456',
+    storyData: $story,
+    lang: 'de'
+);
+```
+
+Force update a locked story:
+
+```php
+$storyApi->update(
+    storyId: '123456',
+    storyData: $story,
+    forceUpdate: '1'
+);
+```
 
 ### Creating stories from large CSV files (streamed, memory-efficient)
 When importing stories from a CSV file, especially very large ones, one of the approaches is to stream the CSV file using generators and create stories one by one using the Management API client. This keeps memory usage low and allows the client’s built-in retry logic to gracefully handle potential 429 Too Many Requests responses, which can occur multiple times when processing large CSV files.

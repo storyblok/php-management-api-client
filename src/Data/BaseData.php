@@ -157,7 +157,12 @@ abstract class BaseData implements
                 $array = &$array[$key];
             }
 
-            $array[array_shift($keys)] = $value;
+            $key = array_shift($keys);
+
+            if (!is_null($key)) {
+                $array[$key] = $value;
+            }
+
             return $this;
         }
 
