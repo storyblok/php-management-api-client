@@ -8,6 +8,11 @@
             "Storyblok\\ManagementApi\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Roberto Butti",
@@ -23,17 +28,17 @@
         "phpstan/phpstan": "^2.0",
         "rector/rector": "^2",
         "friendsofphp/php-cs-fixer": "^3.65",
-        "pestphp/pest": "^3.7"
+        "phpunit/phpunit": "^11.0"
     },
     "scripts": {
         "license-check": "php license-checker.php",
         "static-code": "vendor/bin/phpstan analyse",
         "style-fix-code": "vendor/bin/php-cs-fixer fix",
         "style-check-code": "vendor/bin/php-cs-fixer check",
-        "test-code": "vendor/bin/pest",
-        "test-code-ci": "vendor/bin/pest -c . --ci --cache-directory ./tmp",
+        "test-code": "vendor/bin/phpunit",
+        "test-code-ci": "vendor/bin/phpunit --cache-directory ./tmp",
         "refactor-check-code": "vendor/bin/rector --dry-run",
-        "test-coverage": "vendor/bin/pest --configuration=phpunit.xml.dist --coverage-html .build/html",
+        "test-coverage": "vendor/bin/phpunit --coverage-html .build/html",
         "all-checks": [
             "@style-check-code",
             "@static-code",
@@ -42,8 +47,6 @@
         ]
     },
     "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+        "allow-plugins": {}
     }
 }

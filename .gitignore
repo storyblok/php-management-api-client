@@ -2,9 +2,11 @@
 /vendor/
 /composer.lock
 /.php-cs-fixer.cache
+/.phpunit.cache/
 /phpunit.xml
 /.idea
 /.phpunit.result.cache
 .phpunit.cache/test-results
 /test-output
 .phpactor.json
+/tmp/test-results

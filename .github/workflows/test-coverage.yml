@@ -20,9 +20,9 @@ jobs:
 
         strategy:
             matrix:
-                operating-system: [ 'ubuntu-latest']
-                php-versions: [  '8.4' ]
-                dependency-stability: [ 'prefer-none' ]
+                operating-system: ["ubuntu-latest"]
+                php-versions: ["8.4"]
+                dependency-stability: ["prefer-none"]
 
         name: P${{ matrix.php-versions }} - ${{ matrix.operating-system}}
 
@@ -46,17 +46,14 @@ jobs:
             - name: Platform check
               run: composer check-platform-reqs
 
-
             - name: running tests
-              run: "vendor/bin/pest --configuration=phpunit.xml.dist --coverage-clover=.build/logs/clover.xml"
+              run: "vendor/bin/phpunit --configuration=phpunit.xml.dist --coverage-clover=.build/logs/clover.xml"
 
-            - name: 'Upload coverage reports to Codecov'
+            - name: "Upload coverage reports to Codecov"
               env:
                   my_codecov_token: ${{ secrets.CODECOV_TOKEN }}
               if: ${{ env.my_codecov_token  != '' && hashFiles('./.build/logs/clover.xml')!= '' }}
-              uses: 'codecov/codecov-action@v5.1.2'
+              uses: "codecov/codecov-action@v5.1.2"
               with:
-                  files: './.build/logs/clover.xml'
+                  files: "./.build/logs/clover.xml"
                   token: ${{ env.my_codecov_token }}
-
-
