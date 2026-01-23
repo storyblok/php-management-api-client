@@ -107,6 +107,7 @@ class ManagementApiClient
 
     /**
      * @deprecated Use `new StoryApi($managementApiClient, $spaceId, $logger)` instead.
+     * @codeCoverageIgnore
      */
     public function storyApi(
         string|int $spaceId,
@@ -122,6 +123,7 @@ class ManagementApiClient
 
     /**
      * @deprecated Use `new StoryBulkApi($managementApiClient, $spaceId, $logger)` instead.
+     * @codeCoverageIgnore
      */
     public function storyBulkApi(
         string|int $spaceId,
@@ -137,6 +139,7 @@ class ManagementApiClient
 
     /**
      * @deprecated Use `new AssetApi($managementApiClient, $spaceId)` instead.
+     * @codeCoverageIgnore
      */
     public function assetApi(string|int $spaceId): AssetApi
     {
@@ -150,6 +153,7 @@ class ManagementApiClient
 
     /**
      * @deprecated Use `new TagApi($managementApiClient, $spaceId)` instead.
+     * @codeCoverageIgnore
      */
     public function tagApi(string|int $spaceId): TagApi
     {
@@ -163,6 +167,7 @@ class ManagementApiClient
 
     /**
      * @deprecated Use `new WorkflowApi($managementApiClient, $spaceId)` instead.
+     * @codeCoverageIgnore
      */
     public function workflowApi(string|int $spaceId): WorkflowApi
     {
@@ -176,6 +181,7 @@ class ManagementApiClient
 
     /**
      * @deprecated Use `new WorkflowStageApi($managementApiClient, $spaceId)` instead.
+     * @codeCoverageIgnore
      */
     public function workflowStageApi(string|int $spaceId): WorkflowStageApi
     {
@@ -189,6 +195,7 @@ class ManagementApiClient
 
     /**
      * @deprecated Use `new ComponentApi($managementApiClient, $spaceId, $logger)` instead.
+     * @codeCoverageIgnore
      */
     public function componentApi(
         string|int $spaceId,
@@ -204,6 +211,7 @@ class ManagementApiClient
 
     /**
      * @deprecated Use `new ManagementApi($managementApiClient)` instead.
+     * @codeCoverageIgnore
      */
     public function managementApi(): ManagementApi
     {

@@ -55,8 +55,14 @@ final class SpaceApiTest extends TestCase
         $this->assertSame("2018-11-10", $storyblokData->createdAt());
         $this->assertSame("2018-11-11", $storyblokData->updatedAt());
         $this->assertSame("Starter (Trial)", $storyblokData->planDescription());
-        $this->assertSame("https://example.storyblok.com", $storyblokData->domain());
-        $this->assertSame("8IE7MzYCzw5d7KLckDa38Att", $storyblokData->firstToken());
+        $this->assertSame(
+            "https://example.storyblok.com",
+            $storyblokData->domain(),
+        );
+        $this->assertSame(
+            "8IE7MzYCzw5d7KLckDa38Att",
+            $storyblokData->firstToken(),
+        );
         $this->assertFalse($storyblokData->isDemo());
         $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
         $this->assertCount(0, $storyblokData->environments());
@@ -71,9 +77,7 @@ final class SpaceApiTest extends TestCase
 
     public function testOneSpaceSetters(): void
     {
-        $responses = [
-            $this->mockResponse("one-space", 200),
-        ];
+        $responses = [$this->mockResponse("one-space", 200)];
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
@@ -85,7 +89,10 @@ final class SpaceApiTest extends TestCase
         $storyblokData->setName("New Name");
         $this->assertSame("New Name", $storyblokData->get("name"));
         $this->assertSame("2018-11-10", $storyblokData->createdAt());
-        $this->assertSame("https://example.storyblok.com", $storyblokData->get("domain"));
+        $this->assertSame(
+            "https://example.storyblok.com",
+            $storyblokData->get("domain"),
+        );
 
         $storyblokData->setDomain("example.com");
         $this->assertSame("New Name", $storyblokData->get("name"));
@@ -109,7 +116,10 @@ final class SpaceApiTest extends TestCase
 
         $this->assertSame("New Name", $spaceData->get("name"));
         $this->assertSame("", $spaceData->createdAt());
-        $this->assertSame("https://example.storyblok.com", $spaceData->get("domain"));
+        $this->assertSame(
+            "https://example.storyblok.com",
+            $spaceData->get("domain"),
+        );
 
         $storyblokResponse = $spaceApi->create($spaceData);
         $storyblokData = $storyblokResponse->data();
@@ -183,6 +193,7 @@ final class SpaceApiTest extends TestCase
     {
         $responses = [
             $this->mockResponse("one-space", 200),
+            $this->mockResponse("one-space", 200),
             $this->mockResponse("empty-space", 404),
         ];
 
@@ -194,6 +205,20 @@ final class SpaceApiTest extends TestCase
         $storyblokData = $storyblokResponse->data();
 
         $this->assertSame("Example Space", $storyblokData->get("name"));
+        $this->assertSame("Example Space", $storyblokData->name());
+        $this->assertSame("2018-11-10", $storyblokData->createdAt());
+        $this->assertSame("Starter (Trial)", $storyblokData->planDescription());
+        $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
+
+        $storyblokResponse = $spaceApi->duplicate(
+            "111",
+            "New Space Name",
+            inOrg: true,
+        );
+        $storyblokData = $storyblokResponse->data();
+
+        $this->assertSame("Example Space", $storyblokData->get("name"));
+
         $this->assertSame("Example Space", $storyblokData->name());
         $this->assertSame("2018-11-10", $storyblokData->createdAt());
         $this->assertSame("Starter (Trial)", $storyblokData->planDescription());
@@ -223,5 +248,31 @@ final class SpaceApiTest extends TestCase
         }
 
         $this->assertSame(2, $storyblokData->howManySpaces());
+    }
+
+    public function testUpdateSpace(): void
+    {
+        $responses = [$this->mockResponse("one-space", 200)];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $spaceApi = new SpaceApi($mapiClient);
+
+        $spaceData = new Space("New Name");
+        $spaceData->setDomain("https://example.storyblok.com");
+
+        $storyblokResponse = $spaceApi->update("111", $spaceData);
+        $storyblokData = $storyblokResponse->data();
+
+        $this->assertSame("Example Space", $storyblokData->get("name"));
+        $this->assertSame("Example Space", $storyblokData->name());
+        $this->assertSame("2018-11-10", $storyblokData->createdAt());
+        $this->assertSame("Starter (Trial)", $storyblokData->planDescription());
+        $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Space ID cannot be empty");
+        $spaceData = new Space("");
+        $spaceApi->update("", $spaceData);
     }
 }
