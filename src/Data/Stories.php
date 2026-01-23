@@ -24,4 +24,20 @@ class Stories extends StoryblokData
     {
         return $this->count();
     }
+
+    /**
+     * Returns an array of the UUIDs of each Story in the collection.
+     *
+     * @return array<string> Array of UUID strings indexed from 0
+     */
+    public function getUuids(): array
+    {
+        $array = [];
+        /** @var Story $story */
+        foreach ($this as $story) {
+            $array[] = $story->uuid();
+        }
+
+        return $array;
+    }
 }
