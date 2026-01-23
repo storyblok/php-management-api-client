@@ -1,7 +1,8 @@
 # Changelog
 
-## 1.0.12 - WIP
+## 1.1.0 - WIP
 - Moving from PestPHP to PHPUnit
+- Deprecate API factory methods, prefer dependency injection
 
 ## 1.0.11 - 2026-01-05
 - Adding parameters for updating a story

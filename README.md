@@ -1173,8 +1173,9 @@ And then create a new workflow stage:
 
 ```php
 use Storyblok\ManagementApi\Data\WorkflowStageData;
+use Storyblok\ManagementApi\Endpoints\WorkflowStageApi;
 
-$workflowStageApi = $client->workflowStageApi($spaceId);
+$workflowStageApi = new WorkflowStageApi($client, $spaceId);
 $workflowStageData = new WorkflowStageData();
 $workflowStageData->setName("Name");
 $workflowStageData->setWorkflowId($workflowId);

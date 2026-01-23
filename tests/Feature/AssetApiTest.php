@@ -33,7 +33,10 @@ final class AssetApiTest extends TestCase
         $storyblokData = $storyblokResponse->data();
 
         $this->assertSame(111, $storyblokData->get("id"));
-        $this->assertSame("https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg", $storyblokData->filenameCDN());
+        $this->assertSame(
+            "https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg",
+            $storyblokData->filenameCDN(),
+        );
         $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
         $this->assertSame("image/jpeg", $storyblokData->contentType());
         $this->assertSame(3_094_788, $storyblokData->contentLength());
@@ -51,13 +54,16 @@ final class AssetApiTest extends TestCase
     public function testListAssetsAssetsData(): void
     {
         $responses = [
-            $this->mockResponse("list-assets", 200, ["total" => 2, "per-page" => 25]),
+            $this->mockResponse("list-assets", 200, [
+                "total" => 2,
+                "per-page" => 25,
+            ]),
             $this->mockResponse("empty-asset", 404),
         ];
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $assetApi = $mapiClient->assetApi("222");
+        $assetApi = new AssetApi($mapiClient, "222");
 
         $storyblokResponse = $assetApi->page();
         $storyblokData = $storyblokResponse->data();
@@ -69,7 +75,10 @@ final class AssetApiTest extends TestCase
         }
 
         $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
-        $this->assertSame("No error detected, HTTP Status Code: 200", $storyblokResponse->getErrorMessage());
+        $this->assertSame(
+            "No error detected, HTTP Status Code: 200",
+            $storyblokResponse->getErrorMessage(),
+        );
         $this->assertSame(2, $storyblokResponse->total());
         $this->assertSame(25, $storyblokResponse->perPage());
 
@@ -84,7 +93,10 @@ final class AssetApiTest extends TestCase
     public function testListAssetsParams(): void
     {
         $responses = [
-            $this->mockResponse("list-assets", 200, ["total" => 2, "per-page" => 25]),
+            $this->mockResponse("list-assets", 200, [
+                "total" => 2,
+                "per-page" => 25,
+            ]),
             $this->mockResponse("list-assets", 200, [
                 "total" => 200,
                 "per-page" => 25,
@@ -98,13 +110,16 @@ final class AssetApiTest extends TestCase
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $assetApi = $mapiClient->assetApi("222");
+        $assetApi = new AssetApi($mapiClient, "222");
 
         $response = $assetApi->page(params: new AssetsParams(inFolder: -1));
 
         $url = $response->getLastCalledUrl();
         $this->assertMatchesRegularExpression('/.*in_folder=-1.*$/', $url);
-        $this->assertMatchesRegularExpression('/.*page=1&per_page=25.*$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*page=1&per_page=25.*$/',
+            $url,
+        );
 
         $response = $assetApi->page(
             params: new AssetsParams(inFolder: -1),
@@ -112,7 +127,10 @@ final class AssetApiTest extends TestCase
         );
 
         $url = $response->getLastCalledUrl();
-        $this->assertMatchesRegularExpression('/.*page=5&per_page=30.*$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*page=5&per_page=30.*$/',
+            $url,
+        );
 
         $response = $assetApi->page(
             params: new AssetsParams(search: "something", withTags: "aaa"),
@@ -135,7 +153,7 @@ final class AssetApiTest extends TestCase
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $assetApi = $mapiClient->assetApi("222");
+        $assetApi = new AssetApi($mapiClient, "222");
 
         $payload = $assetApi->buildPayload(
             "./tests/Feature/Data/image-test.png",
@@ -242,7 +260,10 @@ final class AssetApiTest extends TestCase
         $assetField = AssetField::makeFromAsset($asset);
 
         $this->assertSame(111, $assetField->get("id"));
-        $this->assertSame("https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg", $assetField->get("filename"));
+        $this->assertSame(
+            "https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg",
+            $assetField->get("filename"),
+        );
         $this->assertSame("", $assetField->getString("title"));
     }
 
@@ -264,7 +285,10 @@ final class AssetApiTest extends TestCase
         $content->setAsset("image", $asset);
 
         $this->assertNull($content->get("id"));
-        $this->assertSame("https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg", $content->get("image.filename"));
+        $this->assertSame(
+            "https://a.storyblok.com/f/222/3799x6005/3af265ee08/mypic.jpg",
+            $content->get("image.filename"),
+        );
         $this->assertSame("asset", $content->get("image.fieldtype"));
         $this->assertSame("My New Article", $content->get("title"));
     }

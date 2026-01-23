@@ -105,49 +105,113 @@ class ManagementApiClient
         return $this->httpAssetClient;
     }
 
+    /**
+     * @deprecated Use `new StoryApi($managementApiClient, $spaceId, $logger)` instead.
+     */
     public function storyApi(
         string|int $spaceId,
         ?LoggerInterface $logger = null,
     ): StoryApi {
+        trigger_error(
+            'Method storyApi() is deprecated. Use `new StoryApi($managementApiClient, $spaceId, $logger)` instead.',
+            E_USER_DEPRECATED,
+        );
+
         return new StoryApi($this, $spaceId, $logger ?? new NullLogger());
     }
 
+    /**
+     * @deprecated Use `new StoryBulkApi($managementApiClient, $spaceId, $logger)` instead.
+     */
     public function storyBulkApi(
         string|int $spaceId,
         ?LoggerInterface $logger = null,
     ): StoryBulkApi {
+        trigger_error(
+            'Method storyBulkApi() is deprecated. Use `new StoryBulkApi($managementApiClient, $spaceId, $logger)` instead.',
+            E_USER_DEPRECATED,
+        );
+
         return new StoryBulkApi($this, $spaceId, $logger ?? new NullLogger());
     }
 
+    /**
+     * @deprecated Use `new AssetApi($managementApiClient, $spaceId)` instead.
+     */
     public function assetApi(string|int $spaceId): AssetApi
     {
+        trigger_error(
+            'Method assetApi() is deprecated. Use `new AssetApi($managementApiClient, $spaceId)` instead.',
+            E_USER_DEPRECATED,
+        );
+
         return new AssetApi($this, $spaceId);
     }
 
+    /**
+     * @deprecated Use `new TagApi($managementApiClient, $spaceId)` instead.
+     */
     public function tagApi(string|int $spaceId): TagApi
     {
+        trigger_error(
+            'Method tagApi() is deprecated. Use `new TagApi($managementApiClient, $spaceId)` instead.',
+            E_USER_DEPRECATED,
+        );
+
         return new TagApi($this, $spaceId);
     }
 
+    /**
+     * @deprecated Use `new WorkflowApi($managementApiClient, $spaceId)` instead.
+     */
     public function workflowApi(string|int $spaceId): WorkflowApi
     {
+        trigger_error(
+            'Method workflowApi() is deprecated. Use `new WorkflowApi($managementApiClient, $spaceId)` instead.',
+            E_USER_DEPRECATED,
+        );
+
         return new WorkflowApi($this, $spaceId);
     }
 
+    /**
+     * @deprecated Use `new WorkflowStageApi($managementApiClient, $spaceId)` instead.
+     */
     public function workflowStageApi(string|int $spaceId): WorkflowStageApi
     {
+        trigger_error(
+            'Method workflowStageApi() is deprecated. Use `new WorkflowStageApi($managementApiClient, $spaceId)` instead.',
+            E_USER_DEPRECATED,
+        );
+
         return new WorkflowStageApi($this, $spaceId);
     }
 
+    /**
+     * @deprecated Use `new ComponentApi($managementApiClient, $spaceId, $logger)` instead.
+     */
     public function componentApi(
         string|int $spaceId,
         ?LoggerInterface $logger = null,
     ): ComponentApi {
+        trigger_error(
+            'Method componentApi() is deprecated. Use `new ComponentApi($managementApiClient, $spaceId, $logger)` instead.',
+            E_USER_DEPRECATED,
+        );
+
         return new ComponentApi($this, $spaceId, $logger ?? new NullLogger());
     }
 
+    /**
+     * @deprecated Use `new ManagementApi($managementApiClient)` instead.
+     */
     public function managementApi(): ManagementApi
     {
+        trigger_error(
+            'Method managementApi() is deprecated. Use `new ManagementApi($managementApiClient)` instead.',
+            E_USER_DEPRECATED,
+        );
+
         return new ManagementApi($this);
     }
 }

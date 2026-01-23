@@ -29,7 +29,7 @@ final class StoryApiTest extends TestCase
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyApi = $mapiClient->storyApi("222");
+        $storyApi = new StoryApi($mapiClient, "222");
 
         $storyblokResponse = $storyApi->get("111");
         /** @var Story $storyblokData */
@@ -56,7 +56,7 @@ final class StoryApiTest extends TestCase
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyApi = $mapiClient->storyApi("222");
+        $storyApi = new StoryApi($mapiClient, "222");
 
         $storyblokResponse = $storyApi->create(
             new Story("aa", "aa", new StoryComponent("aa")),
@@ -97,7 +97,7 @@ final class StoryApiTest extends TestCase
         // Create mock client with response
         $client = new MockHttpClient([$response], "https://api.storyblok.com");
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyApi = $mapiClient->storyApi("222");
+        $storyApi = new StoryApi($mapiClient, "222");
 
         // Create story data
         $storyData = Story::make($expectedStoryData);
@@ -146,14 +146,17 @@ final class StoryApiTest extends TestCase
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyApi = $mapiClient->storyApi("222");
+        $storyApi = new StoryApi($mapiClient, "222");
 
         $storyblokResponse = $storyApi->page(
             params: new StoriesParams(favorite: true),
         );
         $url = $storyblokResponse->getLastCalledUrl();
         $this->assertMatchesRegularExpression('/.*favorite=1.*$/', $url);
-        $this->assertMatchesRegularExpression('/.*page=1&per_page=25.*$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*page=1&per_page=25.*$/',
+            $url,
+        );
 
         $storyblokResponse = $storyApi->page(
             params: new StoriesParams(favorite: true),
@@ -161,7 +164,10 @@ final class StoryApiTest extends TestCase
         );
         $url = $storyblokResponse->getLastCalledUrl();
         $this->assertMatchesRegularExpression('/.*favorite=1.*$/', $url);
-        $this->assertMatchesRegularExpression('/.*page=5&per_page=30.*$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*page=5&per_page=30.*$/',
+            $url,
+        );
 
         $storyblokResponse = $storyApi->page(
             params: new StoriesParams(withTag: "aaa", search: "something"),
@@ -170,7 +176,10 @@ final class StoryApiTest extends TestCase
         $url = $storyblokResponse->getLastCalledUrl();
         $this->assertMatchesRegularExpression('/.*search=something.*$/', $url);
         $this->assertMatchesRegularExpression('/.*with_tag=aaa.*$/', $url);
-        $this->assertMatchesRegularExpression('/.*page=5&per_page=30.*$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*page=5&per_page=30.*$/',
+            $url,
+        );
 
         $storyblokResponse = $storyApi->page(
             params: new StoriesParams(withTag: "aaa", search: "something"),
@@ -182,8 +191,14 @@ final class StoryApiTest extends TestCase
         $url = $storyblokResponse->getLastCalledUrl();
         $this->assertMatchesRegularExpression('/.*search=something.*$/', $url);
         $this->assertMatchesRegularExpression('/.*with_tag=aaa.*$/', $url);
-        $this->assertMatchesRegularExpression('/.*page=5&per_page=30.*$/', $url);
-        $this->assertMatchesRegularExpression('/.*filter_query\[headline\]\[like\]=something.*$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*page=5&per_page=30.*$/',
+            $url,
+        );
+        $this->assertMatchesRegularExpression(
+            '/.*filter_query\[headline\]\[like\]=something.*$/',
+            $url,
+        );
 
         $storyblokResponse = $storyApi->page(
             params: new StoriesParams(withTag: "aaa", search: "something"),
@@ -195,9 +210,18 @@ final class StoryApiTest extends TestCase
         $url = $storyblokResponse->getLastCalledUrl();
         $this->assertMatchesRegularExpression('/.*search=something.*$/', $url);
         $this->assertMatchesRegularExpression('/.*with_tag=aaa.*$/', $url);
-        $this->assertMatchesRegularExpression('/.*page=5&per_page=30.*$/', $url);
-        $this->assertMatchesRegularExpression('/.*filter_query\[headline\]\[like\]=something.*$/', $url);
-        $this->assertMatchesRegularExpression('/.*filter_query\[subheadline\]\[like\]=somethingelse.*$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*page=5&per_page=30.*$/',
+            $url,
+        );
+        $this->assertMatchesRegularExpression(
+            '/.*filter_query\[headline\]\[like\]=something.*$/',
+            $url,
+        );
+        $this->assertMatchesRegularExpression(
+            '/.*filter_query\[subheadline\]\[like\]=somethingelse.*$/',
+            $url,
+        );
     }
 
     public function testSettingStoryMethodsStoryData(): void

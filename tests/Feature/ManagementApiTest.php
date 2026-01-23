@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use Storyblok\ManagementApi\Data\Enum\Region;
+use Storyblok\ManagementApi\Endpoints\ManagementApi;
 use Tests\TestCase;
 use Storyblok\ManagementApi\ManagementApiClient;
+use Symfony\Component\HttpClient\CurlHttpClient;
 use Symfony\Component\HttpClient\Exception\ClientException;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\RetryableHttpClient;
 
-final class ManagementApiClientTest extends TestCase
+final class ManagementApiTest extends TestCase
 {
     public function testMultipleResourcesStoryblokData(): void
     {
@@ -26,7 +31,7 @@ final class ManagementApiClientTest extends TestCase
             baseUri: "https://mapi.storyblok.com",
         );
         $mapiClient = ManagementApiClient::initTest($client);
-        $managementApi = $mapiClient->managementApi();
+        $managementApi = new ManagementApi($mapiClient);
 
         $spaceId = "321388";
         $response = $managementApi->get(
@@ -36,7 +41,10 @@ final class ManagementApiClientTest extends TestCase
             ],
         );
 
-        $this->assertSame("https://mapi.storyblok.com/v1/spaces/321388/internal_tags?by_object_type=asset", $response->getLastCalledUrl());
+        $this->assertSame(
+            "https://mapi.storyblok.com/v1/spaces/321388/internal_tags?by_object_type=asset",
+            $response->getLastCalledUrl(),
+        );
         $this->assertSame(8, $response->total());
         $this->assertTrue($response->isOk());
 
@@ -73,7 +81,7 @@ final class ManagementApiClientTest extends TestCase
             baseUri: "https://mapi.storyblok.com",
         );
         $mapiClient = ManagementApiClient::initTest($client);
-        $managementApi = $mapiClient->managementApi();
+        $managementApi = new ManagementApi($mapiClient);
 
         $spaceId = "321388";
         $response = $managementApi->post(
@@ -107,7 +115,7 @@ final class ManagementApiClientTest extends TestCase
             baseUri: "https://mapi.storyblok.com",
         );
         $mapiClient = ManagementApiClient::initTest($client);
-        $managementApi = $mapiClient->managementApi();
+        $managementApi = new ManagementApi($mapiClient);
 
         $spaceId = "321388";
         $tagId = "56980";
@@ -137,7 +145,7 @@ final class ManagementApiClientTest extends TestCase
             baseUri: "https://mapi.storyblok.com",
         );
         $mapiClient = ManagementApiClient::initTest($client);
-        $managementApi = $mapiClient->managementApi();
+        $managementApi = new ManagementApi($mapiClient);
 
         $spaceId = "321388";
         $tagId = "56980";
@@ -170,7 +178,7 @@ final class ManagementApiClientTest extends TestCase
             baseUri: "https://mapi.storyblok.com",
         );
         $mapiClient = ManagementApiClient::initTest($client);
-        $managementApi = $mapiClient->managementApi();
+        $managementApi = new ManagementApi($mapiClient);
 
         $spaceId = "321388";
         $response = $managementApi->get(
@@ -181,5 +189,34 @@ final class ManagementApiClientTest extends TestCase
         );
 
         $this->assertIsArray($response->toArray());
+    }
+
+    public function testInitializeManagementClient(): void
+    {
+        $client = new ManagementApiClient(
+            personalAccessToken: "aaa",
+            region: Region::EU,
+            baseUri: "",
+            shouldRetry: true,
+        );
+        $httpClient = $client->httpClient();
+        $this->assertInstanceOf(RetryableHttpClient::class, $httpClient);
+
+        $client = new ManagementApiClient(
+            personalAccessToken: "aaa",
+            region: Region::EU,
+            baseUri: "",
+            shouldRetry: false,
+        );
+        $httpClient = $client->httpClient();
+        $this->assertInstanceOf(CurlHttpClient::class, $httpClient);
+
+        $client = ManagementApiClient::init(
+            personalAccessToken: "aaa",
+            region: Region::EU,
+            baseUri: "",
+        );
+        $httpClient = $client->httpClient();
+        $this->assertInstanceOf(CurlHttpClient::class, $httpClient);
     }
 }
