@@ -55,7 +55,10 @@ final class RateLimitRetryApiTest extends TestCase
             ),
         );
 
-        $this->assertSame("my-first-post", $storyResponse->data()->get("0.slug"));
+        $this->assertSame(
+            "my-first-post",
+            $storyResponse->data()->get("0.slug"),
+        );
 
         $storyResponse = $storyApi->page(
             queryFilters: new QueryFilters()->add(
@@ -63,7 +66,10 @@ final class RateLimitRetryApiTest extends TestCase
             ),
         );
 
-        $this->assertSame("my-third-post", $storyResponse->data()->get("0.slug"));
+        $this->assertSame(
+            "my-third-post",
+            $storyResponse->data()->get("0.slug"),
+        );
     }
 
     public function testRetryMechanismWithListStories2(): void
@@ -104,7 +110,10 @@ final class RateLimitRetryApiTest extends TestCase
             ),
         );
 
-        $this->assertSame("my-first-post", $storyResponse->data()->get("0.slug"));
+        $this->assertSame(
+            "my-first-post",
+            $storyResponse->data()->get("0.slug"),
+        );
         $this->assertSame(6, $storyResponse->total());
         $this->assertCount(2, $storyResponse->data());
 
@@ -114,7 +123,10 @@ final class RateLimitRetryApiTest extends TestCase
             ),
         );
 
-        $this->assertSame("my-third-post", $storyResponse->data()->get("0.slug"));
+        $this->assertSame(
+            "my-third-post",
+            $storyResponse->data()->get("0.slug"),
+        );
     }
 
     public function testRetryMechanismWith500Exception(): void
@@ -144,7 +156,7 @@ final class RateLimitRetryApiTest extends TestCase
 
         $client = new RetryableHttpClient(
             new MockHttpClient($responses),
-            new GenericRetryStrategy([429], delayMs: 1000),
+            new GenericRetryStrategy([429], delayMs: 0),
             maxRetries: 2,
         );
 
@@ -177,7 +189,10 @@ final class RateLimitRetryApiTest extends TestCase
             ),
         );
 
-        $this->assertSame("my-first-post", $storyResponse->data()->get("0.slug"));
+        $this->assertSame(
+            "my-first-post",
+            $storyResponse->data()->get("0.slug"),
+        );
         $this->assertSame(6, $storyResponse->total());
         $this->assertSame(2, $storyResponse->perPage());
     }
