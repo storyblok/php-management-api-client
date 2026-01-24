@@ -9,6 +9,9 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 
 abstract class TestCase extends BaseTestCase
 {
+    /**
+     * @param array<string, int|string> $headers
+     */
     protected function mockResponse(
         string $mockfile = 'test',
         int $statusCode = 200,
