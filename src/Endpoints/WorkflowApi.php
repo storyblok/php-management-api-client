@@ -8,6 +8,7 @@ use Storyblok\ManagementApi\Data\StoryblokData;
 use Storyblok\ManagementApi\Data\WorkflowData;
 use Storyblok\ManagementApi\Data\WorkflowsData;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
+use Storyblok\ManagementApi\Response\WorkflowResponse;
 
 class WorkflowApi extends EndpointSpace
 {
@@ -21,70 +22,70 @@ class WorkflowApi extends EndpointSpace
         $options = [];
         if (null !== $contentType) {
             if (is_array($contentType)) {
-                $contentType = implode(',', $contentType);
+                $contentType = implode(",", $contentType);
             }
 
             $options = [
-                'query' => [
-                    'content_type' => $contentType,
+                "query" => [
+                    "content_type" => $contentType,
                 ],
             ];
-
         }
 
         return $this->makeRequest(
             "GET",
-            '/v1/spaces/' . $this->spaceId . '/workflows',
+            "/v1/spaces/" . $this->spaceId . "/workflows",
             options: $options,
             dataClass: WorkflowsData::class,
         );
     }
 
-    public function get(string|int $workflowId): StoryblokResponseInterface
+    public function get(string|int $workflowId): WorkflowResponse
     {
-
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "GET",
-            '/v1/spaces/' . $this->spaceId . '/workflows/' . $workflowId,
-            dataClass: WorkflowData::class,
+            "/v1/spaces/" . $this->spaceId . "/workflows/" . $workflowId,
         );
+        return new WorkflowResponse($httpResponse);
     }
 
     /**
      * @param string|int $workflowId the workflow identifier
      */
-    public function delete(string|int $workflowId): StoryblokResponseInterface
+    public function delete(string|int $workflowId): WorkflowResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            '/v1/spaces/' . $this->spaceId . '/workflows/' . $workflowId,
-            dataClass: WorkflowData::class
+            "/v1/spaces/" . $this->spaceId . "/workflows/" . $workflowId,
         );
+        return new WorkflowResponse($httpResponse);
     }
 
-    public function create(StoryblokData $storyblokData): StoryblokResponseInterface
+    public function create(StoryblokData $storyblokData): WorkflowResponse
     {
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . '/workflows',
+            "/v1/spaces/" . $this->spaceId . "/workflows",
             [
                 "body" => [
                     "workflow" => $storyblokData->toArray(),
                 ],
             ],
-            dataClass: WorkflowData::class,
         );
+        return new WorkflowResponse($httpResponse);
     }
 
-    public function update(string|int $workflowId, StoryblokData $storyblokData): StoryblokResponseInterface
-    {
-        return $this->makeRequest(
+    public function update(
+        string|int $workflowId,
+        StoryblokData $storyblokData,
+    ): WorkflowResponse {
+        $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . '/workflows/' . $workflowId,
+            "/v1/spaces/" . $this->spaceId . "/workflows/" . $workflowId,
             [
                 "body" => $storyblokData->toArray(),
             ],
-            dataClass: WorkflowData::class,
         );
+        return new WorkflowResponse($httpResponse);
     }
 }

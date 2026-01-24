@@ -40,9 +40,9 @@ final class StoryBulkApiTest extends TestCase
                 array $context = [],
             ): void {
                 $this->logs[] = [
-                    'level' => $level,
-                    'message' => $message,
-                    'context' => $context,
+                    "level" => $level,
+                    "message" => $message,
+                    "context" => $context,
                 ];
             }
 
@@ -50,24 +50,21 @@ final class StoryBulkApiTest extends TestCase
                 string|\Stringable $message,
                 array $context = [],
             ): void {
-                $this->log('error', $message, $context);
+                $this->log("error", $message, $context);
             }
         };
 
         // Create a response that will trigger error logging
         $responses = [
-            new MockResponse(
-                '',
-                [
-                    'http_code' => 500,
-                    'response_headers' => ['Content-Type: application/json'],
-                ],
-            ),
+            new MockResponse("", [
+                "http_code" => 500,
+                "response_headers" => ["Content-Type: application/json"],
+            ]),
         ];
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyBulkApi = new TestStoryBulkApi($mapiClient, '222', $mockLogger);
+        $storyBulkApi = new TestStoryBulkApi($mapiClient, "222", $mockLogger);
 
         // Use the all() method which we know triggers logging
         try {
@@ -78,84 +75,84 @@ final class StoryBulkApiTest extends TestCase
 
         // Verify that logs were recorded
         $this->assertNotEmpty($mockLogger->logs);
-        $this->assertSame('error', $mockLogger->logs[0]['level']);
-        $this->assertSame('API error', $mockLogger->logs[0]['message']);
+        $this->assertSame("error", $mockLogger->logs[0]["level"]);
+        $this->assertSame("API error", $mockLogger->logs[0]["message"]);
     }
 
     public function testListOfStoriesParams(): void
     {
         $responses = [
-            $this->mockResponse('list-stories', 200, [
-                'total' => 10,
-                'per-page' => 2,
-                'page' => 1,
+            $this->mockResponse("list-stories", 200, [
+                "total" => 10,
+                "per-page" => 2,
+                "page" => 1,
             ]),
-            $this->mockResponse('list-stories', 429, [
-                'total' => 10,
-                'per-page' => 2,
-                'page' => 2,
+            $this->mockResponse("list-stories", 429, [
+                "total" => 10,
+                "per-page" => 2,
+                "page" => 2,
             ]),
-            $this->mockResponse('list-stories', 200, [
-                'total' => 10,
-                'per-page' => 2,
-                'page' => 2,
+            $this->mockResponse("list-stories", 200, [
+                "total" => 10,
+                "per-page" => 2,
+                "page" => 2,
             ]),
-            $this->mockResponse('list-stories', 200, [
-                'total' => 10,
-                'per-page' => 2,
-                'page' => 3,
+            $this->mockResponse("list-stories", 200, [
+                "total" => 10,
+                "per-page" => 2,
+                "page" => 3,
             ]),
-            $this->mockResponse('list-stories', 200, [
-                'total' => 10,
-                'per-page' => 2,
-                'page' => 4,
+            $this->mockResponse("list-stories", 200, [
+                "total" => 10,
+                "per-page" => 2,
+                "page" => 4,
             ]),
-            $this->mockResponse('list-stories', 200, [
-                'total' => 10,
-                'per-page' => 2,
-                'page' => 5,
+            $this->mockResponse("list-stories", 200, [
+                "total" => 10,
+                "per-page" => 2,
+                "page" => 5,
             ]),
         ];
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyBulkApi = new TestStoryBulkApi($mapiClient, '222');
+        $storyBulkApi = new TestStoryBulkApi($mapiClient, "222");
 
         foreach (
             $storyBulkApi->all(
-                params: new StoriesParams(withTag: 'aaa', search: 'something'),
+                params: new StoriesParams(withTag: "aaa", search: "something"),
                 itemsPerPage: 2,
             ) as $story
         ) {
-            $this->assertSame('My third post', $story->name());
+            $this->assertSame("My third post", $story->name());
         }
     }
 
     public function testListOfStoriesMaxRetryOnTheFirstPage(): void
     {
         $this->expectException(StoryblokApiException::class);
-        $this->expectExceptionMessage('Rate limit exceeded maximum retries');
+        $this->expectExceptionMessage("Rate limit exceeded maximum retries");
 
         $responses = [
-            $this->mockResponse('list-stories-page-1', 429),
-            $this->mockResponse('list-stories-page-1', 429),
-            $this->mockResponse('list-stories-page-1', 429),
-            $this->mockResponse('list-stories-page-1', 429),
-            $this->mockResponse('list-stories-page-1', 429),
-            $this->mockResponse('list-stories-page-1', 200, [
-                'total' => 6,
-                'per-page' => 2,
-                'page' => 1,
+            $this->mockResponse("list-stories-page-1", 429),
+            $this->mockResponse("list-stories-page-1", 429),
+            $this->mockResponse("list-stories-page-1", 429),
+            $this->mockResponse("list-stories-page-1", 429),
+            $this->mockResponse("list-stories-page-1", 429),
+            $this->mockResponse("list-stories-page-1", 200, [
+                "total" => 6,
+                "per-page" => 2,
+                "page" => 1,
             ]),
         ];
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyBulkApi = new TestStoryBulkApi($mapiClient, '222');
+        $storyBulkApi = new TestStoryBulkApi($mapiClient, "222");
 
         iterator_to_array(
             $storyBulkApi->all(
-                params: new StoriesParams(withTag: 'aaa', search: 'something'),
+                params: new StoriesParams(withTag: "aaa", search: "something"),
                 itemsPerPage: 2,
             ),
         );
@@ -164,43 +161,43 @@ final class StoryBulkApiTest extends TestCase
     public function testAllWithSomeSparse429(): void
     {
         $responses = [
-            $this->mockResponse('list-stories-page-1', 429),
-            $this->mockResponse('list-stories-page-1', 200, [
-                'total' => 6,
-                'per-page' => 2,
-                'page' => 1,
+            $this->mockResponse("list-stories-page-1", 429),
+            $this->mockResponse("list-stories-page-1", 200, [
+                "total" => 6,
+                "per-page" => 2,
+                "page" => 1,
             ]),
-            $this->mockResponse('list-stories-page-2', 429),
-            $this->mockResponse('list-stories-page-2', 429),
-            $this->mockResponse('list-stories-page-2', 200, [
-                'total' => 6,
-                'per-page' => 2,
-                'page' => 2,
+            $this->mockResponse("list-stories-page-2", 429),
+            $this->mockResponse("list-stories-page-2", 429),
+            $this->mockResponse("list-stories-page-2", 200, [
+                "total" => 6,
+                "per-page" => 2,
+                "page" => 2,
             ]),
-            $this->mockResponse('list-stories-page-3', 200, [
-                'total' => 6,
-                'per-page' => 2,
-                'page' => 3,
+            $this->mockResponse("list-stories-page-3", 200, [
+                "total" => 6,
+                "per-page" => 2,
+                "page" => 3,
             ]),
         ];
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyBulkApi = new TestStoryBulkApi($mapiClient, '222');
+        $storyBulkApi = new TestStoryBulkApi($mapiClient, "222");
 
         $i = 0;
         $expectedNames = [
-            'My first post',
-            'My second post',
-            'My third post',
-            'My fourth post',
-            'My fifth post',
-            'My sixth post',
+            "My first post",
+            "My second post",
+            "My third post",
+            "My fourth post",
+            "My fifth post",
+            "My sixth post",
         ];
 
         foreach (
             $storyBulkApi->all(
-                params: new StoriesParams(withTag: 'aaa', search: 'something'),
+                params: new StoriesParams(withTag: "aaa", search: "something"),
                 itemsPerPage: 2,
             ) as $story
         ) {
@@ -214,28 +211,28 @@ final class StoryBulkApiTest extends TestCase
     public function testAllWithALotOf429OnSecondPage(): void
     {
         $this->expectException(StoryblokApiException::class);
-        $this->expectExceptionMessage('Rate limit exceeded maximum retries');
+        $this->expectExceptionMessage("Rate limit exceeded maximum retries");
 
         $responses = [
-            $this->mockResponse('list-stories-page-1', 429),
-            $this->mockResponse('list-stories-page-1', 200, [
-                'total' => 6,
-                'per-page' => 2,
-                'page' => 1,
+            $this->mockResponse("list-stories-page-1", 429),
+            $this->mockResponse("list-stories-page-1", 200, [
+                "total" => 6,
+                "per-page" => 2,
+                "page" => 1,
             ]),
-            $this->mockResponse('list-stories-page-2', 429),
-            $this->mockResponse('list-stories-page-2', 429),
-            $this->mockResponse('list-stories-page-2', 429),
-            $this->mockResponse('list-stories-page-2', 429),
+            $this->mockResponse("list-stories-page-2", 429),
+            $this->mockResponse("list-stories-page-2", 429),
+            $this->mockResponse("list-stories-page-2", 429),
+            $this->mockResponse("list-stories-page-2", 429),
         ];
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyBulkApi = new TestStoryBulkApi($mapiClient, '222');
+        $storyBulkApi = new TestStoryBulkApi($mapiClient, "222");
 
         iterator_to_array(
             $storyBulkApi->all(
-                params: new StoriesParams(withTag: 'aaa', search: 'something'),
+                params: new StoriesParams(withTag: "aaa", search: "something"),
                 itemsPerPage: 2,
             ),
         );
@@ -244,57 +241,57 @@ final class StoryBulkApiTest extends TestCase
     public function test429OnFirstPageWithNoResponseHeaders(): void
     {
         $responses = [
-            $this->mockResponse('list-stories-page-1', 429),
-            $this->mockResponse('list-stories-page-1', 200, [
-                'total' => 6,
-                'per-page' => 2,
-                'page' => 1,
+            $this->mockResponse("list-stories-page-1", 429),
+            $this->mockResponse("list-stories-page-1", 200, [
+                "total" => 6,
+                "per-page" => 2,
+                "page" => 1,
             ]),
-            $this->mockResponse('list-stories-page-2', 200, [
-                'total' => 6,
-                'per-page' => 2,
-                'page' => 2,
+            $this->mockResponse("list-stories-page-2", 200, [
+                "total" => 6,
+                "per-page" => 2,
+                "page" => 2,
             ]),
-            $this->mockResponse('list-stories-page-3', 200, [
-                'total' => 6,
-                'per-page' => 2,
-                'page' => 3,
+            $this->mockResponse("list-stories-page-3", 200, [
+                "total" => 6,
+                "per-page" => 2,
+                "page" => 3,
             ]),
-            $this->mockResponse('list-stories', 429),
-            $this->mockResponse('list-stories', 200, [
-                'total' => 10,
-                'per-page' => 2,
-                'page' => 4,
+            $this->mockResponse("list-stories", 429),
+            $this->mockResponse("list-stories", 200, [
+                "total" => 10,
+                "per-page" => 2,
+                "page" => 4,
             ]),
-            $this->mockResponse('list-stories', 200, [
-                'total' => 10,
-                'per-page' => 2,
-                'page' => 5,
+            $this->mockResponse("list-stories", 200, [
+                "total" => 10,
+                "per-page" => 2,
+                "page" => 5,
             ]),
-            $this->mockResponse('list-stories', 200, [
-                'total' => 10,
-                'per-page' => 2,
-                'page' => 6,
+            $this->mockResponse("list-stories", 200, [
+                "total" => 10,
+                "per-page" => 2,
+                "page" => 6,
             ]),
         ];
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
-        $storyBulkApi = new TestStoryBulkApi($mapiClient, '222');
+        $storyBulkApi = new TestStoryBulkApi($mapiClient, "222");
 
         $i = 0;
         $expectedNames = [
-            'My first post',
-            'My second post',
-            'My third post',
-            'My fourth post',
-            'My fifth post',
-            'My sixth post',
+            "My first post",
+            "My second post",
+            "My third post",
+            "My fourth post",
+            "My fifth post",
+            "My sixth post",
         ];
 
         foreach (
             $storyBulkApi->all(
-                params: new StoriesParams(withTag: 'aaa', search: 'something'),
+                params: new StoriesParams(withTag: "aaa", search: "something"),
                 itemsPerPage: 2,
             ) as $story
         ) {
@@ -317,9 +314,9 @@ final class StoryBulkApiTest extends TestCase
                 array $context = [],
             ): void {
                 $this->logs[] = [
-                    'level' => $level,
-                    'message' => $message,
-                    'context' => $context,
+                    "level" => $level,
+                    "message" => $message,
+                    "context" => $context,
                 ];
             }
 
@@ -327,61 +324,61 @@ final class StoryBulkApiTest extends TestCase
                 string|\Stringable $message,
                 array $context = [],
             ): void {
-                $this->log('warning', $message, $context);
+                $this->log("warning", $message, $context);
             }
         };
 
         $story1Data = [
-            'story' => [
-                'name' => 'Story 1',
-                'slug' => 'story-1',
-                'content' => ['component' => 'blog'],
-                'created_at' => '2024-02-08 09:40:59.123',
-                'published_at' => null,
-                'id' => 1,
-                'uuid' => '1234-5678',
+            "story" => [
+                "name" => "Story 1",
+                "slug" => "story-1",
+                "content" => ["component" => "blog"],
+                "created_at" => "2024-02-08 09:40:59.123",
+                "published_at" => null,
+                "id" => 1,
+                "uuid" => "1234-5678",
             ],
         ];
 
         $story2Data = [
-            'story' => [
-                'name' => 'Story 2',
-                'slug' => 'story-2',
-                'content' => ['component' => 'blog'],
-                'created_at' => '2024-02-08 09:41:59.123',
-                'published_at' => null,
-                'id' => 2,
-                'uuid' => '8765-4321',
+            "story" => [
+                "name" => "Story 2",
+                "slug" => "story-2",
+                "content" => ["component" => "blog"],
+                "created_at" => "2024-02-08 09:41:59.123",
+                "published_at" => null,
+                "id" => 2,
+                "uuid" => "8765-4321",
             ],
         ];
 
         $responses = [
             // First story - Rate limit hit, then success
-            $this->mockResponse('empty-story', 429, [
-                'error' => 'Rate limit exceeded',
+            $this->mockResponse("empty-story", 429, [
+                "error" => "Rate limit exceeded",
             ]),
-            new JsonMockResponse($story1Data, ['http_code' => 201]),
+            new JsonMockResponse($story1Data, ["http_code" => 201]),
             // Second story - Immediate success
-            new JsonMockResponse($story2Data, ['http_code' => 201]),
+            new JsonMockResponse($story2Data, ["http_code" => 201]),
         ];
 
         $client = new MockHttpClient($responses);
         $mapiClient = ManagementApiClient::initTest($client);
 
         // Use TestStoryApi instead of regular StoryApi
-        $storyBulkApi = new TestStoryBulkApi($mapiClient, '222', $mockLogger);
+        $storyBulkApi = new TestStoryBulkApi($mapiClient, "222", $mockLogger);
 
         // Create test stories
         $stories = [
             Story::make([
-                'name' => 'Story 1',
-                'slug' => 'story-1',
-                'content' => ['component' => 'blog'],
+                "name" => "Story 1",
+                "slug" => "story-1",
+                "content" => ["component" => "blog"],
             ]),
             Story::make([
-                'name' => 'Story 2',
-                'slug' => 'story-2',
-                'content' => ['component' => 'blog'],
+                "name" => "Story 2",
+                "slug" => "story-2",
+                "content" => ["component" => "blog"],
             ]),
         ];
 
@@ -397,8 +394,9 @@ final class StoryBulkApiTest extends TestCase
         $hasRateLimitWarning = false;
         foreach ($mockLogger->logs as $log) {
             if (
-                $log['level'] === 'warning' &&
-                $log['message'] === 'Rate limit reached while creating story, retrying...'
+                $log["level"] === "warning" &&
+                $log["message"] ===
+                    "Rate limit reached while creating story, retrying..."
             ) {
                 $hasRateLimitWarning = true;
                 break;
@@ -408,10 +406,10 @@ final class StoryBulkApiTest extends TestCase
         $this->assertTrue($hasRateLimitWarning);
 
         // Verify created stories
-        $this->assertSame('Story 1', $createdStories[0]->name());
-        $this->assertSame('Story 2', $createdStories[1]->name());
-        $this->assertSame('story-1', $createdStories[0]->slug());
-        $this->assertSame('story-2', $createdStories[1]->slug());
+        $this->assertSame("Story 1", $createdStories[0]->get("name"));
+        $this->assertSame("Story 2", $createdStories[1]->get("name"));
+        $this->assertSame("story-1", $createdStories[0]->get("slug"));
+        $this->assertSame("story-2", $createdStories[1]->get("slug"));
     }
 
     public function testCreateBulkThrowsExceptionWhenMaxRetriesIsReached(): void
@@ -426,9 +424,9 @@ final class StoryBulkApiTest extends TestCase
                 array $context = [],
             ): void {
                 $this->logs[] = [
-                    'level' => $level,
-                    'message' => $message,
-                    'context' => $context,
+                    "level" => $level,
+                    "message" => $message,
+                    "context" => $context,
                 ];
             }
 
@@ -436,14 +434,14 @@ final class StoryBulkApiTest extends TestCase
                 string|\Stringable $message,
                 array $context = [],
             ): void {
-                $this->log('warning', $message, $context);
+                $this->log("warning", $message, $context);
             }
 
             public function error(
                 string|\Stringable $message,
                 array $context = [],
             ): void {
-                $this->log('error', $message, $context);
+                $this->log("error", $message, $context);
             }
         };
 
@@ -454,10 +452,10 @@ final class StoryBulkApiTest extends TestCase
             4,
             new JsonMockResponse(
                 [
-                    'error' => 'Rate limit exceeded',
+                    "error" => "Rate limit exceeded",
                 ],
                 [
-                    'http_code' => 429,
+                    "http_code" => 429,
                 ],
             ),
         );
@@ -466,23 +464,26 @@ final class StoryBulkApiTest extends TestCase
         $mapiClient = ManagementApiClient::initTest($client);
 
         // Use TestStoryApi instead of regular StoryApi
-        $storyApi = new TestStoryBulkApi($mapiClient, '222', $mockLogger);
+        $storyApi = new TestStoryBulkApi($mapiClient, "222", $mockLogger);
 
         // Create test story
         $stories = [
             Story::make([
-                'name' => 'Story 1',
-                'slug' => 'story-1',
-                'content' => ['component' => 'blog'],
+                "name" => "Story 1",
+                "slug" => "story-1",
+                "content" => ["component" => "blog"],
             ]),
         ];
 
         // Execute bulk creation and expect exception
         try {
             iterator_to_array($storyApi->createStories($stories));
-            self::fail('Expected StoryblokApiException was not thrown');
+            self::fail("Expected StoryblokApiException was not thrown");
         } catch (StoryblokApiException $storyblokApiException) {
-            $this->assertSame('Rate limit exceeded maximum retries', $storyblokApiException->getMessage());
+            $this->assertSame(
+                "Rate limit exceeded maximum retries",
+                $storyblokApiException->getMessage(),
+            );
         }
 
         // Verify warning logs for each retry
@@ -491,15 +492,16 @@ final class StoryBulkApiTest extends TestCase
 
         foreach ($mockLogger->logs as $log) {
             if (
-                $log['level'] === 'warning' &&
-                $log['message'] === 'Rate limit reached while creating story, retrying...'
+                $log["level"] === "warning" &&
+                $log["message"] ===
+                    "Rate limit reached while creating story, retrying..."
             ) {
                 ++$warningCount;
             }
 
             if (
-                $log['level'] === 'error' &&
-                $log['message'] === 'Max retries reached while creating story'
+                $log["level"] === "error" &&
+                $log["message"] === "Max retries reached while creating story"
             ) {
                 $hasErrorLog = true;
             }
@@ -512,11 +514,11 @@ final class StoryBulkApiTest extends TestCase
         // Verify the last log context contains story information
         $lastErrorLog = array_filter(
             $mockLogger->logs,
-            fn(array $log): bool => $log['level'] === 'error',
+            fn(array $log): bool => $log["level"] === "error",
         );
         $lastErrorLog = end($lastErrorLog);
 
-        $this->assertArrayHasKey('story_name', $lastErrorLog['context']);
-        $this->assertSame('Story 1', $lastErrorLog['context']['story_name']);
+        $this->assertArrayHasKey("story_name", $lastErrorLog["context"]);
+        $this->assertSame("Story 1", $lastErrorLog["context"]["story_name"]);
     }
 }

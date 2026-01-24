@@ -58,23 +58,21 @@ class WorkflowStageApi extends EndpointSpace
     /**
      * @param string|int $workflowStageId the workflow stage identifier
      */
-    public function delete(
-        string|int $workflowStageId,
-    ): StoryblokResponseInterface {
-        return $this->makeRequest(
+    public function delete(string|int $workflowStageId): WorkflowStageResponse
+    {
+        $httpResponse = $this->makeHttpRequest(
             "DELETE",
             "/v1/spaces/" .
                 $this->spaceId .
                 "/workflow_stages/" .
                 $workflowStageId,
-            dataClass: WorkflowStageData::class,
         );
+        return new WorkflowStageResponse($httpResponse);
     }
 
-    public function create(
-        StoryblokData $storyblokData,
-    ): StoryblokResponseInterface {
-        return $this->makeRequest(
+    public function create(StoryblokData $storyblokData): WorkflowStageResponse
+    {
+        $httpResponse = $this->makeHttpRequest(
             "POST",
             "/v1/spaces/" . $this->spaceId . "/workflow_stages",
             [
@@ -82,15 +80,15 @@ class WorkflowStageApi extends EndpointSpace
                     "workflow_stage" => $storyblokData->toArray(),
                 ],
             ],
-            dataClass: WorkflowStageData::class,
         );
+        return new WorkflowStageResponse($httpResponse);
     }
 
     public function update(
         string|int $workflowStageId,
         StoryblokData $storyblokData,
-    ): StoryblokResponseInterface {
-        return $this->makeRequest(
+    ): WorkflowStageResponse {
+        $httpResponse = $this->makeHttpRequest(
             "POST",
             "/v1/spaces/" .
                 $this->spaceId .
@@ -99,7 +97,7 @@ class WorkflowStageApi extends EndpointSpace
             [
                 "body" => $storyblokData->toArray(),
             ],
-            dataClass: WorkflowStageData::class,
         );
+        return new WorkflowStageResponse($httpResponse);
     }
 }
