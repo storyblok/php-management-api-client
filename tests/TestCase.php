@@ -17,7 +17,11 @@ abstract class TestCase extends BaseTestCase
         int $statusCode = 200,
         array $headers = [],
     ): MockResponse {
-        $content = file_get_contents(sprintf('./tests/Feature/Data/%s.json', $mockfile));
+        $path = sprintf('./tests/Feature/Data/%s.json', $mockfile);
+        $content = file_get_contents($path);
+        if ($content === false) {
+            throw new \RuntimeException(sprintf('Failed to read mock file: %s', $path));
+        }
 
         return new MockResponse($content, [
             'http_code' => $statusCode,

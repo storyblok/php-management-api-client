@@ -517,7 +517,7 @@ final class StoryBulkApiTest extends TestCase
             fn(array $log): bool => $log["level"] === "error",
         );
         $lastErrorLog = end($lastErrorLog);
-
+        $this->assertIsArray($lastErrorLog);
         $this->assertArrayHasKey("story_name", $lastErrorLog["context"]);
         $this->assertSame("Story 1", $lastErrorLog["context"]["story_name"]);
     }

@@ -88,7 +88,7 @@ final class StoryApiTest extends TestCase
         $response = new MockResponse(
             json_encode([
                 "story" => $expectedStoryData,
-            ]),
+            ], JSON_THROW_ON_ERROR),
             [
                 "http_code" => 201,
                 "response_headers" => ["Content-Type: application/json"],
