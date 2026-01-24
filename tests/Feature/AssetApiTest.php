@@ -67,8 +67,8 @@ final class AssetApiTest extends TestCase
 
         $storyblokResponse = $assetApi->page();
         $storyblokData = $storyblokResponse->data();
-
-        $this->assertInstanceOf(Assets::class, $storyblokData);
+        $this->assertCount(2, $storyblokData);
+        //$this->assertInstanceOf(Assets::class, $storyblokData);
 
         foreach ($storyblokData as $asset) {
             $this->assertGreaterThan(10, $asset->id());

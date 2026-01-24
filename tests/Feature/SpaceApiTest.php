@@ -17,10 +17,7 @@ final class SpaceApiTest extends TestCase
     public function testMakingSpace(): void
     {
         $spaceData = Space::make([]);
-        $this->assertInstanceOf(Space::class, $spaceData);
-
-        $spacesData = Spaces::make([]);
-        $this->assertInstanceOf(Spaces::class, $spacesData);
+        $this->assertSame("", $spaceData->name());
 
         $responses = [
             $this->mockResponse("one-space", 200),
@@ -31,7 +28,7 @@ final class SpaceApiTest extends TestCase
         $mapiClient = ManagementApiClient::initTest($client);
         $spaceApi = new SpaceApi($mapiClient);
 
-        $this->assertInstanceOf(SpaceApi::class, $spaceApi);
+        $this->assertStringEndsWith("SpaceApi", $spaceApi::class);
     }
 
     public function testOneSpaceSpace(): void
