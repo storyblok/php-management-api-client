@@ -28,7 +28,7 @@
         "phpstan/phpstan": "^2.0",
         "rector/rector": "^2",
         "friendsofphp/php-cs-fixer": "^3.65",
-        "phpunit/phpunit": "^11.0"
+        "phpunit/phpunit": "^12.0"
     },
     "scripts": {
         "license-check": "php license-checker.php",

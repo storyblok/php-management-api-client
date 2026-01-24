@@ -106,7 +106,7 @@ class ManagementApiClient
     }
 
     /**
-     * @deprecated Use `new StoryApi($managementApiClient, $spaceId, $logger)` instead.
+     * @deprecated since 1.1, Use `new StoryApi($managementApiClient, $spaceId, $logger)` instead.
      * @codeCoverageIgnore
      */
     public function storyApi(
@@ -114,7 +114,7 @@ class ManagementApiClient
         ?LoggerInterface $logger = null,
     ): StoryApi {
         trigger_error(
-            'Method storyApi() is deprecated. Use `new StoryApi($managementApiClient, $spaceId, $logger)` instead.',
+            'Method storyApi() is deprecated since 1.1 and will be removed in 2.0. Use `new StoryApi($managementApiClient, $spaceId, $logger)` instead.',
             E_USER_DEPRECATED,
         );
 
@@ -122,7 +122,7 @@ class ManagementApiClient
     }
 
     /**
-     * @deprecated Use `new StoryBulkApi($managementApiClient, $spaceId, $logger)` instead.
+     * @deprecated sing 1.1 Use `new StoryBulkApi($managementApiClient, $spaceId, $logger)` instead.
      * @codeCoverageIgnore
      */
     public function storyBulkApi(
@@ -130,7 +130,7 @@ class ManagementApiClient
         ?LoggerInterface $logger = null,
     ): StoryBulkApi {
         trigger_error(
-            'Method storyBulkApi() is deprecated. Use `new StoryBulkApi($managementApiClient, $spaceId, $logger)` instead.',
+            'Method storyBulkApi() is deprecated since 1.1 and will be removed in 2.0. Use `new StoryBulkApi($managementApiClient, $spaceId, $logger)` instead.',
             E_USER_DEPRECATED,
         );
 
@@ -138,13 +138,13 @@ class ManagementApiClient
     }
 
     /**
-     * @deprecated Use `new AssetApi($managementApiClient, $spaceId)` instead.
+     * @deprecated since 1.1 Use `new AssetApi($managementApiClient, $spaceId)` instead.
      * @codeCoverageIgnore
      */
     public function assetApi(string|int $spaceId): AssetApi
     {
         trigger_error(
-            'Method assetApi() is deprecated. Use `new AssetApi($managementApiClient, $spaceId)` instead.',
+            'Method assetApi() is deprecated since 1.1 and will be removed in 2.0. Use `new AssetApi($managementApiClient, $spaceId)` instead.',
             E_USER_DEPRECATED,
         );
 
@@ -152,13 +152,13 @@ class ManagementApiClient
     }
 
     /**
-     * @deprecated Use `new TagApi($managementApiClient, $spaceId)` instead.
+     * @deprecated since 1.1 Use `new TagApi($managementApiClient, $spaceId)` instead.
      * @codeCoverageIgnore
      */
     public function tagApi(string|int $spaceId): TagApi
     {
         trigger_error(
-            'Method tagApi() is deprecated. Use `new TagApi($managementApiClient, $spaceId)` instead.',
+            'Method tagApi() is deprecated since 1.1 and will be removed in 2.0. Use `new TagApi($managementApiClient, $spaceId)` instead.',
             E_USER_DEPRECATED,
         );
 
@@ -166,13 +166,13 @@ class ManagementApiClient
     }
 
     /**
-     * @deprecated Use `new WorkflowApi($managementApiClient, $spaceId)` instead.
+     * @deprecated since 1.1 Use `new WorkflowApi($managementApiClient, $spaceId)` instead.
      * @codeCoverageIgnore
      */
     public function workflowApi(string|int $spaceId): WorkflowApi
     {
         trigger_error(
-            'Method workflowApi() is deprecated. Use `new WorkflowApi($managementApiClient, $spaceId)` instead.',
+            'Method workflowApi() is deprecated since 1.1 and will be removed in 2.0. Use `new WorkflowApi($managementApiClient, $spaceId)` instead.',
             E_USER_DEPRECATED,
         );
 
@@ -180,13 +180,13 @@ class ManagementApiClient
     }
 
     /**
-     * @deprecated Use `new WorkflowStageApi($managementApiClient, $spaceId)` instead.
+     * @deprecated since 1.1 Use `new WorkflowStageApi($managementApiClient, $spaceId)` instead.
      * @codeCoverageIgnore
      */
     public function workflowStageApi(string|int $spaceId): WorkflowStageApi
     {
         trigger_error(
-            'Method workflowStageApi() is deprecated. Use `new WorkflowStageApi($managementApiClient, $spaceId)` instead.',
+            'Method workflowStageApi() is deprecated since 1.1 and will be removed in 2.0. Use `new WorkflowStageApi($managementApiClient, $spaceId)` instead.',
             E_USER_DEPRECATED,
         );
 
@@ -194,7 +194,7 @@ class ManagementApiClient
     }
 
     /**
-     * @deprecated Use `new ComponentApi($managementApiClient, $spaceId, $logger)` instead.
+     * @deprecated since 1.1 Use `new ComponentApi($managementApiClient, $spaceId, $logger)` instead.
      * @codeCoverageIgnore
      */
     public function componentApi(
@@ -202,7 +202,7 @@ class ManagementApiClient
         ?LoggerInterface $logger = null,
     ): ComponentApi {
         trigger_error(
-            'Method componentApi() is deprecated. Use `new ComponentApi($managementApiClient, $spaceId, $logger)` instead.',
+            'Method componentApi() is deprecated since 1.1 and will be removed in 2.0. Use `new ComponentApi($managementApiClient, $spaceId, $logger)` instead.',
             E_USER_DEPRECATED,
         );
 
@@ -210,13 +210,13 @@ class ManagementApiClient
     }
 
     /**
-     * @deprecated Use `new ManagementApi($managementApiClient)` instead.
+     * @deprecated since 1.1 Use `new ManagementApi($managementApiClient)` instead.
      * @codeCoverageIgnore
      */
     public function managementApi(): ManagementApi
     {
         trigger_error(
-            'Method managementApi() is deprecated. Use `new ManagementApi($managementApiClient)` instead.',
+            'Method managementApi() is deprecated since 1.1 and will be removed in 2.0. Use `new ManagementApi($managementApiClient)` instead.',
             E_USER_DEPRECATED,
         );
 
