@@ -34,7 +34,6 @@
     "scripts": {
         "license-check": "php license-checker.php",
         "static-code": "vendor/bin/phpstan analyse",
-        "static-tests": "vendor/bin/phpstan analyse -c phpstan-tests.neon",
         "style-fix-code": "vendor/bin/php-cs-fixer fix",
         "style-check-code": "vendor/bin/php-cs-fixer check",
         "test-code": "vendor/bin/phpunit",
@@ -44,7 +43,6 @@
         "all-checks": [
             "@style-check-code",
             "@static-code",
-            "@static-tests",
             "@refactor-check-code",
             "@test-code"
         ]

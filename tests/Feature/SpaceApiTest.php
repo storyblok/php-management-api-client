@@ -240,6 +240,7 @@ final class SpaceApiTest extends TestCase
         $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
 
         foreach ($storyblokData as $spaceItem) {
+            $this->assertInstanceOf(Space::class, $spaceItem);
             $this->assertIsString($spaceItem->name());
             $this->assertSame("1114", $spaceItem->ownerId());
         }

@@ -1,4 +1,8 @@
+includes:
+	- vendor/phpstan/phpstan-phpunit/extension.neon
 parameters:
 	level: 9
+	treatPhpDocTypesAsCertain: false
 	paths:
 		- src
+		- tests
