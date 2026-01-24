@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use Storyblok\ManagementApi\Data\Enum\Region;
+use Storyblok\ManagementApi\Data\StoryblokDataInterface;
 use Storyblok\ManagementApi\Endpoints\ManagementApi;
 use Tests\TestCase;
 use Storyblok\ManagementApi\ManagementApiClient;
@@ -49,9 +50,11 @@ final class ManagementApiTest extends TestCase
         $this->assertTrue($response->isOk());
 
         $tags = $response->data()->get("internal_tags");
+        $this->assertIsIterable($tags);
         $this->assertCount(8, $tags);
 
         foreach ($tags as $tag) {
+            $this->assertInstanceOf(StoryblokDataInterface::class, $tag);
             $this->assertSame("asset", $tag->get("object_type"));
             $this->assertIsString($tag->get("name"));
             $this->assertIsNumeric($tag->get("id"));
@@ -97,6 +100,7 @@ final class ManagementApiTest extends TestCase
         $this->assertTrue($response->isOk());
 
         $tag = $response->data()->get("internal_tag");
+        $this->assertInstanceOf(StoryblokDataInterface::class, $tag);
 
         $this->assertIsString($tag->get("name"));
         $this->assertIsString($tag->getString("name"));
@@ -127,6 +131,7 @@ final class ManagementApiTest extends TestCase
         $this->assertTrue($response->isOk());
 
         $tag = $response->data()->get("internal_tag");
+        $this->assertInstanceOf(StoryblokDataInterface::class, $tag);
 
         $this->assertIsString($tag->get("name"));
         $this->assertIsString($tag->getString("name"));
@@ -157,6 +162,7 @@ final class ManagementApiTest extends TestCase
         $this->assertTrue($response->isOk());
 
         $tag = $response->data()->get("internal_tag");
+        $this->assertInstanceOf(StoryblokDataInterface::class, $tag);
 
         $this->assertIsString($tag->get("name"));
         $this->assertIsString($tag->getString("name"));

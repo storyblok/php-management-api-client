@@ -28,21 +28,30 @@ final class ComponentApiTest extends TestCase
         $storyblokResponse = $componentApi->all();
         $url = $storyblokResponse->getLastCalledUrl();
 
-        $this->assertMatchesRegularExpression('/.*\/v1\/spaces\/2222\/components$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*\/v1\/spaces\/2222\/components$/',
+            $url,
+        );
 
         $storyblokResponse = $componentApi->all(
             new ComponentsParams(byIds: "1234567890"),
         );
         $url = $storyblokResponse->getLastCalledUrl();
 
-        $this->assertMatchesRegularExpression('/.*\/v1\/spaces\/2222\/components\?by_ids=1234567890$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*\/v1\/spaces\/2222\/components\?by_ids=1234567890$/',
+            $url,
+        );
 
         $storyblokResponse = $componentApi->all(
             new ComponentsParams(byIds: "1234567890", isRoot: true),
         );
         $url = $storyblokResponse->getLastCalledUrl();
 
-        $this->assertMatchesRegularExpression('/.*\/v1\/spaces\/2222\/components\?is_root=1&by_ids=1234567890$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*\/v1\/spaces\/2222\/components\?is_root=1&by_ids=1234567890$/',
+            $url,
+        );
     }
 
     public function testGettingOneComponent(): void
@@ -56,11 +65,12 @@ final class ComponentApiTest extends TestCase
         $componentResponse = $componentApi->get("7223149");
         $url = $componentResponse->getLastCalledUrl();
 
-        $this->assertMatchesRegularExpression('/.*\/v1\/spaces\/2222\/components\/7223149$/', $url);
+        $this->assertMatchesRegularExpression(
+            '/.*\/v1\/spaces\/2222\/components\/7223149$/',
+            $url,
+        );
 
         $component = $componentResponse->data();
-
-        $this->assertInstanceOf(Component::class, $component);
 
         $this->assertSame(7223149, $component->getInt("id"));
         $this->assertSame("7223149", $component->id());

@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use Exception;
 use Tests\TestCase;
+use Storyblok\ManagementApi\Data\Asset;
 use Storyblok\ManagementApi\Data\Assets;
 use Storyblok\ManagementApi\Data\Fields\AssetField;
 use Storyblok\ManagementApi\Data\StoryComponent;
@@ -67,10 +68,11 @@ final class AssetApiTest extends TestCase
 
         $storyblokResponse = $assetApi->page();
         $storyblokData = $storyblokResponse->data();
-
-        $this->assertInstanceOf(Assets::class, $storyblokData);
+        $this->assertCount(2, $storyblokData);
+        //$this->assertInstanceOf(Assets::class, $storyblokData);
 
         foreach ($storyblokData as $asset) {
+            $this->assertInstanceOf(Asset::class, $asset);
             $this->assertGreaterThan(10, $asset->id());
         }
 

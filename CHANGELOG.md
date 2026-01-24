@@ -3,6 +3,7 @@
 ## 1.1.0 - WIP
 - Moving from PestPHP to PHPUnit (version 12)
 - Deprecate API factory methods, prefer dependency injection
+- Adding phpstan-phpunit for tests (level 9)
 
 ## 1.0.11 - 2026-01-05
 - Adding parameters for updating a story

@@ -10,6 +10,7 @@ use Tests\TestCase;
 use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\Data\StoryComponent;
 use Storyblok\ManagementApi\Endpoints\StoryApi;
+use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
@@ -87,7 +88,7 @@ final class StoryApiTest extends TestCase
         $response = new MockResponse(
             json_encode([
                 "story" => $expectedStoryData,
-            ]),
+            ], JSON_THROW_ON_ERROR),
             [
                 "http_code" => 201,
                 "response_headers" => ["Content-Type: application/json"],
@@ -263,7 +264,7 @@ final class StoryApiTest extends TestCase
         $responses = [
             $this->mockResponse("one-story", 200),
             $this->mockResponse("one-story", 200),
-            $this->mockResponse("empty-story", 404),
+            $this->mockResponse("empty-story", 200),
         ];
 
         $client = new MockHttpClient($responses);
@@ -282,6 +283,12 @@ final class StoryApiTest extends TestCase
         $storyblokResponse = $storyApi->update("111", $storyblokData);
         $storyblokData = $storyblokResponse->data();
         $this->assertSame("440448565", $storyblokData->id());
+
+        // now the third interaction will return an empty payload
+        $this->expectException(StoryblokFormatException::class);
+        $this->expectExceptionMessage("Expected 'story' in the response.");
+        $storyblokResponse = $storyApi->update("111", $storyblokData);
+        $storyblokResponse->data();
     }
 
     public function testPublishingStoryStoryData(): void

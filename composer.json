@@ -22,10 +22,11 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=8.3",
-        "symfony/http-client": "^7.0|^8.0"
+        "symfony/http-client": "^6.4|^7.0|^8.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
         "rector/rector": "^2",
         "friendsofphp/php-cs-fixer": "^3.65",
         "phpunit/phpunit": "^12.0"
