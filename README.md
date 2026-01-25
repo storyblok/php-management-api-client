@@ -67,7 +67,7 @@ require 'vendor/autoload.php';
 use Storyblok\ManagementApi\ManagementApiClient;
 
 $client = new ManagementApiClient(
-    token: $storyblokPersonalAccessToken,
+    personalAccessToken: $storyblokPersonalAccessToken,
     shouldRetry: true
 );
 ```
@@ -108,6 +108,8 @@ To obtain a proper token for accessing the Management API you can choose:
 
 - **Personal Access Token**: Navigate to [your Storyblok account settings](https://app.storyblok.com/#/me/account?tab=token) and click on "Generate new token."
 - **OAuth Token**: Follow the steps outlined in [this guide on authentication apps](https://www.storyblok.com/docs/plugins/authentication-apps).
+
+> More information about the Storyblok Management API tokens: <https://www.storyblok.com/docs/api/management/getting-started/authentication>
 
 Once you have your Token, instead of storing the access token directly in the source code, you should consider handling it via environment variables.
 For example, you can create the `.env` file (if it does not already exist) and set a parameter for storing the Personal Access Token.
