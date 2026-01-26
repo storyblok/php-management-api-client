@@ -91,6 +91,11 @@ class Asset extends BaseData
         return $this;
     }
 
+    public function isExternalUrl(): bool
+    {
+        return $this->getBoolean("is_external_url", false);
+    }
+
     public static function emptyAsset(): Asset
     {
         return self::make([

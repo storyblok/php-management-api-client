@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1 - WIP
+- Adding `isExternalUrl()` helper method for Asset
+- Full test coverage for Asset and Assets classes
+
 ## 1.1.0 - 2026-01-25
 - Moving from PestPHP to PHPUnit (version 12)
 - Deprecate API factory methods, prefer dependency injection
