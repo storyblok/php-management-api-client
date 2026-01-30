@@ -27,4 +27,20 @@ class Assets extends StoryblokData
     {
         return new self($data["assets"] ?? []);
     }
+
+    /**
+     * Returns an array of the IDs of each Asset in the collection.
+     *
+     * @return array<string> Array of IDs strings indexed from 0
+     */
+    public function getIds(): array
+    {
+        $array = [];
+        /** @var Asset $asset */
+        foreach ($this as $asset) {
+            $array[] = $asset->id();
+        }
+
+        return $array;
+    }
 }

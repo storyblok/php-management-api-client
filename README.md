@@ -923,6 +923,37 @@ $deletedAsset = $assetApi->delete($assetId)-data();
 echo "DELETED ASSET, ID : " . $deletedAsset->id() . PHP_EOL;
 ```
 
+
+### Deleting Multiple Assets
+
+To delete multiple assets, you can use the `deleteMultipleAssets()` method. It requires an array of asset ID strings as parameter:
+
+```php
+$response = $assetApi->deleteMultipleAssets($ids);
+```
+
+On success, the response will have a `200` status code.
+
+Here is a more complete example that queries assets by tag, retrieves their IDs, and deletes them:
+
+```php
+$assetApi = new AssetApi($client, $spaceId);
+$tags = ["some-tag"];
+$params = [
+    "withTags" => $tags,
+];
+$assets = $assetApi->page(new AssetsParams(...$params))->data();
+$ids = $assets->getIds();
+
+echo "Going to delete: " . implode(", ", $ids) . PHP_EOL;
+try {
+    $response = $assetApi->deleteMultipleAssets($ids);
+    echo "Status: " . $response->getResponseStatusCode() . PHP_EOL;
+} catch (Exception $e) {
+    echo "Error deleting: " . $e->getMessage() . PHP_EOL;
+}
+```
+
 ## Handling tags
 
 For using the `TagApi` class you have to import:
