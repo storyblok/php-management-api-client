@@ -1,7 +1,9 @@
 # Changelog
 
-## 1.1.1 - WIP
+## 1.1.1 - 2026-01-30
 - Adding `isExternalUrl()` helper method for Asset
+- Adding `getIds()` helper method for Assets
+- Adding `deleteMultipleAssets()` method for deleting multiple assets
 - Full test coverage for Asset and Assets classes
 
 ## 1.1.0 - 2026-01-25
