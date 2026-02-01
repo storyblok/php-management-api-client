@@ -12,6 +12,7 @@ use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\Response\AssetResponse;
 use Storyblok\ManagementApi\Response\AssetsResponse;
 use Storyblok\ManagementApi\Response\AssetUploadResponse;
+use Storyblok\ManagementApi\Response\MessageResponse;
 use Storyblok\ManagementApi\Response\StoryblokResponse;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 use Symfony\Component\HttpClient\HttpClient;
@@ -182,17 +183,18 @@ class AssetApi extends EndpointSpace
      * @link https://www.storyblok.com/docs/api/management/core-resources/assets/delete-multiple-assets
      * @param string[] $assetIds
      */
-    public function deleteMultipleAssets(array $assetIds): StoryblokResponseInterface
+    public function deleteMultipleAssets(array $assetIds): MessageResponse
     {
         $payload = [
             "ids" => $assetIds,
         ];
-        return $this->makeRequest(
+        $httpResponse = $this->makeHttpRequest(
             "POST",
             "/v1/spaces/" . $this->spaceId . "/assets/bulk_destroy",
             [
                 "body" => json_encode($payload),
             ],
         );
+        return new MessageResponse($httpResponse);
     }
 }
