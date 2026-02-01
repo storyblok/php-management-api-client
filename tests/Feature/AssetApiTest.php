@@ -183,6 +183,26 @@ final class AssetApiTest extends TestCase
         $this->assertSame("111", $data->id());
     }
 
+    public function testDeleteMultipleAsset(): void
+    {
+        $responses = [
+            $this->mockResponse("delete-multiple-assets", 200),
+            $this->mockResponse("empty-asset", 404),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $assetApi = new AssetApi($mapiClient, "222");
+
+        $response = $assetApi->deleteMultipleAssets(["123456789", "987654321"]);
+        $data = $response->data();
+
+        $this->assertSame(
+            "Asset(s) 123456789, 987654321 deleted successfully",
+            $data->message(),
+        );
+    }
+
     public function testUploadOneAsset(): void
     {
         $responses = [

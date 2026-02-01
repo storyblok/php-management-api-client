@@ -949,6 +949,7 @@ echo "Going to delete: " . implode(", ", $ids) . PHP_EOL;
 try {
     $response = $assetApi->deleteMultipleAssets($ids);
     echo "Status: " . $response->getResponseStatusCode() . PHP_EOL;
+    echo $response->data()->message();
 } catch (Exception $e) {
     echo "Error deleting: " . $e->getMessage() . PHP_EOL;
 }

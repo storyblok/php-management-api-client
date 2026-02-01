@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.2 - WIP
+- Adding `MessageResponse` for typing responses with message data
+
 ## 1.1.1 - 2026-01-30
 - Adding `isExternalUrl()` helper method for Asset
 - Adding `getIds()` helper method for Assets
