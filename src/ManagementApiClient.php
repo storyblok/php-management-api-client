@@ -8,11 +8,9 @@ use Storyblok\ManagementApi\Data\Enum\Region;
 use Storyblok\ManagementApi\Endpoints\AssetApi;
 use Storyblok\ManagementApi\Endpoints\ComponentApi;
 use Storyblok\ManagementApi\Endpoints\ManagementApi;
-use Storyblok\ManagementApi\Endpoints\SpaceApi;
 use Storyblok\ManagementApi\Endpoints\StoryApi;
 use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
 use Storyblok\ManagementApi\Endpoints\TagApi;
-use Storyblok\ManagementApi\Endpoints\UserApi;
 use Storyblok\ManagementApi\Endpoints\WorkflowApi;
 use Storyblok\ManagementApi\Endpoints\WorkflowStageApi;
 use Symfony\Component\HttpClient\HttpClient;
@@ -24,8 +22,7 @@ use Symfony\Component\HttpClient\Retry\GenericRetryStrategy;
 use Symfony\Component\HttpClient\RetryableHttpClient;
 
 /**
- * Class MapiClient
- * @package Storyblok\ManagementApi
+ * Client for the Storyblok Management API.
  */
 class ManagementApiClient
 {
@@ -33,9 +30,6 @@ class ManagementApiClient
 
     private HttpClientInterface $httpAssetClient;
 
-    /**
-     * MapiClient constructor.
-     */
     public function __construct(
         string $personalAccessToken,
         Region $region = Region::EU,
@@ -64,9 +58,6 @@ class ManagementApiClient
         $this->httpAssetClient = HttpClient::create();
     }
 
-    /**
-     * Initialize the MapiClient
-     */
     public static function init(
         string $personalAccessToken,
         Region $region = Region::EU,
@@ -80,17 +71,8 @@ class ManagementApiClient
         ?HttpClientInterface $httpAssetClient = null,
     ): self {
         $client = new self("");
-        //$baseUriMapi = $baseUri ?? StoryblokUtils::baseUriFromRegionForMapi($region);
-
         $client->httpClient = $httpClient;
-        if (
-            $httpAssetClient instanceof
-            \Symfony\Contracts\HttpClient\HttpClientInterface
-        ) {
-            $client->httpAssetClient = $httpAssetClient;
-        } else {
-            $client->httpAssetClient = new MockHttpClient();
-        }
+        $client->httpAssetClient = $httpAssetClient ?? new MockHttpClient();
 
         return $client;
     }
@@ -122,7 +104,7 @@ class ManagementApiClient
     }
 
     /**
-     * @deprecated sing 1.1 Use `new StoryBulkApi($managementApiClient, $spaceId, $logger)` instead.
+     * @deprecated since 1.1 Use `new StoryBulkApi($managementApiClient, $spaceId, $logger)` instead.
      * @codeCoverageIgnore
      */
     public function storyBulkApi(
