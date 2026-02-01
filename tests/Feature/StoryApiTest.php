@@ -6,10 +6,10 @@ namespace Tests\Feature;
 
 use Exception;
 use InvalidArgumentException;
-use Tests\TestCase;
 use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\Data\StoryComponent;
 use Storyblok\ManagementApi\Endpoints\StoryApi;
+use Storyblok\ManagementApi\Exceptions\InvalidStoryDataException;
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
@@ -18,6 +18,7 @@ use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Tests\TestCase;
 
 final class StoryApiTest extends TestCase
 {
@@ -382,5 +383,259 @@ final class StoryApiTest extends TestCase
         $this->assertCount(2, $array);
         $this->assertSame("e656e146-f4ed-44a2-8017-013e5a9d9395", $array[1]);
         $this->assertSame("e656e146-f4ed-44a2-8017-013e5a9d9396", $array[0]);
+    }
+
+    public function testGetStoryWithEmptyIdThrowsException(): void
+    {
+        $client = new MockHttpClient([]);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Story ID cannot be empty");
+
+        $storyApi->get("");
+    }
+
+    public function testGetStoryWithZeroIdThrowsException(): void
+    {
+        $client = new MockHttpClient([]);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Story ID cannot be empty");
+
+        $storyApi->get("0");
+    }
+
+    public function testUpdateStoryWithEmptyIdThrowsException(): void
+    {
+        $client = new MockHttpClient([]);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyData = new Story("test", "test-slug", new StoryComponent("page"));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Story ID cannot be empty");
+
+        $storyApi->update("", $storyData);
+    }
+
+    public function testPublishStoryWithEmptyIdThrowsException(): void
+    {
+        $client = new MockHttpClient([]);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Story ID cannot be empty");
+
+        $storyApi->publish("");
+    }
+
+    public function testUnpublishStoryWithEmptyIdThrowsException(): void
+    {
+        $client = new MockHttpClient([]);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Story ID cannot be empty");
+
+        $storyApi->unpublish("");
+    }
+
+    public function testCreateStoryWithInvalidDataThrowsException(): void
+    {
+        $client = new MockHttpClient([]);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyData = new Story("test", "test-slug", new StoryComponent("page"));
+        // Remove name to make it invalid
+        $storyData->setData(["slug" => "test-slug"]);
+
+        $this->expectException(InvalidStoryDataException::class);
+        $this->expectExceptionMessage("Invalid story data provided");
+
+        $storyApi->create($storyData);
+    }
+
+    public function testCreateStoryWithPublishFlag(): void
+    {
+        $response = new MockResponse(
+            json_encode([
+                "story" => [
+                    "name" => "Published Story",
+                    "slug" => "published-story",
+                    "content" => ["component" => "page"],
+                ],
+            ], JSON_THROW_ON_ERROR),
+            [
+                "http_code" => 201,
+                "response_headers" => ["Content-Type: application/json"],
+            ],
+        );
+
+        $client = new MockHttpClient([$response], "https://api.storyblok.com");
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyData = new Story(
+            "Published Story",
+            "published-story",
+            new StoryComponent("page"),
+        );
+
+        $storyResponse = $storyApi->create($storyData, publish: true);
+
+        $this->assertTrue($storyResponse->isOk());
+        $this->assertSame(201, $storyResponse->getResponseStatusCode());
+    }
+
+    public function testCreateStoryWithReleaseId(): void
+    {
+        $response = new MockResponse(
+            json_encode([
+                "story" => [
+                    "name" => "Release Story",
+                    "slug" => "release-story",
+                    "content" => ["component" => "page"],
+                ],
+            ], JSON_THROW_ON_ERROR),
+            [
+                "http_code" => 201,
+                "response_headers" => ["Content-Type: application/json"],
+            ],
+        );
+
+        $client = new MockHttpClient([$response], "https://api.storyblok.com");
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyData = new Story(
+            "Release Story",
+            "release-story",
+            new StoryComponent("page"),
+        );
+
+        $storyResponse = $storyApi->create($storyData, releaseId: 12345);
+
+        $this->assertTrue($storyResponse->isOk());
+        $this->assertSame(201, $storyResponse->getResponseStatusCode());
+    }
+
+    public function testUpdateStoryWithAllOptionalParameters(): void
+    {
+        $responses = [$this->mockResponse("one-story", 200)];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyData = new Story("test", "test-slug", new StoryComponent("page"));
+
+        $storyResponse = $storyApi->update(
+            storyId: "111",
+            storyData: $storyData,
+            groupId: "group-uuid-123",
+            forceUpdate: "1",
+            releaseId: 12345,
+            publish: true,
+            lang: "de",
+        );
+
+        $this->assertTrue($storyResponse->isOk());
+        $this->assertSame(200, $storyResponse->getResponseStatusCode());
+    }
+
+    public function testPublishStoryWithoutOptionalParameters(): void
+    {
+        $responses = [$this->mockResponse("one-story", 200)];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyResponse = $storyApi->publish("111");
+
+        $this->assertTrue($storyResponse->isOk());
+        $this->assertSame(200, $storyResponse->getResponseStatusCode());
+    }
+
+    public function testUnpublishStoryWithoutLanguage(): void
+    {
+        $responses = [$this->mockResponse("one-story", 200)];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyResponse = $storyApi->unpublish("111");
+
+        $this->assertTrue($storyResponse->isOk());
+        $this->assertSame(200, $storyResponse->getResponseStatusCode());
+    }
+
+    public function testPageWithDefaultParameters(): void
+    {
+        $responses = [
+            $this->mockResponse("list-stories", 200, [
+                "total" => 2,
+                "per-page" => 25,
+            ]),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyResponse = $storyApi->page();
+        $url = $storyResponse->getLastCalledUrl();
+
+        $this->assertMatchesRegularExpression(
+            '/.*\/v1\/spaces\/222\/stories\?page=1&per_page=25$/',
+            $url,
+        );
+        $this->assertTrue($storyResponse->isOk());
+    }
+
+    public function testCreateStoryWithDefaultContent(): void
+    {
+        $response = new MockResponse(
+            json_encode([
+                "story" => [
+                    "name" => "No Content Story",
+                    "slug" => "no-content-story",
+                    "content" => ["component" => "default-type"],
+                ],
+            ], JSON_THROW_ON_ERROR),
+            [
+                "http_code" => 201,
+                "response_headers" => ["Content-Type: application/json"],
+            ],
+        );
+
+        $client = new MockHttpClient([$response], "https://api.storyblok.com");
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        // Create story without content, but set default content type
+        $storyData = new Story(
+            "No Content Story",
+            "no-content-story",
+            new StoryComponent("page"),
+        );
+        $storyData->setContentType("default-type");
+        // Remove content to trigger default content creation
+        $data = $storyData->toArray();
+        unset($data["content"]);
+        $storyData->setData($data);
+
+        $storyResponse = $storyApi->create($storyData);
+
+        $this->assertTrue($storyResponse->isOk());
     }
 }
