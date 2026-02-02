@@ -101,7 +101,7 @@ class AssetApi extends EndpointSpace
 
         $signedResponse = $this->makeRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/assets",
+            "/v1/spaces/" . $this->spaceId . "/assets/",
             ["body" => $payload],
         );
         if (!$signedResponse->isOk()) {

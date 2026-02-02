@@ -13,5 +13,8 @@
         "x-amz-date": "20181110T153300Z",
         "x-amz-signature": "aaedd72b54636662b137b7648b54bdb47ee3b1dd28173313647930e625c8"
     },
-    "post_url": "https://s3.amazonaws.com/a-example.storyblok.com"
+    "post_url": "https://s3.amazonaws.com/a-example.storyblok.com",
+    "id": 140773191961982,
+    "locked": false,
+    "meta_data": []
 }

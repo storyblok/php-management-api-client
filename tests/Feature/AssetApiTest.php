@@ -222,6 +222,10 @@ final class AssetApiTest extends TestCase
         $assetApi = new AssetApi($mapiClient, "222");
 
         $response = $assetApi->upload("./tests/Feature/Data/image-test.png");
+        $this->assertSame(
+            "https://example.com/v1/spaces/222/assets/140773191961982/finish_upload",
+            $response->getLastCalledUrl(),
+        );
         $data = $response->data();
 
         $this->assertSame("111", $data->id());
