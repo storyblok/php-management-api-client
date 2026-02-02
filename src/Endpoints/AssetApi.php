@@ -13,7 +13,6 @@ use Storyblok\ManagementApi\Response\AssetResponse;
 use Storyblok\ManagementApi\Response\AssetsResponse;
 use Storyblok\ManagementApi\Response\AssetUploadResponse;
 use Storyblok\ManagementApi\Response\MessageResponse;
-use Storyblok\ManagementApi\Response\StoryblokResponse;
 use Storyblok\ManagementApi\Response\StoryblokResponseInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -92,18 +91,21 @@ class AssetApi extends EndpointSpace
         return $payload;
     }
 
-    public function upload(
-        string $filename,
-        string|int|null $parent_id = null,
-    ): AssetUploadResponse {
-        // =========== CREATE A SIGNED REQUEST
-        $payload = $this->buildPayload($filename, $parent_id);
-
+    /**
+     * Step 1: Create a signed request for uploading an asset.
+     * @link https://www.storyblok.com/docs/api/management/core-resources/assets/create-an-asset
+     * @param array<string, mixed> $payload The payload from buildPayload()
+     * @return StoryblokResponseInterface The signed response containing post_url and fields
+     * @throws \Exception If the signed request fails
+     */
+    public function createSignedRequest(array $payload): StoryblokResponseInterface
+    {
         $signedResponse = $this->makeRequest(
             "POST",
             "/v1/spaces/" . $this->spaceId . "/assets/",
             ["body" => $payload],
         );
+
         if (!$signedResponse->isOk()) {
             throw new \Exception(
                 "Upload Asset, Signed Request call failed (Step 1) , " .
@@ -113,28 +115,23 @@ class AssetApi extends EndpointSpace
             );
         }
 
-        $signedResponseData = $signedResponse->data();
+        return $signedResponse;
+    }
 
-        // =========== UPLOAD FILE for the SIGNED REQUEST
-        $fields = $signedResponseData->get("fields");
-        $postFields = [];
-        if ($fields instanceof StoryblokData) {
-            $postFields = $fields->toArray();
-        }
-
+    /**
+     * Step 2: Upload the file to the signed URL (S3).
+     * @param string $postUrl The signed URL to upload to
+     * @param array<string, mixed> $postFields The fields from the signed response
+     * @param string $filename The path to the file to upload
+     * @return \Symfony\Contracts\HttpClient\ResponseInterface The upload response
+     * @throws \Exception If the upload fails
+     */
+    public function uploadToSignedUrl(
+        string $postUrl,
+        array $postFields,
+        string $filename,
+    ): \Symfony\Contracts\HttpClient\ResponseInterface {
         $postFields["file"] = fopen($filename, "r");
-        $postUrl = $signedResponseData->getString("post_url");
-
-        /*
-        $responseUpload = $this->makeHttpRequest(
-            "POST",
-            $postUrl,
-            [
-                "body" => $postFields,
-            ],
-
-        );
-        */
 
         $responseUpload = $this->managementClient
             ->httpAssetClient()
@@ -148,22 +145,63 @@ class AssetApi extends EndpointSpace
                 $responseUpload->getStatusCode() < 300
             )
         ) {
-            //var_dump($responseUpload->getInfo());
             throw new \Exception(
                 "Upload Asset, Upload call failed (Step 2) , " .
                     $responseUpload->getStatusCode(),
             );
         }
 
+        return $responseUpload;
+    }
+
+    /**
+     * Step 3: Finish the upload by notifying Storyblok.
+     * @link https://www.storyblok.com/docs/api/management/core-resources/assets/finish-upload
+     * @param string|int $assetId The asset ID from the signed response
+     * @return AssetUploadResponse The final upload response
+     */
+    public function finishUpload(string|int $assetId): AssetUploadResponse
+    {
         $httpResponse = $this->makeHttpRequest(
             "GET",
             "/v1/spaces/" .
                 $this->spaceId .
                 "/assets/" .
-                $signedResponseData->getString("id") .
+                $assetId .
                 "/finish_upload",
         );
+
         return new AssetUploadResponse($httpResponse);
+    }
+
+    /**
+     * Upload a file to Storyblok assets.
+     * This method orchestrates the 3-step upload process:
+     * 1. createSignedRequest() - Get a signed URL for upload
+     * 2. uploadToSignedUrl() - Upload the file to S3
+     * 3. finishUpload() - Notify Storyblok that the upload is complete
+     */
+    public function upload(
+        string $filename,
+        string|int|null $parent_id = null,
+    ): AssetUploadResponse {
+        // Step 1: Create a signed request
+        $payload = $this->buildPayload($filename, $parent_id);
+        $signedResponse = $this->createSignedRequest($payload);
+        $signedResponseData = $signedResponse->data();
+
+        // Step 2: Upload file to the signed URL
+        $fields = $signedResponseData->get("fields");
+        $postFields = [];
+        if ($fields instanceof StoryblokData) {
+            $postFields = $fields->toArray();
+        }
+
+        $postUrl = $signedResponseData->getString("post_url");
+        $this->uploadToSignedUrl($postUrl, $postFields, $filename);
+
+        // Step 3: Finish the upload
+        return $this->finishUpload($signedResponseData->getString("id"));
     }
 
     /**
