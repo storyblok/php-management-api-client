@@ -1,7 +1,8 @@
 # Changelog
 
-## 1.1.2 - WIP
+## 1.1.2 - 2026-02-02
 - Adding `MessageResponse` for typing responses with message data
+- Fixing upload assets endpoint URL
 
 ## 1.1.1 - 2026-01-30
 - Adding `isExternalUrl()` helper method for Asset
