@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3 - WIP
+- Adding `getIntStrict()` helper method (returing a forced integer with default)
+
+
 ## 1.1.2 - 2026-02-02
 - Adding `MessageResponse` for typing responses with message data
 - Fixing upload assets endpoint URL

@@ -65,6 +65,14 @@ abstract class BaseData implements
         return $defaultValue;
     }
 
+    public function getIntStrict(
+        int|string $key,
+        int $defaultValue = 0,
+        string $charNestedKey = ".",
+    ): int {
+        return (int) $this->getInt($key, $defaultValue, $charNestedKey);
+    }
+
     public function getBoolean(
         int|string $key,
         bool $defaultValue = false,
