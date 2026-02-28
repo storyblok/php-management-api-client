@@ -1,6 +1,7 @@
 # Changelog
 
 ## 1.1.3 - WIP
+- Adding `isNestable()`, `isContentType()`, `isUniversal()`, and `getComponentTypeDetail()` helper methods for Component
 - Adding `getIntStrict()` helper method (returing a forced integer with default)
 
 

@@ -13,11 +13,10 @@ class Component extends BaseData
     /**
      * @param string $name the component name
      */
-    public function __construct(
-        string $name,
-    ) {
+    public function __construct(string $name)
+    {
         $this->data = [];
-        $this->data['name'] = $name;
+        $this->data["name"] = $name;
     }
 
     /**
@@ -27,30 +26,35 @@ class Component extends BaseData
     public static function make(array $data = []): self
     {
         $dataObject = new StoryblokData($data);
-        if (!($dataObject->hasKey('name'))) {
-            throw new StoryblokFormatException("Component is not valid, missing the name");
+        if (!$dataObject->hasKey("name")) {
+            throw new StoryblokFormatException(
+                "Component is not valid, missing the name",
+            );
         }
 
-        $component = new Component(
-            $dataObject->getString("name")
-        );
+        $component = new Component($dataObject->getString("name"));
         $component->setData($dataObject->toArray());
         // validate
-        if (! $component->isValid()) {
+        if (!$component->isValid()) {
             if ($dataObject->getString("name") === "") {
-                throw new StoryblokFormatException("Component is not valid, missing the name");
+                throw new StoryblokFormatException(
+                    "Component is not valid, missing the name",
+                );
             }
 
-            throw new StoryblokFormatException("Component <" . $dataObject->getString("name") . "> is not valid");
+            throw new StoryblokFormatException(
+                "Component <" .
+                    $dataObject->getString("name") .
+                    "> is not valid",
+            );
         }
 
         return $component;
-
     }
 
     public function setName(string $name): void
     {
-        $this->set('name', $name);
+        $this->set("name", $name);
     }
 
     /**
@@ -58,7 +62,7 @@ class Component extends BaseData
      */
     public function name(): string
     {
-        return $this->getString('name');
+        return $this->getString("name");
     }
 
     /**
@@ -66,7 +70,7 @@ class Component extends BaseData
      */
     public function realName(): string
     {
-        return $this->getString('real_name');
+        return $this->getString("real_name");
     }
 
     /**
@@ -74,7 +78,7 @@ class Component extends BaseData
      */
     public function displayName(): string
     {
-        return $this->getString('display_name');
+        return $this->getString("display_name");
     }
 
     /**
@@ -82,7 +86,7 @@ class Component extends BaseData
      */
     public function setDisplayName(string $displayName): void
     {
-        $this->set('display_name', $displayName);
+        $this->set("display_name", $displayName);
     }
 
     /**
@@ -90,7 +94,7 @@ class Component extends BaseData
      */
     public function image(): string|null
     {
-        return $this->getStringNullable('image');
+        return $this->getStringNullable("image");
     }
 
     /**
@@ -98,7 +102,7 @@ class Component extends BaseData
      */
     public function setImage(string $url): void
     {
-        $this->set('image', $url);
+        $this->set("image", $url);
     }
 
     /**
@@ -106,7 +110,7 @@ class Component extends BaseData
      */
     public function previewField(): string
     {
-        return $this->getString('preview_field');
+        return $this->getString("preview_field");
     }
 
     /**
@@ -114,23 +118,25 @@ class Component extends BaseData
      */
     public function setPreviewField(string $value): void
     {
-        $this->set('preview_field', $value);
+        $this->set("preview_field", $value);
     }
 
     /**
      * Creation date
      */
-    public function createdAt(string $format = self::DEFAULT_DATE_FORMAT): null|string
-    {
-        return $this->getFormattedDateTime('created_at', "", format: $format);
+    public function createdAt(
+        string $format = self::DEFAULT_DATE_FORMAT,
+    ): null|string {
+        return $this->getFormattedDateTime("created_at", "", format: $format);
     }
 
     /**
      * Latest update date
      */
-    public function updatedAt(string $format = self::DEFAULT_DATE_FORMAT): null|string
-    {
-        return $this->getFormattedDateTime('updated_at', "", format: $format);
+    public function updatedAt(
+        string $format = self::DEFAULT_DATE_FORMAT,
+    ): null|string {
+        return $this->getFormattedDateTime("updated_at", "", format: $format);
     }
 
     /**
@@ -138,15 +144,16 @@ class Component extends BaseData
      */
     public function id(): string
     {
-        return $this->getString('id');
+        return $this->getString("id");
     }
 
     /**
      * True if the component can be used as a Content Type
+     * for example if is a content-type or a universal
      */
     public function isRoot(): bool
     {
-        return $this->getBoolean('is_root');
+        return $this->getBoolean("is_root");
     }
 
     /**
@@ -154,12 +161,59 @@ class Component extends BaseData
      */
     public function setRoot(bool $isRoot = true): void
     {
-        $this->set('is_root', $isRoot);
+        $this->set("is_root", $isRoot);
+    }
+
+    /**
+     * True if the component can be nested inside other components
+     */
+    public function isNestable(): bool
+    {
+        return $this->getBoolean("is_nestable");
+    }
+
+    /**
+     * If the component can be nested inside other components
+     */
+    public function setNestable(bool $isNestable = true): void
+    {
+        $this->set("is_nestable", $isNestable);
+    }
+
+    /**
+     * True if the component is a content type (is_root only)
+     */
+    public function isContentType(): bool
+    {
+        return $this->getBoolean("is_root") &&
+            !$this->getBoolean("is_nestable");
+    }
+
+    /**
+     * True if the component is universal (is_root and is_nestable)
+     */
+    public function isUniversal(): bool
+    {
+        return $this->getBoolean("is_root") && $this->getBoolean("is_nestable");
+    }
+
+    /**
+     * Returns the component type as a string:
+     * "universal", "content-type", "nestable", or "".
+     */
+    public function getComponentTypeDetail(): string
+    {
+        return match (true) {
+            $this->isUniversal() => "universal",
+            $this->isContentType() => "content-type",
+            $this->isNestable() => "nestable",
+            default => "",
+        };
     }
 
     public function uuid(): string
     {
-        return $this->getString('uuid');
+        return $this->getString("uuid");
     }
 
     /**
@@ -167,7 +221,7 @@ class Component extends BaseData
      */
     public function getSchema(): array
     {
-        return $this->getArray('schema');
+        return $this->getArray("schema");
     }
 
     /**
@@ -175,7 +229,7 @@ class Component extends BaseData
      */
     public function setSchema(array $schema): void
     {
-        $this->set('schema', $schema);
+        $this->set("schema", $schema);
     }
 
     /**
@@ -183,7 +237,7 @@ class Component extends BaseData
      */
     public function setField(string $name, array $fieldAttributes): void
     {
-        $this->set('schema.' . $name, $fieldAttributes);
+        $this->set("schema." . $name, $fieldAttributes);
     }
 
     /**
@@ -191,7 +245,7 @@ class Component extends BaseData
      */
     public function isValid(): bool
     {
-        return $this->hasKey('name');
+        return $this->hasKey("name");
     }
 
     /**
@@ -200,9 +254,7 @@ class Component extends BaseData
      */
     public function setTags(Tags $tags): self
     {
-
         return $this->setTagsFromArray($tags->getTagsArray());
-
     }
 
     /**

@@ -739,6 +739,16 @@ foreach ($components as $component) {
 }
 
 ```
+
+Each component has a type based on the `is_root` and `is_nestable` flags. You can use the helper methods `isContentType()`, `isNestable()`, `isUniversal()`, or `getComponentTypeDetail()` to determine the component type:
+
+```php
+foreach ($components as $component) {
+    // returns "content-type", "nestable", "universal", or ""
+    echo $component->name() . " - " . $component->getComponentTypeDetail() . PHP_EOL;
+}
+```
+
 With the same response you can retrieve the component folders.
 You can use the `dataFolders()` method:
 
