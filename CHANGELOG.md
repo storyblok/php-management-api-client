@@ -1,6 +1,7 @@
 # Changelog
 
 ## 1.1.3 - WIP
+- Adding `SpacesParams` with `search` parameter for filtering spaces by name in `SpaceApi::all()`
 - Adding `isNestable()`, `isContentType()`, `isUniversal()`, and `getComponentTypeDetail()` helper methods for Component
 - Adding User helper methods: `friendlyName()`, `altEmail()`, `phone()`, `lang()`, `loginStrategy()`, `jobRole()`, `partnerRole()`, `isEditor()`, `isSso()`
 - Adding `getIntStrict()` helper method (returing a forced integer with default)

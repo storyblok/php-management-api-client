@@ -7,6 +7,7 @@ namespace Storyblok\ManagementApi\Endpoints;
 use Storyblok\ManagementApi\Data\Space;
 use Storyblok\ManagementApi\Data\Spaces;
 use Storyblok\ManagementApi\Data\StoryblokData;
+use Storyblok\ManagementApi\QueryParameters\SpacesParams;
 use Storyblok\ManagementApi\Response\SpaceResponse;
 use Storyblok\ManagementApi\Response\SpacesResponse;
 use Storyblok\ManagementApi\Response\StoryblokResponse;
@@ -17,11 +18,16 @@ class SpaceApi extends EndpointBase
 {
     protected const string API_PATH_SPACE_PREFIX_V1 = "/v1/spaces";
 
-    public function all(): SpacesResponse
+    public function all(?SpacesParams $params = null): SpacesResponse
     {
+        $paramsArray = ($params instanceof SpacesParams) ? $params->toArray() : [];
+
         $httpResponse = $this->makeHttpRequest(
             "GET",
             self::API_PATH_SPACE_PREFIX_V1,
+            options: [
+                'query' => $paramsArray,
+            ],
         );
         return new SpacesResponse($httpResponse, Spaces::class);
     }

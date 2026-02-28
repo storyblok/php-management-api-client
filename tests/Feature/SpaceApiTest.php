@@ -9,6 +9,7 @@ use Storyblok\ManagementApi\Data\Space;
 use Storyblok\ManagementApi\Data\Spaces;
 use Storyblok\ManagementApi\Endpoints\SpaceApi;
 use Storyblok\ManagementApi\ManagementApiClient;
+use Storyblok\ManagementApi\QueryParameters\SpacesParams;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\MockHttpClient;
 
@@ -245,6 +246,24 @@ final class SpaceApiTest extends TestCase
             $this->assertSame("1114", $spaceItem->ownerId());
         }
 
+        $this->assertSame(2, $storyblokData->howManySpaces());
+    }
+
+    public function testMultipleSpacesWithSearchParam(): void
+    {
+        $responses = [
+            $this->mockResponse("list-spaces", 200),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $spaceApi = new SpaceApi($mapiClient);
+
+        $storyblokResponse = $spaceApi->all(new SpacesParams(search: "Example"));
+        $storyblokData = $storyblokResponse->data();
+
+        $this->assertSame("Example Space", $storyblokData->get("0.name"));
+        $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
         $this->assertSame(2, $storyblokData->howManySpaces());
     }
 
