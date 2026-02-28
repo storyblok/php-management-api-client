@@ -129,10 +129,7 @@ class StoryBulkApi extends EndpointSpace
                                     "story_name" => $storyData->name(),
                                 ],
                             );
-                            throw new StoryblokApiException(
-                                "Rate limit exceeded maximum retries",
-                                self::RATE_LIMIT_STATUS_CODE,
-                            );
+                            throw new StoryblokApiException("Rate limit exceeded maximum retries", self::RATE_LIMIT_STATUS_CODE, $e);
                         }
 
                         $this->logger->warning(

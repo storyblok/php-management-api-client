@@ -30,7 +30,7 @@ class Tags extends StoryblokData
         $tagsArray = [];
 
         foreach ($this->data as $tag) {
-            if (is_array($tag) && array_key_exists("name", $tag)) {
+            if (is_array($tag) && array_key_exists("name", $tag) && is_string($tag["name"])) {
                 $tagsArray[] = $tag["name"];
             }
 
