@@ -84,11 +84,6 @@ class Story extends StoryBaseData
         return StoryComponent::make($contentArray);
     }
 
-    public function name(): string
-    {
-        return $this->getString("name");
-    }
-
     /**
      * Get the folder id for the Story.
      *
@@ -97,21 +92,6 @@ class Story extends StoryBaseData
     public function folderId(): int
     {
         return (int) $this->getInt("parent_id", 0);
-    }
-
-    public function createdAt(string $format = "Y-m-d"): null|string
-    {
-        return $this->getFormattedDateTime("created_at", "", format: $format);
-    }
-
-    public function publishedAt(string $format = "Y-m-d"): null|string
-    {
-        return $this->getFormattedDateTime("published_at", "", format: $format);
-    }
-
-    public function updatedAt(): null|string
-    {
-        return $this->getFormattedDateTime("updated_at", "", format: "Y-m-d");
     }
 
     public function setContentType(string $componentName): self
@@ -123,32 +103,6 @@ class Story extends StoryBaseData
     public function defaultContentType(): string
     {
         return $this->defaultContentType;
-    }
-
-    public function id(): string
-    {
-        return $this->getString("id");
-    }
-
-    public function uuid(): string
-    {
-        return $this->getString("uuid");
-    }
-
-    /**
-     * Validates if the story data contains all required fields and valid values
-     */
-    public function isValid(): bool
-    {
-        if (
-            !$this->hasKey("name") ||
-            in_array($this->getString("name"), ["", "0"], true)
-        ) {
-            return false;
-        }
-
-        return $this->hasKey("slug") &&
-            !in_array($this->getString("slug"), ["", "0"], true);
     }
 
     /**

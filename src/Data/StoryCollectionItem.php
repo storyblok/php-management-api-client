@@ -24,7 +24,6 @@ class StoryCollectionItem extends StoryBaseData
     public function __construct()
     {
         $this->data = [];
-
     }
 
     /**
@@ -34,61 +33,18 @@ class StoryCollectionItem extends StoryBaseData
     public static function make(array $data = []): self
     {
         $dataObject = new StoryblokData($data);
-        if (!($dataObject->hasKey('name') && $dataObject->hasKey('slug'))) {
+        if (!($dataObject->hasKey("name") && $dataObject->hasKey("slug"))) {
             // is not valid
         }
 
         $storyItem = new StoryCollectionItem();
         $storyItem->setData($dataObject->toArray());
         // validate
-        if (! $storyItem->isValid()) {
+        if (!$storyItem->isValid()) {
             throw new StoryblokFormatException("Story is not valid");
         }
 
         return $storyItem;
-
-    }
-
-    public function name(): string
-    {
-        return $this->getString('name');
-    }
-
-    public function createdAt(string $format = "Y-m-d"): null|string
-    {
-        return $this->getFormattedDateTime('created_at', "", format: $format);
-    }
-
-    public function publishedAt(string $format = "Y-m-d"): null|string
-    {
-        return $this->getFormattedDateTime('published_at', "", format: $format);
-    }
-
-    public function updatedAt(): null|string
-    {
-        return $this->getFormattedDateTime('updated_at', "", format: "Y-m-d");
-    }
-
-    public function id(): string
-    {
-        return $this->getString('id');
-    }
-
-    public function uuid(): string
-    {
-        return $this->getString('uuid');
-    }
-
-    /**
-     * Validates if the story data contains all required fields and valid values
-     */
-    public function isValid(): bool
-    {
-        if (!$this->hasKey('name') || in_array($this->getString('name'), ['', '0'], true)) {
-            return false;
-        }
-
-        return $this->hasKey('slug') && !in_array($this->getString('slug'), ['', '0'], true);
     }
 
     /**
@@ -97,9 +53,7 @@ class StoryCollectionItem extends StoryBaseData
      */
     public function setTags(Tags $tags): self
     {
-
         return $this->setTagsFromArray($tags->getTagsArray());
-
     }
 
     /**

@@ -1,27 +1,8 @@
 {
     "story": {
         "name": "My third post",
-        "created_at": "2024-02-08T16:26:24.425Z",
-        "published_at": "2024-02-08T16:27:05.705Z",
-        "id": 440448565,
-        "uuid": "e656e146-f4ed-44a2-8017-013e5a9d9395",
-        "content": {
-            "_uid": "cfe0ff0b-3211-4bb7-8128-66e6ad262a56",
-            "component": "page"
-        },
-        "slug": "my-third-post",
-        "full_slug": "posts/my-third-post",
-        "sort_by_date": null,
-        "position": 0,
-        "tag_list": ["tag1","tag2"],
-        "is_startpage": false,
         "parent_id": 440448337,
-        "meta_data": null,
         "group_id": "b913a671-f1e9-436a-bc5d-2795d2740198",
-        "first_published_at": "2024-02-08T16:27:05.705Z",
-        "release_id": null,
-        "lang": "default",
-        "path": null,
         "alternates": [
             {
                 "id": 440452827,
@@ -33,7 +14,47 @@
                 "parent_id": 440452826
             }
         ],
-        "default_full_slug": "posts/my-third-post",
+        "created_at": "2024-02-08T16:26:24.425Z",
+        "deleted_at": null,
+        "sort_by_date": null,
+        "tag_list": ["tag1", "tag2"],
+        "updated_at": "2024-02-08T16:27:10.000Z",
+        "published_at": "2024-02-08T16:27:05.705Z",
+        "id": 440448565,
+        "uuid": "e656e146-f4ed-44a2-8017-013e5a9d9395",
+        "is_folder": false,
+        "content": {
+            "_uid": "cfe0ff0b-3211-4bb7-8128-66e6ad262a56",
+            "component": "page"
+        },
+        "published": true,
+        "slug": "my-third-post",
+        "path": null,
+        "full_slug": "posts/my-third-post",
+        "default_root": null,
+        "disable_fe_editor": false,
+        "parent": null,
+        "is_startpage": false,
+        "unpublished_changes": false,
+        "meta_data": null,
+        "imported_at": null,
+        "preview_token": {
+            "token": "abc123preview",
+            "timestamp": "1707407225"
+        },
+        "pinned": false,
+        "breadcrumbs": [],
+        "publish_at": null,
+        "expire_at": null,
+        "first_published_at": "2024-02-08T16:27:05.705Z",
+        "last_author": {
+            "id": 123456,
+            "userid": "user@example.com",
+            "friendly_name": "Test User"
+        },
+        "last_author_id": 123456,
+        "user_ids": [],
+        "space_role_ids": [],
         "translated_slugs": [
             {
                 "path": "posts/my-third-post",
@@ -47,6 +68,25 @@
                 "lang": "de",
                 "published": true
             }
-        ]
+        ],
+        "localized_paths": [],
+        "position": 0,
+        "translated_stories": [],
+        "can_not_view": false,
+        "is_scheduled": null,
+        "scheduled_dates": null,
+        "ideas": [],
+        "current_version_id": 0,
+        "stage": {
+            "workflow_stage_id": null,
+            "workflow_id": null,
+            "workflow_stage_name": null,
+            "workflow_stage_color": null,
+            "workflow_name": null
+        },
+        "favourite_for_user_ids": [],
+        "default_full_slug": "posts/my-third-post",
+        "release_id": null,
+        "lang": "default"
     }
 }
