@@ -1299,6 +1299,155 @@ According to the structure of the Management API, when creating a new workflow s
 - `commentMessage`: a text message added to the stage change, useful for providing context or reviewer instructions.
 - `notify`: a boolean indicating whether Storyblok should send notifications to users associated with the workflow stage.
 
+## Handling Apps
+
+For using the `AppApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\AppApi;
+```
+
+For using the `App` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\App;
+```
+
+### Getting the `AppApi` instance
+
+To handle apps, you can start getting the instance of `AppApi` that allows you to access the methods for handling apps. Unlike most endpoints, `AppApi` does not require a space ID in the constructor—the space ID is passed as a parameter to each method.
+
+```php
+use Storyblok\ManagementApi\ManagementApiClient;
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
+
+$appApi = new AppApi($client);
+```
+
+### Getting the apps list
+
+To get the apps list you can use the `page` method from `AppApi` class. You need to provide an `AppsParams` object with the space ID and optional pagination parameters.
+
+```php
+use Storyblok\ManagementApi\QueryParameters\AppsParams;
+
+$spaceId = "your-space-id";
+$params = new AppsParams(spaceId: $spaceId);
+// you can also set page and perPage:
+// $params = new AppsParams(spaceId: $spaceId, page: 1, perPage: 25);
+$response = $appApi->page($params);
+$apps = $response->data();
+echo "Apps count: " . $apps->howManyApps() . PHP_EOL;
+foreach ($apps as $app) {
+    echo $app->name() . PHP_EOL;
+    echo $app->slug() . PHP_EOL;
+    echo $app->status() . PHP_EOL;
+    echo "---" . PHP_EOL;
+}
+```
+
+### Getting a single app
+
+To get a single app by its ID, you can use the `get` method. You need to provide the app ID and the space ID.
+
+```php
+$appId = 14;
+$spaceId = "your-space-id";
+$response = $appApi->get($appId, $spaceId);
+$app = $response->data();
+echo $app->name() . PHP_EOL;
+echo $app->slug() . PHP_EOL;
+echo $app->description() . PHP_EOL;
+echo $app->author() . PHP_EOL;
+echo $app->status() . PHP_EOL;
+```
+
+## Handling App Provisions
+
+App provisions allow you to install, list, get, and uninstall apps in a specific space.
+
+For using the `AppProvisionApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\AppProvisionApi;
+```
+
+For using the `AppProvision` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\AppProvision;
+```
+
+### Getting the `AppProvisionApi` instance
+
+To handle app provisions, get an instance of `AppProvisionApi` by providing the client and the space ID.
+
+```php
+use Storyblok\ManagementApi\ManagementApiClient;
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
+
+$spaceId = "your-space-id";
+$appProvisionApi = new AppProvisionApi($client, $spaceId);
+```
+
+### Listing installed apps
+
+To get the list of installed apps (app provisions) in a space, you can use the `page` method.
+
+```php
+$response = $appProvisionApi->page();
+$appProvisions = $response->data();
+echo "Installed apps: " . $appProvisions->howManyAppProvisions() . PHP_EOL;
+foreach ($appProvisions as $appProvision) {
+    echo $appProvision->name() . PHP_EOL;
+    echo $appProvision->slug() . PHP_EOL;
+    echo $appProvision->appId() . PHP_EOL;
+    echo "---" . PHP_EOL;
+}
+```
+
+### Getting a single app provision
+
+To get a single app provision by the app ID, you can use the `get` method.
+
+```php
+$appId = 14;
+$response = $appProvisionApi->get($appId);
+$appProvision = $response->data();
+echo $appProvision->name() . PHP_EOL;
+echo $appProvision->slug() . PHP_EOL;
+echo $appProvision->planLevel() . PHP_EOL;
+```
+
+### Installing an app
+
+To install an app in a space, you can use the `install` method by providing the app ID.
+
+```php
+$appId = 14;
+$response = $appProvisionApi->install($appId);
+if ($response->isOk()) {
+    $appProvision = $response->data();
+    echo "Installed: " . $appProvision->name() . PHP_EOL;
+} else {
+    echo $response->getErrorMessage();
+}
+```
+
+### Uninstalling an app
+
+To uninstall an app from a space, you can use the `delete` method by providing the app ID. A successful deletion returns a 204 status code.
+
+```php
+$appId = 14;
+$response = $appProvisionApi->delete($appId);
+if ($response->isOk()) {
+    echo "App uninstalled successfully" . PHP_EOL;
+} else {
+    echo $response->getErrorMessage();
+}
+```
+
 ## Using the `ManagementApi` class
 
 To illustrate how to use the `ManagementApi` class, we will demonstrate its usage with the Internal Tags endpoint.

@@ -1,0 +1,17 @@
+{
+    "app_provisions": [
+        {
+            "public_config": null,
+            "session": null,
+            "slug": "activity",
+            "app_id": 14,
+            "name": "Activities",
+            "plan_level": 1100,
+            "in_sidebar": false,
+            "in_toolbar": false,
+            "sidebar_icon": null,
+            "enable_space_settings": false,
+            "space_level_settings": {}
+        }
+    ]
+}

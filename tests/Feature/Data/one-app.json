@@ -1,0 +1,28 @@
+{
+    "app": {
+        "id": 14,
+        "name": "Activities",
+        "slug": "activity",
+        "icon": "https://a.storyblok.com/f/51376/x/ce6bcfce38/activities.svg",
+        "plan_level": 1100,
+        "preview_video": "https://www.youtube.com/embed/K6VYYvgSCJo",
+        "app_url": null,
+        "description": "Track changes of all your space activities",
+        "intro": "Track changes of all space activities.",
+        "screenshot": "https://a.storyblok.com/f/51376/2386x1044/89ba22a5c8/activities.jpg",
+        "status": "approved",
+        "website": "https://www.storyblok.com",
+        "author": "Storyblok GmbH",
+        "updated_at": "2025-04-07T15:34:50.508Z",
+        "field_type_ids": [],
+        "embedded_app_url": null,
+        "dev_embedded_app_url": null,
+        "dev_oauth_redirect_uri": null,
+        "in_sidebar": false,
+        "in_toolbar": false,
+        "sidebar_icon": null,
+        "enable_space_settings": false,
+        "use_app_bridge": false,
+        "terms": []
+    }
+}

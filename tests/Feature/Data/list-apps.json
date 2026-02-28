@@ -1,0 +1,49 @@
+{
+    "apps": [
+        {
+            "id": 101,
+            "name": "SEO App",
+            "slug": "seo-app",
+            "icon": "https://example.com/seo-icon.png",
+            "description": "SEO optimization tool",
+            "intro": "Optimize your content for search engines",
+            "status": "published",
+            "author": "Storyblok",
+            "website": "https://www.storyblok.com",
+            "plan_level": 1,
+            "updated_at": "2024-01-15T10:30:00.000Z",
+            "in_sidebar": true,
+            "in_toolbar": false
+        },
+        {
+            "id": 102,
+            "name": "Image Optimizer",
+            "slug": "image-optimizer",
+            "icon": "https://example.com/img-icon.png",
+            "description": "Automatic image optimization",
+            "intro": "Compress and optimize images",
+            "status": "published",
+            "author": "Storyblok",
+            "website": "https://www.storyblok.com",
+            "plan_level": 2,
+            "updated_at": "2024-02-20T14:00:00.000Z",
+            "in_sidebar": false,
+            "in_toolbar": true
+        },
+        {
+            "id": 103,
+            "name": "Translation App",
+            "slug": "translation-app",
+            "icon": "https://example.com/translate-icon.png",
+            "description": "Multilingual content management",
+            "intro": "Translate your content easily",
+            "status": "draft",
+            "author": "Third Party",
+            "website": "https://example.com",
+            "plan_level": null,
+            "updated_at": "2024-03-10T08:45:00.000Z",
+            "in_sidebar": true,
+            "in_toolbar": true
+        }
+    ]
+}
