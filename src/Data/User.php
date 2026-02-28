@@ -87,6 +87,51 @@ class User extends StoryblokData
         return $this->getString("timezone");
     }
 
+    public function friendlyName(): string
+    {
+        return $this->getString("friendly_name");
+    }
+
+    public function altEmail(): string|null
+    {
+        return $this->getStringNullable("alt_email");
+    }
+
+    public function phone(): string|null
+    {
+        return $this->getStringNullable("phone");
+    }
+
+    public function lang(): string
+    {
+        return $this->getString("lang");
+    }
+
+    public function loginStrategy(): string
+    {
+        return $this->getString("login_strategy");
+    }
+
+    public function jobRole(): string
+    {
+        return $this->getString("job_role");
+    }
+
+    public function partnerRole(): string
+    {
+        return $this->getString("partner_role");
+    }
+
+    public function isEditor(): bool
+    {
+        return $this->getBoolean("is_editor");
+    }
+
+    public function isSso(): bool
+    {
+        return $this->getBoolean("sso");
+    }
+
     public function avatarUrl(?int $size = 72): string
     {
         if ($this->getString("avatar") === "") {

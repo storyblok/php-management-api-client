@@ -2,6 +2,7 @@
 
 ## 1.1.3 - WIP
 - Adding `isNestable()`, `isContentType()`, `isUniversal()`, and `getComponentTypeDetail()` helper methods for Component
+- Adding User helper methods: `friendlyName()`, `altEmail()`, `phone()`, `lang()`, `loginStrategy()`, `jobRole()`, `partnerRole()`, `isEditor()`, `isSso()`
 - Adding `getIntStrict()` helper method (returing a forced integer with default)
 
 
