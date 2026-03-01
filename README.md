@@ -1448,6 +1448,69 @@ if ($response->isOk()) {
 }
 ```
 
+## Handling Collaborators
+
+For using the `CollaboratorApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\CollaboratorApi;
+```
+
+For using the `Collaborator` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\Collaborator;
+```
+
+### Getting the `CollaboratorApi` instance
+
+To list collaborators for a space, start by getting the instance of `CollaboratorApi`:
+
+```php
+use Storyblok\ManagementApi\ManagementApiClient;
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
+
+$spaceId = "spaceid";
+$collaboratorApi = new CollaboratorApi($client, $spaceId);
+```
+
+### Getting the collaborators list
+
+To get the collaborators list you can use the `page` method from `CollaboratorApi` class and obtaining the `Collaborators` object.
+
+```php
+use Storyblok\ManagementApi\QueryParameters\PaginationParams;
+
+$response = $collaboratorApi->page(
+    page: new PaginationParams(page: 1, perPage: 25),
+);
+echo "Total Collaborators: " . $response->total() . PHP_EOL;
+/** @var Collaborators $collaborators */
+$collaborators = $response->data();
+foreach ($collaborators as $key => $collaborator) {
+    echo $collaborator->role() . PHP_EOL;
+    echo $collaborator->firstname() . " " . $collaborator->lastname() . PHP_EOL;
+    echo $collaborator->friendlyName() . PHP_EOL;
+    echo $collaborator->realEmail() . PHP_EOL;
+    echo "---" . PHP_EOL;
+}
+```
+
+### Filtering collaborators by space IDs
+
+To retrieve collaborators across multiple spaces, you can use `CollaboratorsParams` with the `bySpaceIds` parameter:
+
+```php
+use Storyblok\ManagementApi\QueryParameters\CollaboratorsParams;
+
+$params = new CollaboratorsParams(bySpaceIds: ['100', '200', '300']);
+$response = $collaboratorApi->page($params);
+$collaborators = $response->data();
+foreach ($collaborators as $key => $collaborator) {
+    echo $collaborator->friendlyName() . " (" . $collaborator->role() . ")" . PHP_EOL;
+}
+```
+
 ## Using the `ManagementApi` class
 
 To illustrate how to use the `ManagementApi` class, we will demonstrate its usage with the Internal Tags endpoint.

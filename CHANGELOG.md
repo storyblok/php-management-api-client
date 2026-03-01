@@ -1,6 +1,10 @@
 # Changelog
 
 ## 1.1.3 - WIP
+- Adding `CollaboratorApi` endpoint for listing collaborators with pagination
+- Adding `CollaboratorsParams` query parameter class for filtering collaborators by space IDs (`by_space_ids`)
+- Adding `Collaborator`, `Collaborators` data classes with nested user field accessors
+- Adding `CollaboratorsResponse` response class
 - Adding `AppApi` endpoint for listing and getting apps from the Storyblok marketplace
 - Adding `AppProvisionApi` endpoint for managing installed apps (list, get, install, uninstall)
 - Adding `App`, `Apps`, `AppProvision`, `AppProvisions` data classes

@@ -1,0 +1,32 @@
+{
+    "collaborators": [
+        {
+            "id": 10001,
+            "userid": 20001,
+            "role": "editor",
+            "space_id": 300,
+            "space_role_id": 400,
+            "user": {
+                "userid": 20001,
+                "firstname": "Alice",
+                "lastname": "Smith",
+                "friendly_name": "Alice S.",
+                "real_email": "alice@example.com"
+            }
+        },
+        {
+            "id": 10002,
+            "userid": 20002,
+            "role": "admin",
+            "space_id": 300,
+            "space_role_id": 0,
+            "user": {
+                "userid": 20002,
+                "firstname": "Bob",
+                "lastname": "Jones",
+                "friendly_name": "Bob J.",
+                "real_email": "bob@example.com"
+            }
+        }
+    ]
+}
