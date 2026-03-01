@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.3 - WIP
+## 1.1.3 - 2026-03-01
 - Adding `CollaboratorApi` endpoint for listing collaborators with pagination
 - Adding `CollaboratorsParams` query parameter class for filtering collaborators by space IDs (`by_space_ids`)
 - Adding `Collaborator`, `Collaborators` data classes with nested user field accessors
