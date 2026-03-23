@@ -712,6 +712,42 @@ foreach (csvGenerator("stories.csv") as $row) {
 
 This approach is recommended when working with large datasets or when reliability and controlled API usage are critical.
 
+### Getting story versions
+
+You can retrieve versions of a story using the `versions()` method. The story ID is required as the first parameter:
+
+```php
+$response = $storyApi->versions("174957");
+
+$versions = $response->data();
+echo $versions->howManyVersions(); // number of versions returned
+
+foreach ($versions as $version) {
+    echo $version->id();
+    echo $version->status();
+    echo $version->createdAt();
+    echo $version->friendlyName(); // author's friendly name
+}
+```
+
+You can also filter by release ID, include content, and paginate:
+
+```php
+use Storyblok\ManagementApi\QueryParameters\StoryVersionsParams;
+use Storyblok\ManagementApi\QueryParameters\PaginationParams;
+
+$response = $storyApi->versions(
+    "174957",
+    new StoryVersionsParams(
+        byReleaseId: 100,
+        showContent: true,
+    ),
+    new PaginationParams(page: 1, perPage: 10),
+);
+```
+
+> **Note:** This endpoint returns versions created after August 28, 2024. Older versions require the legacy endpoint.
+
 ## Handling components
 
 You can use the `ComponentApi` class to fetch all components from a specific space:

@@ -16,6 +16,7 @@ use Storyblok\ManagementApi\QueryParameters\Filters\Filter;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
+use Storyblok\ManagementApi\QueryParameters\StoryVersionsParams;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Tests\TestCase;
@@ -600,6 +601,87 @@ final class StoryApiTest extends TestCase
             $url,
         );
         $this->assertTrue($storyResponse->isOk());
+    }
+
+    public function testVersionsWithRequiredParams(): void
+    {
+        $responses = [
+            $this->mockResponse("list-story-versions", 200, [
+                "total" => 2,
+                "per-page" => 25,
+            ]),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyblokResponse = $storyApi->versions("174957");
+
+        $url = $storyblokResponse->getLastCalledUrl();
+        $this->assertMatchesRegularExpression('/.*\/v1\/spaces\/222\/story_versions\?/', $url);
+        $this->assertMatchesRegularExpression('/.*by_story_id=174957.*$/', $url);
+        $this->assertMatchesRegularExpression('/.*page=1&per_page=25.*$/', $url);
+        $this->assertTrue($storyblokResponse->isOk());
+
+        $versions = $storyblokResponse->data();
+        $this->assertSame(2, $versions->howManyVersions());
+    }
+
+    public function testVersionsWithAllParams(): void
+    {
+        $responses = [
+            $this->mockResponse("list-story-versions", 200, [
+                "total" => 2,
+                "per-page" => 25,
+            ]),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyblokResponse = $storyApi->versions(
+            "174957",
+            new StoryVersionsParams(byReleaseId: 100, showContent: true),
+            new PaginationParams(2, 10),
+        );
+
+        $url = $storyblokResponse->getLastCalledUrl();
+        $this->assertMatchesRegularExpression('/.*by_story_id=174957.*$/', $url);
+        $this->assertMatchesRegularExpression('/.*by_release_id=100.*$/', $url);
+        $this->assertMatchesRegularExpression('/.*show_content=true.*$/', $url);
+        $this->assertMatchesRegularExpression('/.*page=2&per_page=10.*$/', $url);
+    }
+
+    public function testVersionsDataAccessors(): void
+    {
+        $responses = [
+            $this->mockResponse("list-story-versions", 200),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyblokResponse = $storyApi->versions("174957");
+
+        $versions = $storyblokResponse->data();
+        $first = true;
+        foreach ($versions as $version) {
+            $this->assertInstanceOf(\Storyblok\ManagementApi\Data\StoryVersion::class, $version);
+            if ($first) {
+                $this->assertSame("101", $version->id());
+                $this->assertSame("174957", $version->storyId());
+                $this->assertSame("501", $version->userId());
+                $this->assertSame("published", $version->status());
+                $this->assertSame("2024-09-15 10:30:00", $version->createdAt());
+                $this->assertSame("John", $version->firstname());
+                $this->assertSame("Doe", $version->lastname());
+                $this->assertSame("John Doe", $version->friendlyName());
+                $first = false;
+            }
+        }
     }
 
     public function testCreateStoryWithDefaultContent(): void

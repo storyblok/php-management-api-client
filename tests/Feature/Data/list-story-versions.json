@@ -1,0 +1,42 @@
+{
+    "story_versions": [
+        {
+            "id": 101,
+            "created_at": "2024-09-15T10:30:00.000Z",
+            "user_id": 501,
+            "user": {
+                "id": 501,
+                "firstname": "John",
+                "lastname": "Doe",
+                "alt_email": null,
+                "avatar": "",
+                "userid": "john.doe@example.com",
+                "friendly_name": "John Doe"
+            },
+            "story_id": 174957,
+            "status": "published",
+            "release_id": null,
+            "parent_id": null,
+            "content": null
+        },
+        {
+            "id": 102,
+            "created_at": "2024-09-14T08:15:00.000Z",
+            "user_id": 502,
+            "user": {
+                "id": 502,
+                "firstname": "Jane",
+                "lastname": "Smith",
+                "alt_email": null,
+                "avatar": "",
+                "userid": "jane.smith@example.com",
+                "friendly_name": "Jane Smith"
+            },
+            "story_id": 174957,
+            "status": "draft",
+            "release_id": null,
+            "parent_id": null,
+            "content": null
+        }
+    ]
+}

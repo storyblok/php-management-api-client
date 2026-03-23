@@ -15,9 +15,11 @@ use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\QueryParameters\Filters\QueryFilters;
 use Storyblok\ManagementApi\QueryParameters\PaginationParams;
 use Storyblok\ManagementApi\QueryParameters\StoriesParams;
+use Storyblok\ManagementApi\QueryParameters\StoryVersionsParams;
 use Storyblok\ManagementApi\Response\SpaceResponse;
 use Storyblok\ManagementApi\Response\StoriesResponse;
 use Storyblok\ManagementApi\Response\StoryResponse;
+use Storyblok\ManagementApi\Response\StoryVersionsResponse;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
@@ -260,6 +262,42 @@ class StoryApi extends EndpointSpace
     }
 
     /**
+     * Retrieves versions of a story
+     */
+    public function versions(
+        string $storyId,
+        ?StoryVersionsParams $params = null,
+        ?PaginationParams $page = null,
+    ): StoryVersionsResponse {
+        $this->validateStoryId($storyId);
+
+        if (!$params instanceof StoryVersionsParams) {
+            $params = new StoryVersionsParams();
+        }
+
+        if (!$page instanceof PaginationParams) {
+            $page = new PaginationParams();
+        }
+
+        $this->validatePaginationParams($page);
+
+        $options = [
+            "query" => array_merge(
+                ["by_story_id" => $storyId],
+                $params->toArray(),
+                $page->toArray(),
+            ),
+        ];
+
+        $httpResponse = $this->makeHttpRequest(
+            "GET",
+            $this->buildStoryVersionsEndpoint(),
+            options: $options,
+        );
+        return new StoryVersionsResponse($httpResponse);
+    }
+
+    /**
      * Validates pagination parameters
      *
      * @throws \InvalidArgumentException
@@ -317,5 +355,13 @@ class StoryApi extends EndpointSpace
     private function buildStoryEndpoint(string $storyId): string
     {
         return sprintf("%s/%s", $this->buildStoriesEndpoint(), $storyId);
+    }
+
+    /**
+     * Builds the endpoint for story versions
+     */
+    private function buildStoryVersionsEndpoint(): string
+    {
+        return sprintf("/v1/spaces/%s/story_versions", $this->spaceId);
     }
 }

@@ -30,6 +30,7 @@ abstract class StoryBaseData extends BaseData
 
     public function tagListAsString(): string
     {
+        /** @var array<string> $tags */
         $tags = $this->getArray("tag_list", []);
         return implode(", ", $tags);
     }

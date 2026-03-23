@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.4 - WIP
+- Adding `StoryApi::versions()` endpoint for listing story versions with pagination
+
 ## 1.1.3 - 2026-03-01
 - Adding `CollaboratorApi` endpoint for listing collaborators with pagination
 - Adding `CollaboratorsParams` query parameter class for filtering collaborators by space IDs (`by_space_ids`)
