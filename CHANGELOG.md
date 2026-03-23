@@ -1,7 +1,8 @@
 # Changelog
 
-## 1.1.4 - WIP
+## 1.1.4 - 2026-03-23
 - Adding `StoryApi::versions()` endpoint for listing story versions with pagination
+- Fixing asset upload folder assignment: using `asset_folder_id` instead of `parent_id`
 
 ## 1.1.3 - 2026-03-01
 - Adding `CollaboratorApi` endpoint for listing collaborators with pagination

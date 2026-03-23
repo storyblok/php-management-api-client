@@ -79,7 +79,7 @@ class AssetApi extends EndpointSpace
             "filename" => $filename,
             //'size' => $width . 'x' . $height,
             "validate_upload" => 1,
-            "parent_id" => $parent_id,
+            "asset_folder_id" => $parent_id,
         ];
         $size = getimagesize($filename);
         if ($size !== false) {
