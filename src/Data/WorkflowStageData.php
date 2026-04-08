@@ -42,4 +42,14 @@ class WorkflowStageData extends StoryblokData
     {
         return $this->getString('id', "");
     }
+
+    public function color(): string
+    {
+        return $this->getString("color", "");
+    }
+
+    public function workflowId(): string
+    {
+        return $this->getString("workflow_id", "");
+    }
 }

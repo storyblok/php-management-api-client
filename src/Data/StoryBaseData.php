@@ -65,9 +65,9 @@ abstract class StoryBaseData extends BaseData
         return $this->getFormattedDateTime("published_at", "", format: $format);
     }
 
-    public function updatedAt(): null|string
+    public function updatedAt(string $format = "Y-m-d"): null|string
     {
-        return $this->getFormattedDateTime("updated_at", "", format: "Y-m-d");
+        return $this->getFormattedDateTime("updated_at", "", format: $format);
     }
 
     /**
@@ -114,5 +114,17 @@ abstract class StoryBaseData extends BaseData
     public function firstPublishedAt(string $format = "Y-m-d"): null|string
     {
         return $this->getFormattedDateTime("first_published_at", "", format: $format);
+    }
+
+    public function hasUnpublishedChanges(): bool
+    {
+        return $this->getBoolean("unpublished_changes", false);
+    }
+
+    public function workflowStageId(): ?int
+    {
+        $id = $this->getInt("stage.workflow_stage_id", 0);
+
+        return $id > 0 ? $id : null;
     }
 }

@@ -369,6 +369,25 @@ foreach ($stories as $story) {
 }
 ```
 
+Each story item exposes typed accessors for commonly used fields:
+
+```php
+foreach ($stories as $story) {
+    echo $story->contentType() . PHP_EOL;       // e.g. "article-page"
+    echo $story->updatedAt() . PHP_EOL;          // e.g. "2024-02-08"
+    echo $story->updatedAt("Y-m-d H:i:s") . PHP_EOL; // e.g. "2024-02-08 16:27:10"
+
+    if ($story->hasUnpublishedChanges()) {
+        echo "This story has unpublished draft changes" . PHP_EOL;
+    }
+
+    $stageId = $story->workflowStageId();        // int or null
+    if ($stageId !== null) {
+        echo "Workflow stage ID: " . $stageId . PHP_EOL;
+    }
+}
+```
+
 In the case you need to retrieve the response to access to some additional information you can obtain a `StoriesResponse` via the `page()` method:
 
 ```php
@@ -1237,6 +1256,8 @@ $workflowStages = $response->data();
 foreach ($workflowStages as $key => $workflowStage) {
     echo "Workflow Stage: " . $workflowStage->name() . " - ";
     echo $workflowStage->id() . PHP_EOL;
+    echo "Color: " . $workflowStage->color() . PHP_EOL;       // e.g. "#2db47d"
+    echo "Workflow ID: " . $workflowStage->workflowId() . PHP_EOL;
 }
 ```
 ### Creating a new custom workflow stage

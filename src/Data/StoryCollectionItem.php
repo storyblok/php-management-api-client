@@ -47,6 +47,11 @@ class StoryCollectionItem extends StoryBaseData
         return $storyItem;
     }
 
+    public function contentType(): string
+    {
+        return $this->getString("content_type");
+    }
+
     /**
      * Set tags for Story, from a `Tags` collection
      * @return $this

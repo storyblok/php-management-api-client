@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.5 - 2026-04-08
+- Adding `contentType()` accessor to `StoryCollectionItem` for retrieving the root component name in list responses
+- Adding `hasUnpublishedChanges()` accessor to stories for checking draft changes status
+- Adding `workflowStageId()` accessor to stories for retrieving the workflow stage ID (returns `null` when not set)
+- Adding `color()` and `workflowId()` accessors to `WorkflowStageData`
+- Fixing `updatedAt()` signature to accept a `$format` parameter, consistent with `publishedAt()`, `createdAt()`, and `firstPublishedAt()`
+
 ## 1.1.4 - 2026-03-23
 - Adding `StoryApi::versions()` endpoint for listing story versions with pagination
 - Fixing asset upload folder assignment: using `asset_folder_id` instead of `parent_id`

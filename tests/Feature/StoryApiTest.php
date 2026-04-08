@@ -35,7 +35,6 @@ final class StoryApiTest extends TestCase
         $storyApi = new StoryApi($mapiClient, "222");
 
         $storyblokResponse = $storyApi->get("111");
-        /** @var Story $storyblokData */
         $storyblokData = $storyblokResponse->data();
 
         $this->assertSame("My third post", $storyblokData->get("name"));
@@ -112,7 +111,6 @@ final class StoryApiTest extends TestCase
         $this->assertTrue($response->isOk());
         $this->assertSame(201, $response->getResponseStatusCode());
 
-        /** @var Story $responseData */
         $responseData = $response->data();
         $this->assertSame("Test Story", $responseData->name());
         $this->assertSame("test-story", $responseData->slug());

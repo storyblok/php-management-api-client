@@ -95,6 +95,7 @@ final class StoryBaseDataTest extends TestCase
     {
         $story = $this->makeStory();
         $this->assertSame("2024-02-08", $story->updatedAt());
+        $this->assertSame("2024-02-08 16:27:10", $story->updatedAt("Y-m-d H:i:s"));
     }
 
     public function testUpdatedAtOnStoryCollectionItem(): void
@@ -223,5 +224,67 @@ final class StoryBaseDataTest extends TestCase
     {
         $item = $this->makeStoryCollectionItem();
         $this->assertSame("My third post", $item->name());
+    }
+
+    public function testHasUnpublishedChangesOnStory(): void
+    {
+        $story = $this->makeStory();
+        $this->assertFalse($story->hasUnpublishedChanges());
+    }
+
+    public function testHasUnpublishedChangesTrue(): void
+    {
+        $item = StoryCollectionItem::make([
+            "name" => "Draft story",
+            "slug" => "draft-story",
+            "unpublished_changes" => true,
+        ]);
+        $this->assertTrue($item->hasUnpublishedChanges());
+    }
+
+    public function testHasUnpublishedChangesDefault(): void
+    {
+        $item = $this->makeStoryCollectionItem();
+        $this->assertFalse($item->hasUnpublishedChanges());
+    }
+
+    public function testWorkflowStageIdOnStory(): void
+    {
+        $story = $this->makeStory();
+        $this->assertNull($story->workflowStageId());
+    }
+
+    public function testWorkflowStageIdWithValue(): void
+    {
+        $item = StoryCollectionItem::make([
+            "name" => "Reviewed story",
+            "slug" => "reviewed-story",
+            "stage" => [
+                "workflow_stage_id" => 653554,
+            ],
+        ]);
+        $this->assertSame(653554, $item->workflowStageId());
+    }
+
+    public function testWorkflowStageIdDefault(): void
+    {
+        $item = $this->makeStoryCollectionItem();
+        $this->assertNull($item->workflowStageId());
+    }
+
+    public function testContentTypeWithValue(): void
+    {
+        $item = StoryCollectionItem::make([
+            "name" => "Article story",
+            "slug" => "article-story",
+            "content_type" => "page",
+        ]);
+        $this->assertSame("page", $item->contentType());
+    }
+
+    public function testContentTypeDefault(): void
+    {
+        $item = $this->makeStoryCollectionItem();
+        $this->assertSame("", $item->contentType());
     }
 }
