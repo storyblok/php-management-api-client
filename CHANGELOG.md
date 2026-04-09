@@ -5,6 +5,10 @@
 - Adding `AssetFolderApi` endpoint for managing asset folders (list, get, create, update, delete)
 - Adding `AssetFolder`, `AssetFolders` data classes
 - Adding `AssetFolderResponse`, `AssetFoldersResponse` response classes
+- Adding `InternalTagApi` endpoint for managing internal tags (list, get, create, update, delete)
+- Adding `InternalTag`, `InternalTags` data classes
+- Adding `InternalTagResponse`, `InternalTagsResponse` response classes
+- Adding `InternalTagsParams` query parameter class for filtering by object type and search
 
 
 ## 1.1.5 - 2026-04-08

@@ -129,7 +129,7 @@ $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 The Storyblok **Management API Client** provides two main approaches for interacting with the API:
 
-- Using specific API classes (like `StoryApi` or `SpaceApi` or `AssetApi` or `AssetFolderApi` or `TagApi` or `UserApi`)
+- Using specific API classes (like `StoryApi` or `SpaceApi` or `AssetApi` or `AssetFolderApi` or `InternalTagApi` or `TagApi` or `UserApi`)
 - Using specific API classes for handling bulk data (like `StoryBulkApi`)
 - Using the `ManagementApi` class
 
@@ -139,12 +139,13 @@ Alternatively, you can leverage dedicated classes like `SpaceApi`, which are tai
 
 If a dedicated API class like `SpaceApi` or `StoryApi` does not exist for your desired endpoint, you can always fall back to the more versatile `ManagementApi` class.
 
-In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi`, `AssetApi` and `AssetFolderApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
+In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi`, `InternalTagApi`, `AssetApi` and `AssetFolderApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
 
 - `SpaceApi` focuses on managing space-level operations, such as retrieving space information, performing backup etc.
 - `StoryApi` specializes in handling stories and their content, including creating, updating, retrieving, and deleting stories. This class also provides methods that deal with the structure and fields specific to stories.
 - `AssetApi` designed to manage assets like images, files, and other media. It provides methods to upload, retrieve, and manage assets, offering features specific to media management.
 - `AssetFolderApi` designed to manage asset folders, including creating, retrieving, updating, and deleting folders for organizing assets.
+- `InternalTagApi` designed to manage internal tags for assets and components, including listing, creating, updating, and deleting.
 - `TagApi` designed to manage tags.
 - `UserApi` designed to handle the current user. "Current" means the user related to the access token used for instancing the `ManagementApiClient` object.
 
@@ -1104,6 +1105,83 @@ $updated = $assetFolderApi->update($folderId, $folder)->data();
 
 ```php
 $assetFolderApi->delete($folderId);
+```
+
+## Handling internal tags
+
+Internal tags are used to organize assets and components within Storyblok. They differ from story tags (`TagApi`) and are managed through the `/internal_tags` endpoint.
+
+For using the `InternalTagApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\InternalTagApi;
+```
+
+For using the `InternalTag` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\InternalTag;
+```
+
+### Getting the InternalTagApi instance
+
+```php
+$internalTagApi = new InternalTagApi($client, $spaceId);
+```
+
+### Listing internal tags
+
+```php
+use Storyblok\ManagementApi\QueryParameters\InternalTagsParams;
+
+$tags = $internalTagApi->page(
+    new InternalTagsParams(byObjectType: "asset"),
+)->data();
+
+foreach ($tags as $tag) {
+    echo $tag->id() . PHP_EOL;
+    echo $tag->name() . PHP_EOL;
+    echo $tag->objectType() . PHP_EOL;
+}
+```
+
+You can also filter by name using the `search` parameter:
+
+```php
+$tags = $internalTagApi->page(
+    new InternalTagsParams(byObjectType: "asset", search: "logo"),
+)->data();
+```
+
+### Getting one internal tag
+
+```php
+$tag = $internalTagApi->get($tagId)->data();
+echo $tag->name() . PHP_EOL;
+echo $tag->objectType() . PHP_EOL;
+```
+
+### Creating an internal tag
+
+```php
+$tag = new InternalTag("my-tag");
+$tag->set("object_type", "asset");
+$created = $internalTagApi->create($tag)->data();
+echo "Created tag, ID: " . $created->id() . PHP_EOL;
+```
+
+### Updating an internal tag
+
+```php
+$tag = $internalTagApi->get($tagId)->data();
+$tag->set("name", "renamed-tag");
+$updated = $internalTagApi->update($tagId, $tag)->data();
+```
+
+### Deleting an internal tag
+
+```php
+$internalTagApi->delete($tagId);
 ```
 
 ## Handling tags
