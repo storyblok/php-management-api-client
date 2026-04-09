@@ -1,0 +1,25 @@
+{
+    "asset_folders": [
+        {
+            "id": 100,
+            "name": "Images",
+            "parent_id": null,
+            "parent_uuid": null,
+            "uuid": "aaaa-bbbb-cccc-dddd"
+        },
+        {
+            "id": 200,
+            "name": "Documents",
+            "parent_id": null,
+            "parent_uuid": null,
+            "uuid": "eeee-ffff-gggg-hhhh"
+        },
+        {
+            "id": 300,
+            "name": "Thumbnails",
+            "parent_id": 100,
+            "parent_uuid": "aaaa-bbbb-cccc-dddd",
+            "uuid": "iiii-jjjj-kkkk-llll"
+        }
+    ]
+}

@@ -2,6 +2,9 @@
 
 ## 1.2.0 - WIP
 - Adding `AssetApi::update()` method for updating asset metadata (alt, title, asset_folder_id, internal_tag_ids, etc.)
+- Adding `AssetFolderApi` endpoint for managing asset folders (list, get, create, update, delete)
+- Adding `AssetFolder`, `AssetFolders` data classes
+- Adding `AssetFolderResponse`, `AssetFoldersResponse` response classes
 
 
 ## 1.1.5 - 2026-04-08

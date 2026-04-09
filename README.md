@@ -129,7 +129,7 @@ $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 The Storyblok **Management API Client** provides two main approaches for interacting with the API:
 
-- Using specific API classes (like `StoryApi` or `SpaceApi` or `AssetApi` or `TagApi` or `UserApi`)
+- Using specific API classes (like `StoryApi` or `SpaceApi` or `AssetApi` or `AssetFolderApi` or `TagApi` or `UserApi`)
 - Using specific API classes for handling bulk data (like `StoryBulkApi`)
 - Using the `ManagementApi` class
 
@@ -139,11 +139,12 @@ Alternatively, you can leverage dedicated classes like `SpaceApi`, which are tai
 
 If a dedicated API class like `SpaceApi` or `StoryApi` does not exist for your desired endpoint, you can always fall back to the more versatile `ManagementApi` class.
 
-In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi` and `AssetApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
+In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi`, `AssetApi` and `AssetFolderApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
 
 - `SpaceApi` focuses on managing space-level operations, such as retrieving space information, performing backup etc.
 - `StoryApi` specializes in handling stories and their content, including creating, updating, retrieving, and deleting stories. This class also provides methods that deal with the structure and fields specific to stories.
 - `AssetApi` designed to manage assets like images, files, and other media. It provides methods to upload, retrieve, and manage assets, offering features specific to media management.
+- `AssetFolderApi` designed to manage asset folders, including creating, retrieving, updating, and deleting folders for organizing assets.
 - `TagApi` designed to manage tags.
 - `UserApi` designed to handle the current user. "Current" means the user related to the access token used for instancing the `ManagementApiClient` object.
 
@@ -1033,6 +1034,76 @@ try {
 } catch (Exception $e) {
     echo "Error deleting: " . $e->getMessage() . PHP_EOL;
 }
+```
+
+## Handling asset folders
+
+For using the `AssetFolderApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\AssetFolderApi;
+```
+
+For using the `AssetFolder` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Data\AssetFolder;
+```
+
+### Getting the AssetFolderApi instance
+
+```php
+$assetFolderApi = new AssetFolderApi($client, $spaceId);
+```
+
+### Listing asset folders
+
+```php
+$folders = $assetFolderApi->page()->data();
+
+foreach ($folders as $folder) {
+    echo $folder->id() . PHP_EOL;
+    echo $folder->name() . PHP_EOL;
+    echo $folder->parentId() . PHP_EOL;
+}
+```
+
+### Getting one asset folder
+
+```php
+$folder = $assetFolderApi->get($folderId)->data();
+echo $folder->id() . PHP_EOL;
+echo $folder->name() . PHP_EOL;
+```
+
+### Creating an asset folder
+
+```php
+$folder = new AssetFolder("My New Folder");
+$created = $assetFolderApi->create($folder)->data();
+echo "Created folder, ID: " . $created->id() . PHP_EOL;
+```
+
+To create a subfolder, set the `parent_id`:
+
+```php
+$folder = new AssetFolder("Subfolder");
+$folder->set("parent_id", $parentFolderId);
+$created = $assetFolderApi->create($folder)->data();
+```
+
+### Updating an asset folder
+
+```php
+$folder = $assetFolderApi->get($folderId)->data();
+$folder->set("name", "Renamed Folder");
+$updated = $assetFolderApi->update($folderId, $folder)->data();
+```
+
+### Deleting an asset folder
+
+```php
+$assetFolderApi->delete($folderId);
 ```
 
 ## Handling tags
