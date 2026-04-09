@@ -1,0 +1,29 @@
+{
+
+        "id": 111,
+        "filename": "https:\/\/s3.amazonaws.com\/a.storyblok.com\/f\/222\/3799x6005\/3af265ee08\/mypic.jpg",
+        "space_id": 222,
+        "created_at": "2025-01-18T08:01:02.759Z",
+        "updated_at": "2025-02-10T10:30:00.000Z",
+        "file": null,
+        "asset_folder_id": 555,
+        "deleted_at": null,
+        "short_filename": "mypic.jpg",
+        "content_length": 3094788,
+        "content_type": "image\/jpeg",
+        "permanently_deleted": false,
+        "alt": "Updated alt text",
+        "copyright": "2025 Storyblok",
+        "title": "Updated title",
+        "focus": "300x200:500x400",
+        "ext_id": null,
+        "expire_at": null,
+        "source": "https://example.com",
+        "internal_tag_ids": [10, 20],
+        "locked": false,
+        "is_private": false,
+        "publish_at": null,
+        "meta_data": [],
+        "internal_tags_list": []
+
+}

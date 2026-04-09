@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 - WIP
+- Adding `AssetApi::update()` method for updating asset metadata (alt, title, asset_folder_id, internal_tag_ids, etc.)
+
+
 ## 1.1.5 - 2026-04-08
 - Adding `contentType()` accessor to `StoryCollectionItem` for retrieving the root component name in list responses
 - Adding `hasUnpublishedChanges()` accessor to stories for checking draft changes status

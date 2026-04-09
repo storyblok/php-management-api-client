@@ -205,6 +205,23 @@ class AssetApi extends EndpointSpace
     }
 
     /**
+     * Update an existing asset's metadata.
+     * @link https://www.storyblok.com/docs/api/management/core-resources/assets/update-an-asset
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function update(string|int $assetId, Asset $assetData): AssetResponse
+    {
+        $httpResponse = $this->makeHttpRequest(
+            "PUT",
+            "/v1/spaces/" . $this->spaceId . "/assets/" . $assetId,
+            [
+                "body" => json_encode(["asset" => $assetData->toArray()]),
+            ],
+        );
+        return new AssetResponse($httpResponse);
+    }
+
+    /**
      * @param $assetId
      */
     public function delete(string $assetId): AssetResponse

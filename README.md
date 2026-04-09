@@ -977,6 +977,21 @@ echo "         filename: " . $assetCreated->filename() . PHP_EOL;
 echo "     filename CDN: " . $assetCreated->filenameCDN() . PHP_EOL;
 ```
 
+### Updating an Asset
+
+To update an asset's metadata (alt text, title, folder, internal tags, etc.), you can use the `update()` method:
+
+```php
+$asset = $assetApi->get($assetId)->data();
+$asset->set("alt", "A landscape photo");
+$asset->set("title", "Landscape");
+$asset->set("asset_folder_id", $folderId);
+$asset->set("internal_tag_ids", [10, 20]);
+
+$updatedAsset = $assetApi->update($assetId, $asset)->data();
+echo "Updated asset, ID: " . $updatedAsset->id() . PHP_EOL;
+```
+
 ### Deleting an Asset
 
 To delete an asset, you can use the `delete()` method. The `delete()` method requires the asset ID (you want to delete) as parameter:

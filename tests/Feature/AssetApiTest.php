@@ -271,6 +271,36 @@ final class AssetApiTest extends TestCase
         $assetApi->upload("./tests/Feature/Data/image-test.png");
     }
 
+    public function testUpdateOneAsset(): void
+    {
+        $responses = [
+            $this->mockResponse("one-asset", 200),
+            $this->mockResponse("updated-asset", 200),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $assetApi = new AssetApi($mapiClient, "222");
+
+        $asset = $assetApi->get("111")->data();
+        $asset->set("alt", "Updated alt text");
+        $asset->set("title", "Updated title");
+        $asset->set("asset_folder_id", 555);
+        $asset->set("internal_tag_ids", [10, 20]);
+
+        $response = $assetApi->update("111", $asset);
+        $data = $response->data();
+
+        $this->assertSame(200, $response->getResponseStatusCode());
+        $this->assertSame("111", $data->id());
+        $this->assertSame("Updated alt text", $data->alt());
+        $this->assertSame("Updated title", $data->title());
+        $this->assertSame(
+            "https://example.com/v1/spaces/222/assets/111",
+            $response->getLastCalledUrl(),
+        );
+    }
+
     public function testAssetFieldHandling(): void
     {
         $responses = [
