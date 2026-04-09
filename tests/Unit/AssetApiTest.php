@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use Exception;
+use Storyblok\ManagementApi\Data\Asset;
 use Storyblok\ManagementApi\Endpoints\AssetApi;
 use Storyblok\ManagementApi\ManagementApiClient;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -327,6 +328,82 @@ final class AssetApiTest extends TestCase
         $this->assertSame(222, $data->get("space_id"));
         $this->assertSame("mypic.jpg", $data->get("short_filename"));
         $this->assertSame("image/jpeg", $data->get("content_type"));
+    }
+
+    public function testUpdateAssetSuccess(): void
+    {
+        $responses = [
+            $this->mockResponse("updated-asset", 200),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $assetApi = new AssetApi($mapiClient, "222");
+
+        $asset = Asset::make([
+            "filename" => "https://a.storyblok.com/f/222/mypic.jpg",
+            "alt" => "Updated alt text",
+            "title" => "Updated title",
+        ]);
+
+        $response = $assetApi->update("111", $asset);
+
+        $this->assertSame(200, $response->getResponseStatusCode());
+        $this->assertSame(
+            "https://example.com/v1/spaces/222/assets/111",
+            $response->getLastCalledUrl(),
+        );
+
+        $data = $response->data();
+        $this->assertSame("111", $data->id());
+        $this->assertSame("Updated alt text", $data->alt());
+        $this->assertSame("Updated title", $data->title());
+    }
+
+    public function testUpdateAssetWithIntegerId(): void
+    {
+        $responses = [
+            $this->mockResponse("updated-asset", 200),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $assetApi = new AssetApi($mapiClient, "222");
+
+        $asset = Asset::make([
+            "filename" => "https://a.storyblok.com/f/222/mypic.jpg",
+            "alt" => "New alt",
+        ]);
+
+        $response = $assetApi->update(111, $asset);
+
+        $this->assertSame(
+            "https://example.com/v1/spaces/222/assets/111",
+            $response->getLastCalledUrl(),
+        );
+    }
+
+    public function testUpdateAssetForDifferentSpace(): void
+    {
+        $responses = [
+            $this->mockResponse("updated-asset", 200),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $assetApi = new AssetApi($mapiClient, "999");
+
+        $asset = Asset::make([
+            "filename" => "https://a.storyblok.com/f/999/mypic.jpg",
+            "alt" => "Alt text",
+        ]);
+
+        $response = $assetApi->update("555", $asset);
+
+        $this->assertSame(
+            "https://example.com/v1/spaces/999/assets/555",
+            $response->getLastCalledUrl(),
+        );
     }
 
     public function testFullUploadFlowWithSeparateMethods(): void
