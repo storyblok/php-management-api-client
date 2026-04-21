@@ -96,6 +96,11 @@ abstract class StoryBaseData extends BaseData
         return $this->getBoolean("is_startpage", false);
     }
 
+    public function isFolder(): bool
+    {
+        return $this->getBoolean("is_folder", false);
+    }
+
     public function parentId(): int
     {
         return $this->getIntStrict("parent_id", 0);

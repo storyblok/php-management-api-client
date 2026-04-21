@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0 - WIP
+## 1.2.0 - 2026-04-21
 - Adding `AssetApi::update()` method for updating asset metadata (alt, title, asset_folder_id, internal_tag_ids, etc.)
 - Adding `AssetFolderApi` endpoint for managing asset folders (list, get, create, update, delete)
 - Adding `AssetFolder`, `AssetFolders` data classes
@@ -9,6 +9,12 @@
 - Adding `InternalTag`, `InternalTags` data classes
 - Adding `InternalTagResponse`, `InternalTagsResponse` response classes
 - Adding `InternalTagsParams` query parameter class for filtering by object type and search
+- Adding `setIsFolder()` and `setDefaultRoot()` methods to `Story` for creating folders with a default content type
+- Adding `isFolder()` accessor to `StoryBaseData` for checking whether a story is a folder
+- Adding `setContentTypes()` and `setLockSubfoldersContentTypes()` methods to `StoryComponent` for restricting allowed content types in folders
+- Adding `Story::asFolder()` static factory and `StoryApi::createFolder()` positional helper for creating folders with all UI fields (name, slug, parent, default content type, allowed content types, lock sub-folders, disable visual editor)
+- Adding `Story::setDisableFeEditor()` setter for toggling the Visual Editor on a story or folder
+- Adding `StoryblokUtils::slugify()` utility for generating URL-friendly slugs from names
 
 
 ## 1.1.5 - 2026-04-08

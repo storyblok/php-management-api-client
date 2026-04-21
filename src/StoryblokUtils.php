@@ -81,4 +81,34 @@ class StoryblokUtils
             default => "https://api.storyblok.com",
         };
     }
+
+    /**
+     * Generate a URL-friendly slug from a text.
+     *
+     * Lowercases, transliterates accented characters to ASCII when possible,
+     * replaces any run of non-alphanumeric characters with a single dash,
+     * and trims leading/trailing dashes.
+     */
+    public static function slugify(string $text): string
+    {
+        $text = trim($text);
+        if ($text === "") {
+            return "";
+        }
+
+        if (function_exists("transliterator_transliterate")) {
+            $transliterated = transliterator_transliterate(
+                "Any-Latin; Latin-ASCII; Lower()",
+                $text,
+            );
+            if (is_string($transliterated)) {
+                $text = $transliterated;
+            }
+        } else {
+            $text = strtolower($text);
+        }
+
+        $slug = preg_replace("/[^a-z0-9]+/", "-", $text) ?? "";
+        return trim($slug, "-");
+    }
 }

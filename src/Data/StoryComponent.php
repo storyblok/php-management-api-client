@@ -119,4 +119,28 @@ class StoryComponent extends BaseData
         $this->set($field, $blocks);
         return $this;
     }
+
+    /**
+     * Set the allowed content types for stories inside this folder.
+     *
+     * @param string[] $contentTypes list of component technical names
+     * @return $this
+     */
+    public function setContentTypes(array $contentTypes): self
+    {
+        $this->set("content_types", $contentTypes);
+        return $this;
+    }
+
+    /**
+     * Lock the content type restriction for subfolders.
+     * When enabled, subfolders inherit the same content type restriction.
+     *
+     * @return $this
+     */
+    public function setLockSubfoldersContentTypes(bool $lock = true): self
+    {
+        $this->set("lock_subfolders_content_types", $lock);
+        return $this;
+    }
 }

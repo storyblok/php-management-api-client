@@ -135,6 +135,42 @@ class StoryApi extends EndpointSpace
     }
 
     /**
+     * Creates a new folder.
+     *
+     * Shortcut around {@see Story::asFolder()} + {@see self::create()} that
+     * mirrors the fields exposed by the Storyblok UI "Create folder" dialog.
+     *
+     * @param string      $name                        Folder name (mandatory)
+     * @param string|null $slug                        Slug, auto-generated from name if null
+     * @param int         $parentId                    Parent folder ID, 0 for root
+     * @param string|null $defaultContentType          Default content type (`default_root`)
+     * @param string[]    $contentTypes                Allowed content types whitelist
+     * @param bool        $lockSubfoldersContentTypes  Force sub-folders to inherit the restriction
+     * @param bool        $disableFeEditor             Disable the Visual Editor
+     */
+    public function createFolder(
+        string $name,
+        ?string $slug = null,
+        int $parentId = 0,
+        ?string $defaultContentType = null,
+        array $contentTypes = [],
+        bool $lockSubfoldersContentTypes = false,
+        bool $disableFeEditor = false,
+    ): StoryResponse {
+        $folder = Story::asFolder(
+            $name,
+            $slug,
+            $parentId,
+            $defaultContentType,
+            $contentTypes,
+            $lockSubfoldersContentTypes,
+            $disableFeEditor,
+        );
+
+        return $this->create($folder);
+    }
+
+    /**
      * Updates an existing story.
      *
      * @param string $storyId

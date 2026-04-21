@@ -462,6 +462,49 @@ final class StoryApiTest extends TestCase
         $storyApi->create($storyData);
     }
 
+    public function testCreateFolderHelperReturnsStoryResponse(): void
+    {
+        $response = new MockResponse(
+            json_encode([
+                "story" => [
+                    "name" => "Blog",
+                    "slug" => "blog",
+                    "is_folder" => true,
+                    "parent_id" => 0,
+                    "default_root" => "page",
+                    "content" => [
+                        "component" => "",
+                        "content_types" => ["page", "post"],
+                        "lock_subfolders_content_types" => true,
+                    ],
+                ],
+            ], JSON_THROW_ON_ERROR),
+            [
+                "http_code" => 201,
+                "response_headers" => ["Content-Type: application/json"],
+            ],
+        );
+
+        $client = new MockHttpClient([$response], "https://api.storyblok.com");
+        $mapiClient = ManagementApiClient::initTest($client);
+        $storyApi = new StoryApi($mapiClient, "222");
+
+        $storyResponse = $storyApi->createFolder(
+            name: "Blog",
+            defaultContentType: "page",
+            contentTypes: ["page", "post"],
+            lockSubfoldersContentTypes: true,
+        );
+
+        $this->assertTrue($storyResponse->isOk());
+        $this->assertSame(201, $storyResponse->getResponseStatusCode());
+
+        $data = $storyResponse->data();
+        $this->assertSame("Blog", $data->name());
+        $this->assertSame("blog", $data->slug());
+        $this->assertTrue($data->isFolder());
+    }
+
     public function testCreateStoryWithPublishFlag(): void
     {
         $response = new MockResponse(

@@ -287,4 +287,55 @@ final class StoryBaseDataTest extends TestCase
         $item = $this->makeStoryCollectionItem();
         $this->assertSame("", $item->contentType());
     }
+
+    public function testAsFolderWithMinimumFieldsAutoGeneratesSlug(): void
+    {
+        $folder = Story::asFolder("My Folder");
+
+        $this->assertTrue($folder->isValid());
+        $this->assertSame("My Folder", $folder->name());
+        $this->assertSame("my-folder", $folder->slug());
+        $this->assertTrue($folder->isFolder());
+        $this->assertSame(0, $folder->parentId());
+    }
+
+    public function testAsFolderRespectsExplicitSlug(): void
+    {
+        $folder = Story::asFolder("My Folder", "custom-slug");
+
+        $this->assertSame("custom-slug", $folder->slug());
+    }
+
+    public function testAsFolderWithAllFieldsProducesExpectedPayload(): void
+    {
+        $folder = Story::asFolder(
+            name: "Blog",
+            slug: null,
+            parentId: 42,
+            defaultContentType: "page",
+            contentTypes: ["page", "post"],
+            lockSubfoldersContentTypes: true,
+            disableFeEditor: true,
+        );
+
+        $this->assertSame("Blog", $folder->name());
+        $this->assertSame("blog", $folder->slug());
+        $this->assertTrue($folder->isFolder());
+        $this->assertSame(42, $folder->parentId());
+        $this->assertSame("page", $folder->getString("default_root"));
+        $this->assertTrue($folder->getBoolean("disable_fe_editor"));
+
+        $content = $folder->getArray("content");
+        $this->assertSame(["page", "post"], $content["content_types"]);
+        $this->assertTrue($content["lock_subfolders_content_types"]);
+    }
+
+    public function testAsFolderWithoutContentTypesOmitsRestrictionFields(): void
+    {
+        $folder = Story::asFolder("Empty Restrictions");
+
+        $content = $folder->getArray("content");
+        $this->assertArrayNotHasKey("content_types", $content);
+        $this->assertArrayNotHasKey("lock_subfolders_content_types", $content);
+    }
 }

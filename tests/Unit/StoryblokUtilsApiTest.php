@@ -84,4 +84,25 @@ final class StoryblokUtilsApiTest extends TestCase
     {
         $this->assertSame("EU", StoryblokUtils::getRegionFromSpaceId(-222));
     }
+
+    /**
+     * @return \Iterator<string, array{string, string}>
+     */
+    public static function slugifyProvider(): \Iterator
+    {
+        yield "simple" => ["Blog posts", "blog-posts"];
+        yield "mixed case" => ["My Folder", "my-folder"];
+        yield "multiple spaces" => ["  Too   many  spaces  ", "too-many-spaces"];
+        yield "punctuation" => ["Hello, World!", "hello-world"];
+        yield "slashes" => ["parent/child section", "parent-child-section"];
+        yield "accented" => ["Caffè & Brioche", "caffe-brioche"];
+        yield "empty" => ["", ""];
+        yield "only separators" => ["---", ""];
+    }
+
+    #[DataProvider("slugifyProvider")]
+    public function testSlugify(string $input, string $expected): void
+    {
+        $this->assertSame($expected, StoryblokUtils::slugify($input));
+    }
 }

@@ -524,6 +524,63 @@ If you want to create a story in a specific release, you can set the third param
 $storyCreated = $storyApi->create($story, releaseId: $releaseId)->data();
 ```
 
+### Creating a Folder
+
+Stories in Storyblok can be organized into folders. A folder is a story with `is_folder` set to `true`. You can also set a default content type and restrict which content types are allowed inside the folder.
+
+#### Shortcut: `StoryApi::createFolder()`
+
+The quickest way to create a folder is `StoryApi::createFolder()`. It mirrors the fields of the Storyblok UI "Create folder" dialog:
+
+| Parameter                     | UI label                              | Default                           |
+| ----------------------------- | ------------------------------------- | --------------------------------- |
+| `name`                        | Name (mandatory)                      | —                                 |
+| `slug`                        | Slug                                  | auto-generated from `name`        |
+| `parentId`                    | Parent folder                         | `0` (root)                        |
+| `defaultContentType`          | Default content type                  | `null`                            |
+| `contentTypes`                | Specific content types (whitelist)    | `[]` (all types allowed)          |
+| `lockSubfoldersContentTypes`  | Lock sub-folders content-type change  | `false`                           |
+| `disableFeEditor`             | Disable visual editor                 | `false`                           |
+
+```php
+$created = $storyApi->createFolder(
+    name: "Articles",
+    defaultContentType: "article-page",
+    contentTypes: ["article-page", "landing-page"],
+    lockSubfoldersContentTypes: true,
+)->data();
+
+echo "Created folder: " . $created->id() . " - " . $created->name() . PHP_EOL;
+echo "Is folder: " . ($created->isFolder() ? "yes" : "no") . PHP_EOL;
+```
+
+To create a subfolder, pass the parent folder ID:
+
+```php
+$storyApi->createFolder(
+    name: "Tech Articles",
+    parentId: (int) $created->id(),
+);
+```
+
+#### Object-oriented approach
+
+If you need to compose additional fields (tags, metadata, etc.) before sending, use `Story::asFolder()` and then `StoryApi::create()`:
+
+```php
+$folder = Story::asFolder(
+    name: "Articles",
+    defaultContentType: "article-page",
+    contentTypes: ["article-page", "landing-page"],
+    lockSubfoldersContentTypes: true,
+);
+$folder->setTagsFromArray(["editorial"]);
+
+$created = $storyApi->create($folder)->data();
+```
+
+You can also build the folder manually with `new Story(...)` plus `setIsFolder()`, `setDefaultRoot()`, `setFolderId()`, `setDisableFeEditor()`, and the `StoryComponent` setters `setContentTypes()` / `setLockSubfoldersContentTypes()`.
+
 ### Publishing a story
 
 For publishing a story by the story identifier you can use the `publish` method:

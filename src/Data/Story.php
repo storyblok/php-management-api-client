@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Storyblok\ManagementApi\Data;
 
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
+use Storyblok\ManagementApi\StoryblokUtils;
 
 class Story extends StoryBaseData
 {
@@ -135,5 +136,93 @@ class Story extends StoryBaseData
     {
         $this->set("parent_id", (int) $folderId);
         return $this;
+    }
+
+    /**
+     * Mark this story as a folder.
+     *
+     * @return $this
+     */
+    public function setIsFolder(bool $isFolder = true): self
+    {
+        $this->set("is_folder", $isFolder);
+        return $this;
+    }
+
+    /**
+     * Set the default content type for stories created inside this folder.
+     *
+     * @param string $componentName the technical name of the component
+     * @return $this
+     */
+    public function setDefaultRoot(string $componentName): self
+    {
+        $this->set("default_root", $componentName);
+        return $this;
+    }
+
+    /**
+     * Disable (or enable) the Visual Editor for this story/folder.
+     *
+     * @return $this
+     */
+    public function setDisableFeEditor(bool $disable = true): self
+    {
+        $this->set("disable_fe_editor", $disable);
+        return $this;
+    }
+
+    /**
+     * Build a Story pre-configured as a folder.
+     *
+     * Mirrors the Storyblok UI "Create folder" dialog:
+     *  - Name: mandatory
+     *  - Slug: auto-generated from the name if null
+     *  - Parent folder: 0 (root) by default
+     *  - Default content type (`default_root`): optional
+     *  - Specific content types (`content.content_types`): optional whitelist
+     *  - Lock sub-folders content-type change
+     *    (`content.lock_subfolders_content_types`): only meaningful when
+     *    `$contentTypes` is non-empty
+     *  - Disable visual editor (`disable_fe_editor`): optional
+     *
+     * @param string      $name                        Folder name (mandatory)
+     * @param string|null $slug                        Slug, auto-generated from name if null
+     * @param int         $parentId                    Parent folder ID, 0 for root
+     * @param string|null $defaultContentType          Default content type (`default_root`)
+     * @param string[]    $contentTypes                Allowed content types whitelist
+     * @param bool        $lockSubfoldersContentTypes  Force sub-folders to inherit the restriction
+     * @param bool        $disableFeEditor             Disable the Visual Editor
+     */
+    public static function asFolder(
+        string $name,
+        ?string $slug = null,
+        int $parentId = 0,
+        ?string $defaultContentType = null,
+        array $contentTypes = [],
+        bool $lockSubfoldersContentTypes = false,
+        bool $disableFeEditor = false,
+    ): self {
+        $resolvedSlug = $slug ?? StoryblokUtils::slugify($name);
+
+        $content = new StoryComponent("");
+        if ($contentTypes !== []) {
+            $content->setContentTypes($contentTypes);
+            $content->setLockSubfoldersContentTypes($lockSubfoldersContentTypes);
+        }
+
+        $folder = new self($name, $resolvedSlug, $content);
+        $folder->setIsFolder(true);
+        $folder->setFolderId($parentId);
+
+        if ($defaultContentType !== null && $defaultContentType !== "") {
+            $folder->setDefaultRoot($defaultContentType);
+        }
+
+        if ($disableFeEditor) {
+            $folder->setDisableFeEditor(true);
+        }
+
+        return $folder;
     }
 }
