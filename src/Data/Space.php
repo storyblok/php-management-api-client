@@ -11,17 +11,32 @@ use Storyblok\ManagementApi\StoryblokUtils;
 class Space extends BaseData
 {
     /**
-     * @param string $name the space name
+     * @param string $name The space name. When provided, it is included in the
+     *                     payload sent to the API. When omitted or empty, the
+     *                     `name` field is not added, so the API leaves the
+     *                     existing name untouched on update.
      */
-    public function __construct(string $name)
+    public function __construct(string $name = '')
     {
         $this->data = [];
-        $this->data["name"] = $name;
+        if ($name !== '') {
+            $this->data["name"] = $name;
+        }
     }
 
     /**
-     * @param mixed[] $data
-     * @throws StoryblokFormatException
+     * Creates a Space from a full API response array.
+     *
+     * Designed for hydrating Space objects returned by the Storyblok Management
+     * API. The data array is expected to be a complete space representation
+     * (i.e., it must contain a "name" key). The internal data is replaced in
+     * full by the provided array.
+     *
+     * For partial updates where only specific fields should be sent,
+     * use forUpdate() instead.
+     *
+     * @param mixed[] $data Full space data from the API response.
+     * @throws StoryblokFormatException When the name field cannot be read back after hydration.
      */
     public static function make(array $data = []): self
     {
@@ -29,11 +44,48 @@ class Space extends BaseData
         $name = $dataObject->getString("name");
         $space = new self($dataObject->getString("name"));
         $space->setData($dataObject->toArray());
-        // validate
+        // Sanity-check: name must survive the round-trip through setData()
         if ($space->name() !== $name) {
             throw new StoryblokFormatException("Space has no name");
         }
 
+        return $space;
+    }
+
+    /**
+     * Creates a Space containing only the specified fields for a partial update.
+     *
+     * Unlike new Space($name) — which always forces `name` into the payload — or
+     * Space::make($data) — which is intended for full API response hydration —
+     * this factory populates the payload with exactly and only the fields you
+     * provide. No other fields (including `name`) are added automatically.
+     *
+     * The Storyblok Management API applies only the fields present in the request
+     * body, leaving all other space settings untouched. This makes forUpdate()
+     * the right choice whenever you need to change a subset of space settings.
+     *
+     * Example — update only the Dimensions app folder configuration:
+     *
+     *   $space = Space::forUpdate([
+     *       'dimensions_app_folder_ids' => [123, 456],
+     *       'dimensions_app_folders'    => [
+     *           ['folder_id' => 123, 'ai_translation_code' => ''],
+     *           ['folder_id' => 456, 'ai_translation_code' => 'it'],
+     *       ],
+     *   ]);
+     *   $spaceApi->update($spaceId, $space);
+     *
+     * Example — update only the domain:
+     *
+     *   $space = Space::forUpdate(['domain' => 'https://new.example.com']);
+     *   $spaceApi->update($spaceId, $space);
+     *
+     * @param array<string, mixed> $fields The fields to include in the update payload.
+     */
+    public static function forUpdate(array $fields): self
+    {
+        $space = new self('');
+        $space->setData($fields);
         return $space;
     }
 
@@ -64,10 +116,6 @@ class Space extends BaseData
 
     /**
      * Retrieves the domain associated with the Space.
-     *
-     * Returns the value stored under the "domain" key as a string.
-     *
-     * @return string The domain name.
      */
     public function domain(): string
     {
@@ -75,11 +123,7 @@ class Space extends BaseData
     }
 
     /**
-     * Retrieves the first token associated with the Space.
-     *
-     * Returns the value stored under the "first_token" key.
-     *
-     * @return string The first token, or an empty string if none is defined.
+     * Retrieves the first preview access token associated with the Space.
      */
     public function firstToken(): string
     {
@@ -127,12 +171,7 @@ class Space extends BaseData
     }
 
     /**
-     * Determines whether the current entity is owned by the given user.
-     *
-     * Compares the space's owner ID with the ID of the provided user instance.
-     *
-     * @param User $user The user to check ownership against.
-     * @return bool True if the user owns the entity, false otherwise.
+     * Returns true if the given user is the owner of this space.
      */
     public function isOwnedByUser(User $user): bool
     {
@@ -140,11 +179,7 @@ class Space extends BaseData
     }
 
     /**
-     * Checks whether the entity is marked as a demo instance.
-     *
-     * Retrieves the `is_demo` flag and returns its boolean value.
-     *
-     * @return bool True if the entity is marked as a demo, false otherwise.
+     * Returns true if the space is marked as a demo/example space.
      */
     public function isDemo(): bool
     {
@@ -152,7 +187,7 @@ class Space extends BaseData
     }
 
     /**
-     * Remove the Demo mode flag
+     * Clears the demo/example space flag.
      */
     public function removeDemoMode(): void
     {

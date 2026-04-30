@@ -292,4 +292,42 @@ final class SpaceApiTest extends TestCase
         $spaceData = new Space("");
         $spaceApi->update("", $spaceData);
     }
+
+    public function testUpdateSpaceWithForUpdate(): void
+    {
+        $responses = [$this->mockResponse("one-space", 200)];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $spaceApi = new SpaceApi($mapiClient);
+
+        // Partial update: only dimensions settings, no name in payload
+        $spaceData = Space::forUpdate([
+            'dimensions_app_folder_ids' => [123, 456],
+            'dimensions_app_folders'    => [
+                ['folder_id' => 123, 'ai_translation_code' => ''],
+                ['folder_id' => 456, 'ai_translation_code' => 'it'],
+            ],
+        ]);
+
+        $this->assertArrayNotHasKey('name', $spaceData->toArray());
+        $this->assertCount(2, $spaceData->toArray());
+
+        $storyblokResponse = $spaceApi->update("111", $spaceData);
+
+        $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
+        // The API response always includes the full space — name comes from the server
+        $this->assertSame("Example Space", $storyblokResponse->data()->name());
+    }
+
+    public function testPartialUpdatePayloadDoesNotContainName(): void
+    {
+        // new Space() / new Space('') — no name in payload, safe for partial updates
+        $withConstructor = new Space('');
+        $this->assertArrayNotHasKey('name', $withConstructor->toArray());
+
+        // Space::forUpdate() — equally safe, and more explicit about intent
+        $withForUpdate = Space::forUpdate(['domain' => 'https://example.com']);
+        $this->assertArrayNotHasKey('name', $withForUpdate->toArray());
+    }
 }

@@ -206,6 +206,22 @@ $spaces->forEach( function (Space $space) {
 
 ```
 
+Both `foreach` and direct index access return the same typed object, so you can use either style:
+
+```php
+// foreach — each $space is a Space instance
+foreach ($spaces as $space) {
+    echo $space->name();
+}
+
+// index access — $spaces[0] is also a Space instance
+$first = $spaces[0];
+echo $first->name();
+echo $first->id();
+```
+
+The same consistent behavior applies to all typed collections: `Stories` returns `StoryCollectionItem`, `AssetFolders` returns `AssetFolder`, and so on.
+
 ### Get one specific Space
 
 Retrieve detailed information about a specific space using its ID:
@@ -265,35 +281,32 @@ You can repeat this for any number of environments—such as staging, QA, produc
 
 ### Update Space settings
 
-You can edit space settings using the `update()` method.
-In this basic example you can get information from a space and then set up the changes you want to apply (`$editSpace`):
+You can edit space settings using the `update()` method. There are two ways to build the `Space` object to send, depending on how many fields you want to change.
+
+#### Full update — rename and reconfigure
+
+Use `new Space($name)` when you want to set the name along with other fields. Every field you set on the object is sent in the request body.
 
 ```php
-$spaceId="your-space-id";
+$spaceId = "your-space-id";
 $spaceApi = new SpaceApi($client);
 
-// Getting a space
+// Read current state
 $space = $spaceApi->get($spaceId)->data();
-echo "Current domain: " . $space->get("domain") . PHP_EOL;
-echo "Current token: " . $space->get("first_token") . PHP_EOL;
-// Getting the current environments and the languages
 /** @var StoryblokData $environments */
 $environments = $space->get("environments");
 /** @var StoryblokData $languages */
 $languages = $space->get("languages");
 
-// Now, let's start collecting data you want to change
+// Build the update payload — name is included
 $editSpace = new Space("Your new space name");
-$editSpace->set("id", $spaceId);
-// you can set the domain for preview URL
 $editSpace->set("domain", "https://your-preview-domain/");
-// you can add new preview URLs (for example the localhost)
-if ($environments->count() === 0 ) {
+
+if ($environments->count() === 0) {
     $editSpace->set("environments.0.name", "Demo Local Development");
     $editSpace->set("environments.0.location", "https://localhost:3000/");
 }
-// You can add languages programmatically
-if ($languages->count() === 0 ) {
+if ($languages->count() === 0) {
     $editSpace->set("languages.0.code", "it");
     $editSpace->set("languages.0.name", "Italian");
     $editSpace->set("languages.1.code", "de");
@@ -306,6 +319,37 @@ try {
     echo $e->getMessage();
 }
 ```
+
+#### Partial update — change only specific fields
+
+Use `Space::forUpdate(array $fields)` when you want to send only a subset of fields. The `name` is not included unless you explicitly add it, so the API leaves all other settings untouched.
+
+```php
+$spaceApi = new SpaceApi($client);
+
+// Only update the domain — name and all other settings are preserved
+$editSpace = Space::forUpdate([
+    'domain' => 'https://new-preview-domain/',
+]);
+
+$spaceApi->update($spaceId, $editSpace);
+```
+
+```php
+// Update Dimensions app folder configuration without touching anything else
+$editSpace = Space::forUpdate([
+    'dimensions_app_folder_ids' => [123, 456, 789],
+    'dimensions_app_folders'    => [
+        ['folder_id' => 123, 'ai_translation_code' => ''],
+        ['folder_id' => 456, 'ai_translation_code' => 'it'],
+        ['folder_id' => 789, 'ai_translation_code' => 'de'],
+    ],
+]);
+
+$spaceApi->update($spaceId, $editSpace);
+```
+
+> `new Space()` and `new Space('')` also produce an empty payload (no `name` field), which is fine for partial updates when you add fields via `->set()`. `Space::forUpdate()` is the more explicit and readable choice when you have a known set of fields to send.
 
 ### Triggering the backup
 

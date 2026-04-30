@@ -17,6 +17,11 @@ class StoriesParams
      * @param array<string>|string|null $excludingSlugs
      * @param array<string>|string|null $inWorkflowStages
      * @param array<string>|string|null $byUuidsOrdered
+     * @param int|null $withParent Filter by parent folder ID. Note: passing 0 to list
+     *                             root-level stories may not work as expected — the
+     *                             Storyblok API treats 0 as a falsy value and ignores it.
+     *                             For root-level filtering, apply client-side checks on
+     *                             the returned stories instead.
      */
     public function __construct(
         private readonly string|null $containComponent = null,
@@ -29,11 +34,11 @@ class StoriesParams
         private readonly array|string|null $withTag = null,
         private readonly bool|null $folderOnly = null,
         private readonly bool|null $storyOnly = null,
-        private readonly string|int|null $withParent = null,
+        private readonly int|null $withParent = null,
         private readonly string|null $startsWith = null,
         private readonly bool|null $inTrash = null,
         private readonly string|null $search = null,
-        private readonly string|int|null $inRelease = null,
+        private readonly int|null $inRelease = null,
         private readonly bool|null $isPublished = null,
         private readonly array|string|null $bySlugs = null,
         private readonly bool|null $mine = null,

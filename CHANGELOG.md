@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0 - 2026-04-30
+- `Space` constructor `$name` is now optional (default `''`); when omitted or empty, the `name` field is not added to the payload so the API leaves the existing name untouched on update
+- Adding `Space::forUpdate(array $fields)` static factory for partial updates; sends only the specified fields without forcing a `name` into the payload
+- Fixing `IterableDataTrait::offsetGet()` to return the same typed object as `foreach` iteration; `$collection[n]` now returns the typed item class (e.g. `StoryCollectionItem`, `AssetFolder`, `Space`) instead of plain `StoryblokData`
+- `StoriesParams::withParent` type narrowed from `string|int|null` to `int|null`; `string` was never a valid parent ID. Note: passing `0` sends `with_parent=0` to the API, but the Storyblok API treats `0` as falsy and ignores it, use client-side filtering for root-level stories instead.
+- `StoriesParams::inRelease` type narrowed from `string|int|null` to `int|null`; release IDs are numeric
+
 ## 1.2.0 - 2026-04-21
 - Adding `AssetApi::update()` method for updating asset metadata (alt, title, asset_folder_id, internal_tag_ids, etc.)
 - Adding `AssetFolderApi` endpoint for managing asset folders (list, get, create, update, delete)

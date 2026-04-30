@@ -52,7 +52,12 @@ trait IterableDataTrait
 
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->get($offset);
+        $value = $this->data[$offset] ?? null;
+        if (is_array($value)) {
+            return ($this->getDataClass())::make($value);
+        }
+
+        return $value;
     }
 
     public function offsetSet(mixed $offset, mixed $value): void
