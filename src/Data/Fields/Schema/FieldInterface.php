@@ -25,6 +25,12 @@ interface FieldInterface
     public function tooltip(): bool;
 
     /**
+     * Returns the field attributes as an array suitable for use in a component schema payload.
+     * @return array<mixed>
+     */
+    public function toArray(): array;
+
+    /**
      * Returns the raw value of any field attribute by name.
      * Use this to access attributes not covered by a typed method,
      * for example a custom property or a field-type-specific key

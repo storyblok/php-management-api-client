@@ -917,33 +917,81 @@ $folders = $componentsResponse->dataFolders();
 
 ### Creating a new component
 
-You can programmatically create a new component in a space:
+You can programmatically create a new component in a space using typed field classes and a fluent interface.
+
+Each field class sets its own type automatically, so you only need to provide the field key and any attributes you want to configure via chained setters:
 
 ```php
-// Define a new component
-$component = new Component("my-component-1234567");
-$component->setDisplayName("My Component");
-$component->setRoot(); // Mark as a root component
-$component->setPreviewField("title");
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldRichtext;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldAsset;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldBoolean;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldNumber;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldBloks;
 
-// Add fields
-$component->setField("title", ["type" => "text"]);
-$component->setField("headline", ["type" => "text"]);
-$component->setField("image", ["type" => "asset"]);
+$component = new Component("my-component");
+$component->setDisplayName("My Component");
+$component->setRoot();
+$component->setPreviewField("headline");
+
+$component
+    ->addField(
+        (new FieldText("headline"))
+            ->setPos(0)
+            ->setDisplayName("Headline")
+            ->setRequired()
+            ->setTranslatable()
+    )
+    ->addField(
+        (new FieldRichtext("description"))
+            ->setPos(1)
+            ->setDisplayName("Description")
+            ->setTranslatable()
+            ->setToolbar(["bold", "italic", "link"])
+    )
+    ->addField(
+        (new FieldAsset("image"))
+            ->setPos(2)
+            ->setDisplayName("Image")
+    );
 
 try {
-    // Create the component in Storyblok
     $componentResponse = $componentApi->create($component);
     $newComponent = $componentResponse->data();
-
-    // Output the new component's ID
     echo "Component created with ID: " . $newComponent->id() . PHP_EOL;
-
-    // Dump full component details (for debugging)
-    $newComponent->dump();
 } catch (Exception $e) {
     echo "Error creating component: " . $e->getMessage();
 }
+```
+
+All shared field properties are available on every field type via `FieldGeneric`:
+
+| Setter | Description |
+|---|---|
+| `setPos(int $pos)` | Position in the editor |
+| `setDisplayName(string $name)` | Label shown in the editor |
+| `setRequired(bool $required = true)` | Mark the field as required |
+| `setTranslatable(bool $translatable = true)` | Enable per-language translation |
+| `setNoTranslate(bool $noTranslate = true)` | Exclude from translation |
+| `setDescription(string $description)` | Helper text shown below the field |
+| `setTooltip(bool $tooltip = true)` | Show description as a tooltip |
+
+Each specialized class adds its own setters:
+
+| Class | Setters |
+|---|---|
+| `FieldText` | `setDefaultValue()`, `setRegex()` |
+| `FieldNumber` | `setDefaultValue()`, `setMinValue()`, `setMaxValue()` |
+| `FieldBoolean` | `setDefaultValue()`, `setInlineLabel()`, `setCheckboxLabel()` |
+| `FieldRichtext` | `setToolbar()`, `setRestrictComponents()` |
+| `FieldBloks` | `setMinimum()`, `setMaximum()`, `setComponentWhitelist()` |
+| `FieldAsset` | `setFiletypes()` |
+| `FieldMultiasset` | `setFiletypes()` |
+
+If you prefer passing raw arrays, the existing `setField()` method still works:
+
+```php
+$component->setField("title", ["type" => "text", "pos" => 0]);
 ```
 
 ### Reading a component schema

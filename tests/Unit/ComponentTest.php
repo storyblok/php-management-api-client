@@ -6,6 +6,8 @@ namespace Tests\Unit;
 
 use Storyblok\ManagementApi\Data\Component;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldInterface;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldRichtext;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
 use Tests\TestCase;
 
 final class ComponentTest extends TestCase
@@ -252,6 +254,23 @@ final class ComponentTest extends TestCase
         $this->assertCount(1, $tabs);
         $this->assertArrayHasKey('tab-seo', $tabs);
         $this->assertSame('SEO', $tabs['tab-seo']['display_name']);
+    }
+
+    public function testAddFieldWithFluentBuilder(): void
+    {
+        $component = new Component("my-component");
+        $component
+            ->addField((new FieldText("headline"))->setPos(0)->setRequired())
+            ->addField((new FieldRichtext("description"))->setPos(1)->setTranslatable());
+
+        $fields = $component->getFields();
+
+        $this->assertArrayHasKey("headline", $fields);
+        $this->assertArrayHasKey("description", $fields);
+        $this->assertSame("text", $fields["headline"]->type());
+        $this->assertSame("richtext", $fields["description"]->type());
+        $this->assertTrue($fields["headline"]->required());
+        $this->assertTrue($fields["description"]->translatable());
     }
 
     public function testGetTabsIsSortedByPos(): void

@@ -245,6 +245,16 @@ class Component extends BaseData
     }
 
     /**
+     * Adds a typed field to the component schema.
+     * The field key and attributes are taken from the FieldInterface object.
+     */
+    public function addField(FieldInterface $field): self
+    {
+        $this->setField($field->key(), $field->toArray());
+        return $this;
+    }
+
+    /**
      * Returns non-tab schema entries as FieldInterface objects, sorted by pos ascending.
      * When $tab is provided, returns only fields assigned to that tab display name.
      * @return array<string, FieldInterface>

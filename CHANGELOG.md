@@ -9,6 +9,9 @@
 - Adding `FieldGeneric` base class implementing `FieldInterface` with a `make()` factory that dispatches to specialized subclasses by type
 - Adding specialized field classes in `Data/Fields/Schema/`: `FieldText`, `FieldNumber`, `FieldBoolean`, `FieldRichtext`, `FieldBloks`, `FieldAsset`, `FieldMultiasset`
 - Adding `FieldInterface::get(int|string $key, mixed $defaultValue = null): mixed` for accessing raw field attributes not covered by typed methods, with dot-notation support for nested keys
+- Adding `FieldInterface::toArray(): array` to expose field attributes as a plain array suitable for API payloads
+- Adding fluent builder support to all field classes: constructor now accepts only the field key; `TYPE` constant sets the type automatically; shared setters on `FieldGeneric` (`setPos()`, `setDisplayName()`, `setRequired()`, `setTranslatable()`, `setNoTranslate()`, `setDescription()`, `setTooltip()`) and type-specific setters on each specialized class all return `static` for chaining
+- Adding `Component::addField(FieldInterface $field): self` for adding typed field objects to a component schema using the fluent builder
 
 
 ## 1.3.0 - 2026-04-30

@@ -6,11 +6,31 @@ namespace Storyblok\ManagementApi\Data\Fields\Schema;
 
 class FieldMultiasset extends FieldGeneric
 {
+    public const TYPE = "multiasset";
+
+    /**
+     * @param mixed[] $data
+     */
+    public function __construct(string $key, array $data = [])
+    {
+        $data["type"] = self::TYPE;
+        parent::__construct($key, $data);
+    }
+
     /**
      * @return array<mixed>
      */
     public function filetypes(): array
     {
         return $this->getArray("filetypes");
+    }
+
+    /**
+     * @param string[] $filetypes
+     */
+    public function setFiletypes(array $filetypes): static
+    {
+        $this->set("filetypes", $filetypes);
+        return $this;
     }
 }

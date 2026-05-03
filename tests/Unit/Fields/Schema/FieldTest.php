@@ -184,6 +184,131 @@ final class FieldTest extends TestCase
         $this->assertSame(["images", "videos"], $field->filetypes());
     }
 
+    public function testFluentBuilderSetsTypeAutomatically(): void
+    {
+        $this->assertSame("text", (new FieldText("f"))->type());
+        $this->assertSame("number", (new FieldNumber("f"))->type());
+        $this->assertSame("boolean", (new FieldBoolean("f"))->type());
+        $this->assertSame("richtext", (new FieldRichtext("f"))->type());
+        $this->assertSame("bloks", (new FieldBloks("f"))->type());
+        $this->assertSame("asset", (new FieldAsset("f"))->type());
+        $this->assertSame("multiasset", (new FieldMultiasset("f"))->type());
+    }
+
+    public function testFluentBuilderSharedSetters(): void
+    {
+        $field = (new FieldText("headline"))
+            ->setPos(0)
+            ->setDisplayName("Headline")
+            ->setRequired()
+            ->setTranslatable()
+            ->setDescription("Main headline")
+            ->setTooltip();
+
+        $this->assertSame("headline", $field->key());
+        $this->assertSame("text", $field->type());
+        $this->assertSame(0, $field->pos());
+        $this->assertSame("Headline", $field->displayName());
+        $this->assertTrue($field->required());
+        $this->assertTrue($field->translatable());
+        $this->assertSame("Main headline", $field->description());
+        $this->assertTrue($field->tooltip());
+    }
+
+    public function testFluentBuilderFieldText(): void
+    {
+        $field = (new FieldText("title"))
+            ->setPos(0)
+            ->setDefaultValue("Untitled")
+            ->setRegex("^[A-Z]");
+
+        $this->assertSame("Untitled", $field->defaultValue());
+        $this->assertSame("^[A-Z]", $field->regex());
+        $this->assertSame("text", $field->toArray()["type"]);
+    }
+
+    public function testFluentBuilderFieldNumber(): void
+    {
+        $field = (new FieldNumber("score"))
+            ->setPos(1)
+            ->setDefaultValue("5")
+            ->setMinValue(1)
+            ->setMaxValue(100);
+
+        $this->assertSame("5", $field->defaultValue());
+        $this->assertSame(1, $field->minValue());
+        $this->assertSame(100, $field->maxValue());
+    }
+
+    public function testFluentBuilderFieldBoolean(): void
+    {
+        $field = (new FieldBoolean("active"))
+            ->setPos(2)
+            ->setDefaultValue(true)
+            ->setInlineLabel()
+            ->setCheckboxLabel("Is active");
+
+        $this->assertTrue($field->defaultValue());
+        $this->assertTrue($field->inlineLabel());
+        $this->assertSame("Is active", $field->checkboxLabel());
+    }
+
+    public function testFluentBuilderFieldRichtext(): void
+    {
+        $field = (new FieldRichtext("body"))
+            ->setPos(3)
+            ->setToolbar(["bold", "italic"])
+            ->setRestrictComponents();
+
+        $this->assertSame(["bold", "italic"], $field->toolbar());
+        $this->assertTrue($field->restrictComponents());
+    }
+
+    public function testFluentBuilderFieldBloks(): void
+    {
+        $field = (new FieldBloks("blocks"))
+            ->setPos(4)
+            ->setMinimum(1)
+            ->setMaximum(5)
+            ->setComponentWhitelist(["hero", "teaser"]);
+
+        $this->assertSame(1, $field->minimum());
+        $this->assertSame(5, $field->maximum());
+        $this->assertSame(["hero", "teaser"], $field->componentWhitelist());
+    }
+
+    public function testFluentBuilderFieldAsset(): void
+    {
+        $field = (new FieldAsset("image"))
+            ->setPos(5)
+            ->setFiletypes(["images"]);
+
+        $this->assertSame(["images"], $field->filetypes());
+    }
+
+    public function testFluentBuilderFieldMultiasset(): void
+    {
+        $field = (new FieldMultiasset("gallery"))
+            ->setPos(6)
+            ->setFiletypes(["images", "videos"]);
+
+        $this->assertSame(["images", "videos"], $field->filetypes());
+    }
+
+    public function testToArrayContainsAllSetAttributes(): void
+    {
+        $field = (new FieldText("headline"))
+            ->setPos(0)
+            ->setRequired()
+            ->setDefaultValue("Hello");
+
+        $data = $field->toArray();
+        $this->assertSame("text", $data["type"]);
+        $this->assertSame(0, $data["pos"]);
+        $this->assertTrue($data["required"]);
+        $this->assertSame("Hello", $data["default_value"]);
+    }
+
     public function testGetReturnsRawAttribute(): void
     {
         $field = FieldGeneric::make("title", [
