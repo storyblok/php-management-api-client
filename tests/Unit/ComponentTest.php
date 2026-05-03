@@ -256,6 +256,102 @@ final class ComponentTest extends TestCase
         $this->assertSame('SEO', $tabs['tab-seo']['display_name']);
     }
 
+    public function testInsertFieldShiftsExistingEntriesFromPos(): void
+    {
+        $component = $this->makeComponentWithSchema();
+        // before: title=0, body=1, tab-seo=2, meta_title=3, meta_description=4
+
+        $component->insertField(
+            (new FieldText("summary"))->setDisplayName("Summary"),
+            atPos: 0,
+        );
+
+        $fields = $component->getFields();
+        $schema = $component->getSchema();
+
+        // new field is at pos 0
+        $this->assertSame(0, $fields["summary"]->pos());
+
+        // all previous entries shifted by 1
+        $this->assertSame(1, $fields["title"]->pos());
+        $this->assertSame(2, $fields["body"]->pos());
+        $this->assertSame(4, $fields["meta_title"]->pos());
+        $this->assertSame(5, $fields["meta_description"]->pos());
+
+        // tab also shifted
+        $this->assertSame(3, $schema["tab-seo"]["pos"]);
+    }
+
+    public function testInsertFieldInTheMiddleOnlyShiftsEntriesAtOrAfterPos(): void
+    {
+        $component = $this->makeComponentWithSchema();
+        // before: title=0, body=1, tab-seo=2, meta_title=3, meta_description=4
+
+        $component->insertField(
+            (new FieldText("subtitle"))->setDisplayName("Subtitle"),
+            atPos: 1,
+        );
+
+        $fields = $component->getFields();
+
+        // new field at pos 1
+        $this->assertSame(1, $fields["subtitle"]->pos());
+
+        // title before insertion point — unchanged
+        $this->assertSame(0, $fields["title"]->pos());
+
+        // everything at pos >= 1 shifted by 1
+        $this->assertSame(2, $fields["body"]->pos());
+        $this->assertSame(4, $fields["meta_title"]->pos());
+        $this->assertSame(5, $fields["meta_description"]->pos());
+    }
+
+    public function testInsertFieldLeavesNullPosEntriesUntouched(): void
+    {
+        $component = Component::make([
+            'name'   => 'page',
+            'schema' => [
+                'title'   => ['type' => 'text', 'pos' => 0],
+                'orphan'  => ['type' => 'text'],            // pos key absent
+                'orphan2' => ['type' => 'text', 'pos' => null],  // pos key present but null
+                'orphan3' => ['type' => 'text', 'pos' => ''],    // pos key present but ""
+                'body'    => ['type' => 'richtext', 'pos' => 1],
+            ],
+        ]);
+
+        $component->insertField(
+            (new FieldText("summary"))->setDisplayName("Summary"),
+            atPos: 0,
+        );
+
+        $schema = $component->getSchema();
+
+        // new field at pos 0
+        $this->assertSame(0, $schema["summary"]["pos"]);
+
+        // entries with explicit integer pos are shifted
+        $this->assertSame(1, $schema["title"]["pos"]);
+        $this->assertSame(2, $schema["body"]["pos"]);
+
+        // pos key absent — stays untouched
+        $this->assertArrayNotHasKey("pos", $schema["orphan"]);
+
+        // pos key present but null — stays null
+        $this->assertNull($schema["orphan2"]["pos"]);
+
+        // pos key present but "" — stays ""
+        $this->assertSame("", $schema["orphan3"]["pos"]);
+    }
+
+    public function testInsertFieldIsChainable(): void
+    {
+        $component = new Component("page");
+
+        $result = $component->insertField(new FieldText("title"), atPos: 0);
+
+        $this->assertSame($component, $result);
+    }
+
     public function testAddFieldWithFluentBuilder(): void
     {
         $component = new Component("my-component");

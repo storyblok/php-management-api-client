@@ -12,6 +12,7 @@
 - Adding `FieldInterface::toArray(): array` to expose field attributes as a plain array suitable for API payloads
 - Adding fluent builder support to all field classes: constructor now accepts only the field key; `TYPE` constant sets the type automatically; shared setters on `FieldGeneric` (`setPos()`, `setDisplayName()`, `setRequired()`, `setTranslatable()`, `setNoTranslate()`, `setDescription()`, `setTooltip()`) and type-specific setters on each specialized class all return `static` for chaining
 - Adding `Component::addField(FieldInterface $field): self` for adding typed field objects to a component schema using the fluent builder
+- Adding `Component::insertField(FieldInterface $field, int $atPos): self` for inserting a field at a specific position; automatically shifts every existing schema entry (fields and tabs) at `pos >= $atPos` up by one to keep positions consistent
 
 
 ## 1.3.0 - 2026-04-30

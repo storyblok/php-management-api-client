@@ -994,6 +994,39 @@ If you prefer passing raw arrays, the existing `setField()` method still works:
 $component->setField("title", ["type" => "text", "pos" => 0]);
 ```
 
+### Adding a field to an existing component
+
+Use `addField()` when position does not matter. Fetch the component, add the field, save it back. Storyblok assigns the position automatically.
+
+```php
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
+
+$component = $componentApi->get($componentId)->data();
+
+$component->addField(
+    (new FieldText("summary"))
+        ->setDisplayName("Summary")
+        ->setTranslatable()
+);
+
+$componentApi->update($componentId, $component);
+```
+
+Use `insertField()` when position matters. It shifts every existing schema entry (fields and tabs alike) at `pos >= $atPos` up by one before inserting the new field. This keeps all `pos` values consistent without you having to manage the shift manually.
+
+```php
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
+
+$component = $componentApi->get($componentId)->data();
+
+$component->insertField(
+    (new FieldText("summary"))->setDisplayName("Summary"),
+    atPos: 0,
+);
+
+$componentApi->update($componentId, $component);
+```
+
 ### Reading a component schema
 
 A component's schema describes its fields. The `Component` class provides two ways to read it, depending on what you need.

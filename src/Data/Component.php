@@ -255,6 +255,31 @@ class Component extends BaseData
     }
 
     /**
+     * Inserts a typed field at a specific position.
+     * Every existing schema entry (fields and tabs) at pos >= $atPos is shifted
+     * up by one to make room, then the field is added with pos set to $atPos.
+     * Use this instead of manually shifting entries before calling addField().
+     */
+    public function insertField(FieldInterface $field, int $atPos): self
+    {
+        $schema = $this->getSchema();
+        foreach ($schema as $key => $entry) {
+            if (!is_int($entry["pos"] ?? null)) {
+                continue;
+            }
+
+            if ($entry["pos"] >= $atPos) {
+                $schema[$key]["pos"] = $entry["pos"] + 1;
+            }
+        }
+
+        $this->setSchema($schema);
+
+        $this->setField($field->key(), array_merge($field->toArray(), ["pos" => $atPos]));
+        return $this;
+    }
+
+    /**
      * Returns non-tab schema entries as FieldInterface objects, sorted by pos ascending.
      * When $tab is provided, returns only fields assigned to that tab display name.
      * @return array<string, FieldInterface>
