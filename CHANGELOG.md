@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.0 - WIP
+## 1.4.0 - 2026-05-03
 
 - Adding `Component::getFields(?string $tab = null)` returning typed `FieldInterface` objects, sorted by `pos`, tabs excluded; optional `$tab` parameter filters to fields belonging to that tab
 - Adding `Component::getTabs()` returning tab entries sorted by `pos`
