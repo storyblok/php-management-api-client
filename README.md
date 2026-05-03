@@ -946,6 +946,140 @@ try {
 }
 ```
 
+### Reading a component schema
+
+A component's schema describes its fields. The `Component` class provides two ways to read it, depending on what you need.
+
+#### `getSchema()` — raw API data
+
+Use `getSchema()` when you need the exact structure returned by the API. It includes every entry, tabs and fields alike, in no guaranteed order. Each entry is a plain array.
+
+```php
+$component = $componentApi->get($componentId)->data();
+
+$schema = $component->getSchema();
+// Returns the raw schema array, e.g.:
+// [
+//   'title'    => ['type' => 'text', 'pos' => 0, ...],
+//   'tab-seo'  => ['type' => 'tab', 'display_name' => 'SEO', 'keys' => [...], 'pos' => 1, ...],
+//   'meta'     => ['type' => 'text', 'pos' => 2, ...],
+// ]
+```
+
+This is the right choice when you need to pass the schema back to the API or inspect fields the library does not model explicitly.
+
+#### `getFields()` — typed, sorted, tabs excluded
+
+Use `getFields()` when you want to work with the fields themselves. It returns only non-tab entries, sorted by `pos`, each wrapped in a typed `FieldInterface` object with named accessors.
+
+```php
+$fields = $component->getFields();
+
+foreach ($fields as $key => $field) {
+    echo $field->key() . PHP_EOL;          // e.g. "title"
+    echo $field->type() . PHP_EOL;         // e.g. "text"
+    echo $field->pos() . PHP_EOL;          // e.g. 0
+    echo $field->displayName() . PHP_EOL;  // e.g. "Title"
+    echo $field->required() . PHP_EOL;     // e.g. true
+    echo $field->translatable() . PHP_EOL; // e.g. false
+}
+```
+
+To retrieve only the fields that belong to a specific tab, pass the tab's display name:
+
+```php
+$seoFields = $component->getFields('SEO');
+```
+
+Specialized field types expose additional accessors. The factory in `FieldGeneric::make()` returns the correct subclass automatically.
+
+```php
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldNumber;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldBoolean;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldRichtext;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldBloks;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldAsset;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldMultiasset;
+
+foreach ($component->getFields() as $field) {
+    if ($field instanceof FieldText) {
+        echo $field->defaultValue() . PHP_EOL;
+        echo $field->regex() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldNumber) {
+        echo $field->minValue() . PHP_EOL;
+        echo $field->maxValue() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldBoolean) {
+        echo $field->inlineLabel() . PHP_EOL;
+        echo $field->checkboxLabel() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldRichtext) {
+        echo implode(', ', $field->toolbar()) . PHP_EOL;
+        echo $field->restrictComponents() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldBloks) {
+        echo $field->minimum() . PHP_EOL;
+        echo $field->maximum() . PHP_EOL;
+        echo implode(', ', $field->componentWhitelist()) . PHP_EOL;
+    }
+
+    if ($field instanceof FieldAsset || $field instanceof FieldMultiasset) {
+        echo implode(', ', $field->filetypes()) . PHP_EOL;
+    }
+}
+```
+
+For field types not covered by a specialized class (`textarea`, `datetime`, `option`, etc.), `getFields()` returns a `FieldGeneric` instance, which still provides the shared accessors from `FieldInterface`.
+
+#### Accessing attributes not covered by typed methods
+
+Every field object exposes a `get()` method for reading any raw attribute by name. Use it when the specialized class does not have a dedicated method for the attribute you need.
+
+```php
+foreach ($component->getFields() as $field) {
+    // works on any field type, returns null when the attribute is absent
+    $maxLength = $field->get('max_length');
+
+    // provide a default for missing attributes
+    $toolbar = $field->get('toolbar', []);
+
+    // access nested attributes using dot notation
+    $firstOption = $field->get('options.0.value');
+}
+```
+
+#### Listing tabs
+
+Use `getTabs()` to get the tab entries, sorted by `pos`:
+
+```php
+$tabs = $component->getTabs();
+
+foreach ($tabs as $key => $tab) {
+    echo $tab['display_name'] . PHP_EOL; // e.g. "SEO"
+}
+```
+
+To find which tab a field belongs to:
+
+```php
+$tabName = $component->getFieldTab('meta_title'); // e.g. "SEO", or null
+```
+
+#### Quick reference
+
+| Method | Returns | Tabs included | Ordered by pos | Typed objects |
+|---|---|---|---|---|
+| `getSchema()` | `array<string, array<mixed>>` | yes | no | no |
+| `getFields()` | `array<string, FieldInterface>` | no | yes | yes |
+| `getTabs()` | `array<string, array<mixed>>` | only tabs | yes | no |
+
 ## Handling users
 
 For using the `UserApi` class you have to import:

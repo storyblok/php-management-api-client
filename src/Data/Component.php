@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Data;
 
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldGeneric;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldInterface;
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 
 class Component extends BaseData
@@ -217,11 +219,13 @@ class Component extends BaseData
     }
 
     /**
-     * @return mixed[]
+     * @return array<string, array<mixed>>
      */
     public function getSchema(): array
     {
-        return $this->getArray("schema");
+        /** @var array<string, array<mixed>> $schema */
+        $schema = $this->getArray("schema");
+        return $schema;
     }
 
     /**
@@ -238,6 +242,76 @@ class Component extends BaseData
     public function setField(string $name, array $fieldAttributes): void
     {
         $this->set("schema." . $name, $fieldAttributes);
+    }
+
+    /**
+     * Returns non-tab schema entries as FieldInterface objects, sorted by pos ascending.
+     * When $tab is provided, returns only fields assigned to that tab display name.
+     * @return array<string, FieldInterface>
+     */
+    public function getFields(?string $tab = null): array
+    {
+        /** @var array<string, array<mixed>> $raw */
+        $raw = array_filter(
+            $this->getSchema(),
+            fn(array $entry): bool => ($entry["type"] ?? "") !== "tab",
+        );
+        uasort($raw, fn(array $a, array $b): int => ($a["pos"] ?? 0) <=> ($b["pos"] ?? 0));
+
+        if ($tab !== null) {
+            /** @var array<mixed> $tabKeys */
+            $tabKeys = [];
+            foreach ($this->getTabs() as $tabEntry) {
+                if (($tabEntry["display_name"] ?? null) === $tab) {
+                    /** @var array<mixed> $tabKeys */
+                    $tabKeys = $tabEntry["keys"] ?? [];
+                    break;
+                }
+            }
+
+            /** @var array<string, array<mixed>> $raw */
+            $raw = array_filter($raw, fn(array $_, string $key): bool => in_array($key, $tabKeys, true), ARRAY_FILTER_USE_BOTH);
+        }
+
+        $fields = [];
+        foreach ($raw as $key => $data) {
+            $fields[$key] = FieldGeneric::make($key, $data);
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Returns tab entries only, sorted by pos ascending.
+     * @return array<string, mixed[]>
+     */
+    public function getTabs(): array
+    {
+        /** @var array<string, array<mixed>> $tabs */
+        $tabs = array_filter(
+            $this->getSchema(),
+            fn(array $entry): bool => ($entry["type"] ?? "") === "tab",
+        );
+        uasort($tabs, fn(array $a, array $b): int => ($a["pos"] ?? 0) <=> ($b["pos"] ?? 0));
+        return $tabs;
+    }
+
+    /**
+     * Returns the display name of the tab a field belongs to, or null if the
+     * field is not assigned to any tab.
+     */
+    public function getFieldTab(string $fieldName): string|null
+    {
+        foreach ($this->getTabs() as $tab) {
+            /** @var array<mixed> $keys */
+            $keys = $tab["keys"] ?? [];
+            if (in_array($fieldName, $keys, true)) {
+                $displayName = $tab["display_name"] ?? null;
+                return is_string($displayName) ? $displayName : null;
+            }
+        }
+
+        return null;
     }
 
     /**

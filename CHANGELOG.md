@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.4.0 - WIP
+
+- Adding `Component::getFields(?string $tab = null)` returning typed `FieldInterface` objects, sorted by `pos`, tabs excluded; optional `$tab` parameter filters to fields belonging to that tab
+- Adding `Component::getTabs()` returning tab entries sorted by `pos`
+- Adding `Component::getFieldTab(string $fieldName)` returning the display name of the tab a field belongs to, or `null`
+- Adding `FieldInterface` with shared accessors: `key()`, `type()`, `pos()`, `displayName()`, `required()`, `translatable()`, `noTranslate()`, `description()`, `tooltip()`
+- Adding `FieldGeneric` base class implementing `FieldInterface` with a `make()` factory that dispatches to specialized subclasses by type
+- Adding specialized field classes in `Data/Fields/Schema/`: `FieldText`, `FieldNumber`, `FieldBoolean`, `FieldRichtext`, `FieldBloks`, `FieldAsset`, `FieldMultiasset`
+- Adding `FieldInterface::get(int|string $key, mixed $defaultValue = null): mixed` for accessing raw field attributes not covered by typed methods, with dot-notation support for nested keys
+
+
 ## 1.3.0 - 2026-04-30
 - `Space` constructor `$name` is now optional (default `''`); when omitted or empty, the `name` field is not added to the payload so the API leaves the existing name untouched on update
 - Adding `Space::forUpdate(array $fields)` static factory for partial updates; sends only the specified fields without forcing a `name` into the payload
