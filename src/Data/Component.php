@@ -255,6 +255,18 @@ class Component extends BaseData
     }
 
     /**
+     * Appends a typed field at the end of the schema (pos = maxPos() + 1).
+     * Does not shift any existing entry. Use insertField() to place a field
+     * at a specific position in the middle of the schema.
+     */
+    public function appendField(FieldInterface $field): self
+    {
+        $pos = $this->maxPos() + 1;
+        $this->setField($field->key(), array_merge($field->toArray(), ["pos" => $pos]));
+        return $this;
+    }
+
+    /**
      * Inserts a typed field at a specific position.
      * Every existing schema entry (fields and tabs) at pos >= $atPos is shifted
      * up by one to make room, then the field is added with pos set to $atPos.
@@ -347,6 +359,36 @@ class Component extends BaseData
         }
 
         return null;
+    }
+
+    /**
+     * Returns the highest pos value across all schema entries (fields and tabs).
+     * Returns -1 when the schema is empty.
+     * Use maxPos() + 1 to get the next available position for a new entry.
+     */
+    public function maxPos(): int
+    {
+        $max = -1;
+        foreach ($this->getSchema() as $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+
+            $raw = $entry["pos"] ?? null;
+            if (is_int($raw)) {
+                $pos = $raw;
+            } elseif (is_string($raw) && is_numeric($raw)) {
+                $pos = (int) $raw;
+            } else {
+                continue;
+            }
+
+            if ($pos > $max) {
+                $max = $pos;
+            }
+        }
+
+        return $max;
     }
 
     /**

@@ -1,7 +1,10 @@
 # Changelog
 
+## 1.4.1 - 2026-05-04
+- Adding `Component::maxPos(): int` returning the highest `pos` value across all schema entries (fields and tabs); returns `-1` for an empty schema; use `maxPos() + 1` to get the next available position when appending a field with an explicit `pos`
+- Adding `Component::appendField(FieldInterface $field): self` for appending a field at the end of the schema; automatically sets `pos` to `maxPos() + 1` without shifting any existing entry
+-
 ## 1.4.0 - 2026-05-03
-
 - Adding `Component::getFields(?string $tab = null)` returning typed `FieldInterface` objects, sorted by `pos`, tabs excluded; optional `$tab` parameter filters to fields belonging to that tab
 - Adding `Component::getTabs()` returning tab entries sorted by `pos`
 - Adding `Component::getFieldTab(string $fieldName)` returning the display name of the tab a field belongs to, or `null`
@@ -13,7 +16,6 @@
 - Adding fluent builder support to all field classes: constructor now accepts only the field key; `TYPE` constant sets the type automatically; shared setters on `FieldGeneric` (`setPos()`, `setDisplayName()`, `setRequired()`, `setTranslatable()`, `setNoTranslate()`, `setDescription()`, `setTooltip()`) and type-specific setters on each specialized class all return `static` for chaining
 - Adding `Component::addField(FieldInterface $field): self` for adding typed field objects to a component schema using the fluent builder
 - Adding `Component::insertField(FieldInterface $field, int $atPos): self` for inserting a field at a specific position; automatically shifts every existing schema entry (fields and tabs) at `pos >= $atPos` up by one to keep positions consistent
-
 
 ## 1.3.0 - 2026-04-30
 - `Space` constructor `$name` is now optional (default `''`); when omitted or empty, the `name` field is not added to the payload so the API leaves the existing name untouched on update

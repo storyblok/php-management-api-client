@@ -1027,6 +1027,48 @@ $component->insertField(
 $componentApi->update($componentId, $component);
 ```
 
+### Finding the next available position
+
+When you build a component schema programmatically, you often need to know where the current schema ends so you can append a new field without gaps or collisions. `maxPos()` returns the highest `pos` value across all schema entries, fields and tabs alike. Returns `-1` when the schema is empty.
+
+```php
+$component = $componentApi->get($componentId)->data();
+
+$next = $component->maxPos() + 1;
+
+$component->addField(
+    (new FieldText("summary"))
+        ->setPos($next)
+        ->setDisplayName("Summary")
+);
+```
+
+Without `maxPos()` you would have to iterate the schema yourself to find the current ceiling before adding a field with an explicit position. This matters when you call `addField()` with `setPos()` set explicitly, as opposed to letting Storyblok assign the position server-side.
+
+For the common case of appending at the end, `appendField()` handles this automatically, so you do not need to call `maxPos()` directly.
+
+| Method | When to use |
+|---|---|
+| `appendField($field)` | Add a field after all existing entries |
+| `insertField($field, atPos: $n)` | Insert a field at a specific position, shifting everything else |
+| `addField($field)` | Add a field without touching `pos` (let Storyblok assign it server-side) |
+
+### Appending a field at the end
+
+`appendField()` computes `maxPos() + 1` and assigns that as the field's `pos` before adding it. No existing entries are shifted.
+
+```php
+$component = $componentApi->get($componentId)->data();
+
+$component
+    ->appendField((new FieldText("summary"))->setDisplayName("Summary"))
+    ->appendField((new FieldRichtext("body"))->setDisplayName("Body"));
+
+$componentApi->update($componentId, $component);
+```
+
+`maxPos()` and `insertField()` are complementary. Use `appendField()` (or `maxPos() + 1` directly) to add at the end; use `insertField($field, atPos: $n)` to insert in the middle.
+
 ### Reading a component schema
 
 A component's schema describes its fields. The `Component` class provides two ways to read it, depending on what you need.

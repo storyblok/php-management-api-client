@@ -418,4 +418,135 @@ final class ComponentTest extends TestCase
 
         $this->assertNull($component->getFieldTab('nonexistent'));
     }
+
+    public function testMaxPosReturnsHighestPosAcrossFieldsAndTabs(): void
+    {
+        // makeComponentWithSchema: title=0, body=1, tab-seo=2, meta_title=3, meta_description=4
+        $component = $this->makeComponentWithSchema();
+
+        $this->assertSame(4, $component->maxPos());
+    }
+
+    public function testMaxPosReturnsTabPosWhenTabHasHighestPos(): void
+    {
+        $component = Component::make([
+            'name' => 'page',
+            'schema' => [
+                'title' => ['type' => 'text', 'pos' => 0],
+                'body'  => ['type' => 'richtext', 'pos' => 1],
+                'tab-style' => [
+                    'type' => 'tab',
+                    'display_name' => 'Style',
+                    'keys' => [],
+                    'pos' => 2,
+                ],
+            ],
+        ]);
+
+        $this->assertSame(2, $component->maxPos());
+    }
+
+    public function testMaxPosReturnsMinusOneForEmptySchema(): void
+    {
+        $component = new Component('empty');
+
+        $this->assertSame(-1, $component->maxPos());
+    }
+
+    public function testMaxPosAcceptsNumericStringPos(): void
+    {
+        $component = Component::make([
+            'name' => 'page',
+            'schema' => [
+                'title' => ['type' => 'text', 'pos' => 3],
+                'body'  => ['type' => 'richtext', 'pos' => '99'],
+            ],
+        ]);
+
+        $this->assertSame(99, $component->maxPos());
+    }
+
+    public function testMaxPosIgnoresEmptyStringAndNullAndMissingPos(): void
+    {
+        $component = Component::make([
+            'name' => 'page',
+            'schema' => [
+                'title'   => ['type' => 'text', 'pos' => 3],
+                'orphan'  => ['type' => 'text'],
+                'orphan2' => ['type' => 'text', 'pos' => null],
+                'orphan3' => ['type' => 'text', 'pos' => ''],
+            ],
+        ]);
+
+        $this->assertSame(3, $component->maxPos());
+    }
+
+    public function testMaxPosIgnoresNonNumericStringPos(): void
+    {
+        $component = Component::make([
+            'name' => 'page',
+            'schema' => [
+                'title'  => ['type' => 'text', 'pos' => 3],
+                'broken' => ['type' => 'text', 'pos' => 'aaaa'],
+            ],
+        ]);
+
+        $this->assertSame(3, $component->maxPos());
+    }
+
+    public function testAppendFieldPlacesFieldAfterLastEntry(): void
+    {
+        // makeComponentWithSchema: title=0, body=1, tab-seo=2, meta_title=3, meta_description=4
+        $component = $this->makeComponentWithSchema();
+
+        $component->appendField(new FieldText("footer_note"));
+
+        $this->assertSame(5, $component->getFields()["footer_note"]->pos());
+    }
+
+    public function testAppendFieldDoesNotShiftExistingEntries(): void
+    {
+        $component = $this->makeComponentWithSchema();
+
+        $component->appendField(new FieldText("footer_note"));
+
+        $fields = $component->getFields();
+        $this->assertSame(0, $fields["title"]->pos());
+        $this->assertSame(1, $fields["body"]->pos());
+        $this->assertSame(3, $fields["meta_title"]->pos());
+        $this->assertSame(4, $fields["meta_description"]->pos());
+    }
+
+    public function testAppendFieldOnEmptySchemaGivesPosZero(): void
+    {
+        $component = new Component("empty");
+
+        $component->appendField(new FieldText("title"));
+
+        $this->assertSame(0, $component->getFields()["title"]->pos());
+    }
+
+    public function testAppendFieldMultipleTimesIncrementsPosSequentially(): void
+    {
+        $component = new Component("article");
+
+        $component
+            ->appendField(new FieldText("title"))
+            ->appendField(new FieldText("intro"))
+            ->appendField(new FieldRichtext("body"));
+
+        $fields = $component->getFields();
+        $this->assertSame(0, $fields["title"]->pos());
+        $this->assertSame(1, $fields["intro"]->pos());
+        $this->assertSame(2, $fields["body"]->pos());
+    }
+
+    public function testAppendFieldIsChainable(): void
+    {
+        $component = new Component("page");
+
+        $result = $component->appendField(new FieldText("title"));
+
+        $this->assertSame($component, $result);
+    }
 }
