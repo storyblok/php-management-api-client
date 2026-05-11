@@ -1,9 +1,12 @@
 # Changelog
 
+## 1.4.2 - 2026-05-11
+- Fixing `WorkflowStageApi` update payload
+
 ## 1.4.1 - 2026-05-04
 - Adding `Component::maxPos(): int` returning the highest `pos` value across all schema entries (fields and tabs); returns `-1` for an empty schema; use `maxPos() + 1` to get the next available position when appending a field with an explicit `pos`
 - Adding `Component::appendField(FieldInterface $field): self` for appending a field at the end of the schema; automatically sets `pos` to `maxPos() + 1` without shifting any existing entry
--
+
 ## 1.4.0 - 2026-05-03
 - Adding `Component::getFields(?string $tab = null)` returning typed `FieldInterface` objects, sorted by `pos`, tabs excluded; optional `$tab` parameter filters to fields belonging to that tab
 - Adding `Component::getTabs()` returning tab entries sorted by `pos`

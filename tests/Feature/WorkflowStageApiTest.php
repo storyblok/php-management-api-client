@@ -83,9 +83,20 @@ final class WorkflowStageApiTest extends TestCase
 
     public function testUpdateWorkflowStage(): void
     {
+        $lastRequest = [];
         $responses = [
             $this->mockResponse("one-workflow-stage", 200, []),
-            $this->mockResponse("one-workflow-stage", 200, []),
+            function (string $method, string $url, array $options) use (
+                &$lastRequest,
+            ): \Symfony\Component\HttpClient\Response\MockResponse {
+                $lastRequest = [
+                    "method" => $method,
+                    "url" => $url,
+                    "body" => $options["body"] ?? "",
+                ];
+
+                return $this->mockResponse("one-workflow-stage", 200, []);
+            },
         ];
 
         $client = new MockHttpClient($responses);
@@ -102,6 +113,18 @@ final class WorkflowStageApiTest extends TestCase
         $storyblokResponse = $workflowStageApi->update("653554", $data);
         $data = $storyblokResponse->data();
 
+        $this->assertSame("PUT", $lastRequest["method"]);
+        $this->assertStringContainsString(
+            "/workflow_stages/653554",
+            (string) $lastRequest["url"],
+        );
+        $payload = json_decode($lastRequest["body"], true, 512, JSON_THROW_ON_ERROR);
+
+        $this->assertIsArray($payload);
+        $this->assertArrayHasKey("workflow_stage", $payload);
+        $this->assertIsArray($payload["workflow_stage"]);
+        $this->assertSame("Test", $payload["workflow_stage"]["name"]);
+        $this->assertSame("12345", $payload["workflow_stage"]["workflow_id"]);
         $this->assertSame("653554", $data->id());
     }
 

@@ -89,13 +89,15 @@ class WorkflowStageApi extends EndpointSpace
         StoryblokData $storyblokData,
     ): WorkflowStageResponse {
         $httpResponse = $this->makeHttpRequest(
-            "POST",
+            "PUT",
             "/v1/spaces/" .
                 $this->spaceId .
                 "/workflow_stages/" .
                 $workflowStageId,
             [
-                "body" => $storyblokData->toArray(),
+                "body" => json_encode([
+                    "workflow_stage" => $storyblokData->toArray(),
+                ]),
             ],
         );
         return new WorkflowStageResponse($httpResponse);
