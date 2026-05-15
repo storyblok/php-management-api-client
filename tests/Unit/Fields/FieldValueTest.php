@@ -91,12 +91,36 @@ final class FieldValueTest extends TestCase
             ],
         );
 
+        $this->assertSame("table", $field->get("fieldtype"));
         $this->assertSame("_table_head", $field->get("thead.0.component"));
         $this->assertSame("Name", $field->get("thead.0.value"));
         $this->assertSame("_table_row", $field->get("tbody.0.component"));
         $this->assertSame("_table_col", $field->get("tbody.0.body.0.component"));
         $this->assertSame("Ada", $field->get("tbody.0.body.0.value"));
         $this->assertSame("Scientist", $field->get("tbody.1.body.1.value"));
+        $this->assertMatchesRegularExpression(
+            "/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/",
+            $field->getString("thead.0._uid"),
+        );
+    }
+
+    public function testTableFieldBuildsStoryblokTableValueShape(): void
+    {
+        $field = TableField::fromRows(["aaa", "bbbb"], [["xxx", "yyy"]]);
+
+        $this->assertSame("table", $field->get("fieldtype"));
+        $this->assertCount(2, $field->thead());
+        $this->assertCount(1, $field->tbody());
+        $this->assertSame("_table_head", $field->get("thead.0.component"));
+        $this->assertSame("aaa", $field->get("thead.0.value"));
+        $this->assertSame("_table_head", $field->get("thead.1.component"));
+        $this->assertSame("bbbb", $field->get("thead.1.value"));
+        $this->assertSame("_table_row", $field->get("tbody.0.component"));
+        $this->assertCount(2, $field->getArray("tbody.0.body"));
+        $this->assertSame("_table_col", $field->get("tbody.0.body.0.component"));
+        $this->assertSame("xxx", $field->get("tbody.0.body.0.value"));
+        $this->assertSame("_table_col", $field->get("tbody.0.body.1.component"));
+        $this->assertSame("yyy", $field->get("tbody.0.body.1.value"));
     }
 
     public function testTableFieldAcceptsRawApiShape(): void
