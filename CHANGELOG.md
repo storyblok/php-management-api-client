@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.0 - 2026-05-14
+- Adding specialized component schema field classes in `Data/Fields/Schema/`: `FieldTextarea`, `FieldMarkdown`, `FieldDatetime`, `FieldOption`, `FieldOptions`, `FieldMultilink`, `FieldTable`, `FieldPlugin`, and `FieldSection`
+- Extending `FieldGeneric::make()` to return the new specialized schema field classes for known Storyblok field types while keeping `FieldGeneric` as the fallback for unknown/custom types
+- Adding typed helpers for common schema options: option/options sources and datasource slugs, multilink link types and target blank support, plugin `field_type`, and default values where applicable
+- Adding `FieldRichtext::componentWhitelist()` and `FieldRichtext::setComponentWhitelist()` for configuring embedded component restrictions
+- Keeping raw `get()` and `toArray()` behavior unchanged so unmodeled schema attributes remain accessible and payload-compatible
+- Adding runtime field content value classes in `Data/Fields/`: `FieldValueInterface`, `MultilinkField`, `RichtextField`, `TableField`, and `PluginField`
+- Making the existing `AssetField` implement `FieldValueInterface`
+- Adding `StoryComponent::setMultilink()`, `StoryComponent::setRichtext()`, `StoryComponent::setTable()`, and `StoryComponent::setPlugin()` helpers while keeping raw `StoryComponent::set()` usage unchanged
+
 ## 1.4.2 - 2026-05-11
 - Fixing `WorkflowStageApi` update payload
 

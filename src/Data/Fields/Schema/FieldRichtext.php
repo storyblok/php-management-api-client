@@ -44,4 +44,21 @@ class FieldRichtext extends FieldGeneric
         $this->set("restrict_components", $restrict);
         return $this;
     }
+
+    /**
+     * @return array<mixed>
+     */
+    public function componentWhitelist(): array
+    {
+        return $this->getArray("component_whitelist");
+    }
+
+    /**
+     * @param string[] $whitelist
+     */
+    public function setComponentWhitelist(array $whitelist): static
+    {
+        $this->set("component_whitelist", $whitelist);
+        return $this;
+    }
 }

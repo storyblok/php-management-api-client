@@ -568,6 +568,58 @@ If you want to create a story in a specific release, you can set the third param
 $storyCreated = $storyApi->create($story, releaseId: $releaseId)->data();
 ```
 
+#### Setting structured story content values
+
+For simple fields, you can keep using `StoryComponent::set()` with scalar values or raw arrays.
+For structured field values, the client also provides small value objects that produce the array shape expected by Storyblok.
+
+```php
+use Storyblok\ManagementApi\Data\Fields\MultilinkField;
+use Storyblok\ManagementApi\Data\Fields\PluginField;
+use Storyblok\ManagementApi\Data\Fields\RichtextField;
+use Storyblok\ManagementApi\Data\Fields\TableField;
+use Storyblok\ManagementApi\Data\StoryComponent;
+
+$content = new StoryComponent("article-page");
+$content->set("title", "My New Article");
+
+$content
+    ->setMultilink(
+        "cta_link",
+        MultilinkField::url("https://example.com")->openInNewTab()
+    )
+    ->setRichtext(
+        "body",
+        RichtextField::paragraph("This is the content")
+    )
+    ->setTable(
+        "comparison",
+        TableField::fromRows(
+            ["Name", "Role"],
+            [
+                ["Ada", "Engineer"],
+                ["Grace", "Scientist"],
+            ],
+        )
+    )
+    ->setPlugin(
+        "custom_field",
+        new PluginField("my-plugin", ["value" => "custom value"])
+    );
+```
+
+The specialized setters are additive. Existing raw payloads still work:
+
+```php
+$content->set("cta_link", [
+    "fieldtype" => "multilink",
+    "linktype" => "url",
+    "url" => "https://example.com",
+    "id" => "",
+    "cached_url" => "",
+]);
+```
+
 ### Creating a Folder
 
 Stories in Storyblok can be organized into folders. A folder is a story with `is_folder` set to `true`. You can also set a default content type and restrict which content types are allowed inside the folder.
@@ -928,6 +980,7 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldAsset;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBoolean;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldNumber;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBloks;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldOption;
 
 $component = new Component("my-component");
 $component->setDisplayName("My Component");
@@ -953,6 +1006,15 @@ $component
         (new FieldAsset("image"))
             ->setPos(2)
             ->setDisplayName("Image")
+    )
+    ->addField(
+        (new FieldOption("category"))
+            ->setPos(3)
+            ->setDisplayName("Category")
+            ->setOptions([
+                ["name" => "News", "value" => "news"],
+                ["name" => "Product", "value" => "product"],
+            ])
     );
 
 try {
@@ -981,12 +1043,24 @@ Each specialized class adds its own setters:
 | Class | Setters |
 |---|---|
 | `FieldText` | `setDefaultValue()`, `setRegex()` |
+| `FieldTextarea` | `setDefaultValue()`, `setRegex()` |
+| `FieldMarkdown` | `setDefaultValue()` |
+| `FieldDatetime` | `setDefaultValue()` |
 | `FieldNumber` | `setDefaultValue()`, `setMinValue()`, `setMaxValue()` |
 | `FieldBoolean` | `setDefaultValue()`, `setInlineLabel()`, `setCheckboxLabel()` |
-| `FieldRichtext` | `setToolbar()`, `setRestrictComponents()` |
+| `FieldOption` | `setOptions()`, `setSource()`, `setDatasourceSlug()`, `setDefaultValue()` |
+| `FieldOptions` | `setOptions()`, `setSource()`, `setDatasourceSlug()` |
+| `FieldRichtext` | `setToolbar()`, `setRestrictComponents()`, `setComponentWhitelist()` |
 | `FieldBloks` | `setMinimum()`, `setMaximum()`, `setComponentWhitelist()` |
 | `FieldAsset` | `setFiletypes()` |
 | `FieldMultiasset` | `setFiletypes()` |
+| `FieldMultilink` | `setLinkTypes()`, `setAllowTargetBlank()` |
+| `FieldPlugin` | `setPlugin()` / `setFieldType()` |
+| `FieldTable` | shared setters only |
+| `FieldSection` | shared setters only |
+
+Unknown field types and future Storyblok schema attributes are still supported through `FieldGeneric`, `get()`, and `toArray()`.
+For plugin/custom fields, `FieldPlugin` creates the component schema shape expected by Storyblok: `type: custom` and `field_type: your-plugin-name`.
 
 If you prefer passing raw arrays, the existing `setField()` method still works:
 
@@ -1118,17 +1192,33 @@ Specialized field types expose additional accessors. The factory in `FieldGeneri
 
 ```php
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldTextarea;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldMarkdown;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldDatetime;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldNumber;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBoolean;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldOption;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldOptions;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldRichtext;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBloks;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldAsset;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldMultilink;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldMultiasset;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldPlugin;
 
 foreach ($component->getFields() as $field) {
     if ($field instanceof FieldText) {
         echo $field->defaultValue() . PHP_EOL;
         echo $field->regex() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldTextarea) {
+        echo $field->defaultValue() . PHP_EOL;
+        echo $field->regex() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldMarkdown || $field instanceof FieldDatetime) {
+        echo $field->defaultValue() . PHP_EOL;
     }
 
     if ($field instanceof FieldNumber) {
@@ -1141,9 +1231,16 @@ foreach ($component->getFields() as $field) {
         echo $field->checkboxLabel() . PHP_EOL;
     }
 
+    if ($field instanceof FieldOption || $field instanceof FieldOptions) {
+        echo $field->source() . PHP_EOL;
+        echo $field->datasourceSlug() . PHP_EOL;
+        print_r($field->options());
+    }
+
     if ($field instanceof FieldRichtext) {
         echo implode(', ', $field->toolbar()) . PHP_EOL;
         echo $field->restrictComponents() . PHP_EOL;
+        echo implode(', ', $field->componentWhitelist()) . PHP_EOL;
     }
 
     if ($field instanceof FieldBloks) {
@@ -1155,10 +1252,19 @@ foreach ($component->getFields() as $field) {
     if ($field instanceof FieldAsset || $field instanceof FieldMultiasset) {
         echo implode(', ', $field->filetypes()) . PHP_EOL;
     }
+
+    if ($field instanceof FieldMultilink) {
+        echo implode(', ', $field->linkTypes()) . PHP_EOL;
+        echo $field->allowTargetBlank() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldPlugin) {
+        echo $field->plugin() . PHP_EOL;
+    }
 }
 ```
 
-For field types not covered by a specialized class (`textarea`, `datetime`, `option`, etc.), `getFields()` returns a `FieldGeneric` instance, which still provides the shared accessors from `FieldInterface`.
+For field types not covered by a specialized class, `getFields()` returns a `FieldGeneric` instance, which still provides the shared accessors from `FieldInterface`.
 
 #### Accessing attributes not covered by typed methods
 
