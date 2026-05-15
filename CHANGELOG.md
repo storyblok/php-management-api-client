@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.3 - 2026-05-11
+## 1.4.3 - 2026-05-15
 - Adding `ManagementApi::patch()` helper for generic PATCH requests
 
 ## 1.4.2 - 2026-05-11
