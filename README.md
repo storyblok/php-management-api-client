@@ -2265,9 +2265,9 @@ It works like `put`, but sends a PATCH HTTP request.
 
 ```php
 $response = $managementApi()->patch(
-    "spaces/{$spaceId}/experiments/{$experimentId}/select_winner",
+    "spaces/{$spaceId}/something/{$id}/somethingelse",
     [
-        "experiment" => [
+        "values" => [
             "enabled" => true,
         ],
     ]
