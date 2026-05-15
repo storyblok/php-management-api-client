@@ -65,4 +65,23 @@ class ManagementApi extends EndpointBase
             ],
         );
     }
+
+    /**
+     * Function for partially updating a resource.
+     * Under the hood, is performed a PATCH HTTP method
+     * @param string $path the path of the API endpoint,
+     *        for example: spaces/1111/stories/22222
+     * @param array<mixed> $payload the Request Body Properties
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function patch(string $path, array $payload = []): StoryblokResponseInterface
+    {
+        return $this->makeRequest(
+            "PATCH",
+            "/v1/" . $path,
+            [
+                "body" => $payload,
+            ],
+        );
+    }
 }
