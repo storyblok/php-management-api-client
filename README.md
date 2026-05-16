@@ -783,6 +783,26 @@ $storyApi->update(
 );
 ```
 
+Update fields inside the story content payload:
+
+```php
+$story = $storyApi->get('123456')->data();
+
+$story
+    ->setContentField("headline", "Updated headline")
+    ->setContentField("categories", [$categoryUuid]);
+
+echo $story->getContentField("headline");
+
+$storyApi->update(
+    storyId: '123456',
+    storyData: $story
+);
+```
+
+`setContentField()` and `getContentField()` use paths relative to `content`.
+For full story-level updates, you can still use `set()` with dot notation.
+
 Update and publish immediately:
 
 ```php

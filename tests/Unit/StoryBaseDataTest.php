@@ -288,6 +288,38 @@ final class StoryBaseDataTest extends TestCase
         $this->assertSame("", $item->contentType());
     }
 
+    public function testSetContentFieldSetsFieldInsideContentPayload(): void
+    {
+        $story = new Story("Article", "article", StoryComponent::makeComponent("article-page"));
+
+        $result = $story
+            ->setContentField("headline", "Updated headline")
+            ->setContentField("categories", ["category-uuid"]);
+
+        $this->assertSame($story, $result);
+        $this->assertSame("Updated headline", $story->get("content.headline"));
+        $this->assertSame(["category-uuid"], $story->getArray("content.categories"));
+        $this->assertSame("Updated headline", $story->getContentField("headline"));
+        $this->assertSame(["category-uuid"], $story->getContentField("categories"));
+    }
+
+    public function testContentFieldHelpersSupportNestedContentPaths(): void
+    {
+        $story = new Story("Article", "article", StoryComponent::makeComponent("article-page"));
+
+        $story->setContentField("seo.title", "SEO title");
+
+        $this->assertSame("SEO title", $story->get("content.seo.title"));
+        $this->assertSame("SEO title", $story->getContentField("seo.title"));
+    }
+
+    public function testGetContentFieldReturnsDefaultWhenMissing(): void
+    {
+        $story = new Story("Article", "article", StoryComponent::makeComponent("article-page"));
+
+        $this->assertSame("fallback", $story->getContentField("missing", "fallback"));
+    }
+
     public function testAsFolderWithMinimumFieldsAutoGeneratesSlug(): void
     {
         $folder = Story::asFolder("My Folder");

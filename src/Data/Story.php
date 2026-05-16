@@ -90,6 +90,29 @@ class Story extends StoryBaseData
     }
 
     /**
+     * Set a field inside the story content payload.
+     *
+     * The field path is relative to `content`, so `setContentField("headline", $value)`
+     * is equivalent to `set("content.headline", $value)`.
+     */
+    public function setContentField(string $field, mixed $value): self
+    {
+        $this->set("content." . $field, $value);
+        return $this;
+    }
+
+    /**
+     * Get a field from the story content payload.
+     *
+     * The field path is relative to `content`, so `getContentField("headline")`
+     * is equivalent to `get("content.headline")`.
+     */
+    public function getContentField(string $field, mixed $default = null): mixed
+    {
+        return $this->get("content." . $field, $default, raw: true);
+    }
+
+    /**
      * Get the folder id for the Story.
      *
      * @return int the identifier of the parent folder, 0 if the story is stored at the root level
