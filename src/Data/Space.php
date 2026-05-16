@@ -89,14 +89,16 @@ class Space extends BaseData
         return $space;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->set("name", $name);
+        return $this;
     }
 
-    public function setDomain(string $domain): void
+    public function setDomain(string $domain): self
     {
         $this->set("domain", $domain);
+        return $this;
     }
 
     public function name(): string
@@ -189,8 +191,9 @@ class Space extends BaseData
     /**
      * Clears the demo/example space flag.
      */
-    public function removeDemoMode(): void
+    public function removeDemoMode(): self
     {
         $this->set("is_demo", false);
+        return $this;
     }
 }

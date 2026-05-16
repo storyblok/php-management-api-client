@@ -59,24 +59,28 @@ class Story extends StoryBaseData
         return $story;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->set("name", $name);
+        return $this;
     }
 
-    public function setSlug(string $slug): void
+    public function setSlug(string $slug): self
     {
         $this->set("slug", $slug);
+        return $this;
     }
 
-    public function setCreatedAt(string $createdAt): void
+    public function setCreatedAt(string $createdAt): self
     {
         $this->set("created_at", $createdAt);
+        return $this;
     }
 
-    public function setContent(StoryComponent $content): void
+    public function setContent(StoryComponent $content): self
     {
         $this->set("content", $content->toArray());
+        return $this;
     }
 
     public function content(): StoryComponent

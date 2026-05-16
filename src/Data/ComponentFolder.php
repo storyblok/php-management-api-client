@@ -49,9 +49,10 @@ class ComponentFolder extends BaseData
 
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->set('name', $name);
+        return $this;
     }
 
     /**

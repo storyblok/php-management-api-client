@@ -145,6 +145,22 @@ final class ComponentTest extends TestCase
         $this->assertFalse($component->isNestable());
     }
 
+    public function testSchemaSettersAreFluent(): void
+    {
+        $component = new Component("page");
+        $schema = [
+            "title" => ["type" => "text", "pos" => 0],
+        ];
+
+        $result = $component
+            ->setSchema($schema)
+            ->setField("summary", ["type" => "textarea", "pos" => 1]);
+
+        $this->assertSame($component, $result);
+        $this->assertSame("text", $component->getSchema()["title"]["type"]);
+        $this->assertSame("textarea", $component->getSchema()["summary"]["type"]);
+    }
+
     private function makeComponentWithSchema(): Component
     {
         return Component::make([

@@ -1000,6 +1000,7 @@ $folders = $componentsResponse->dataFolders();
 ### Creating a new component
 
 You can programmatically create a new component in a space using typed field classes and a fluent interface.
+Mutating methods return the same instance, so existing one-call usage and chained calls are both supported.
 
 Each field class sets its own type automatically, so you only need to provide the field key and any attributes you want to configure via chained setters:
 
@@ -1111,10 +1112,13 @@ FieldOption::make("category")->setOptions([
 ]);
 ```
 
-If you prefer passing raw arrays, the existing `setField()` method still works:
+If you prefer passing raw arrays, the existing `setField()` method still works
+and can be chained like the other component mutators:
 
 ```php
-$component->setField("title", ["type" => "text", "pos" => 0]);
+$component
+    ->setSchema([])
+    ->setField("title", ["type" => "text", "pos" => 0]);
 ```
 
 ### Adding a field to an existing component

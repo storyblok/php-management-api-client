@@ -237,17 +237,19 @@ class Component extends BaseData
     /**
      * @param mixed[] $schema
      */
-    public function setSchema(array $schema): void
+    public function setSchema(array $schema): self
     {
         $this->set("schema", $schema);
+        return $this;
     }
 
     /**
      * @param mixed[] $fieldAttributes
      */
-    public function setField(string $name, array $fieldAttributes): void
+    public function setField(string $name, array $fieldAttributes): self
     {
         $this->set("schema." . $name, $fieldAttributes);
+        return $this;
     }
 
     /**

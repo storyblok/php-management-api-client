@@ -46,9 +46,10 @@ abstract class BaseData implements
      *
      * @param mixed[] $data The underlying data in array form.
      */
-    public function setData(array $data): void
+    public function setData(array $data): self
     {
         $this->data = $data;
+        return $this;
     }
 
     public function getInt(

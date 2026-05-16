@@ -36,25 +36,29 @@ class WorkflowStageChange extends StoryblokData
         return $change;
     }
 
-    public function setStoryAndStage(int $storyId, int $workflowStageId): void
+    public function setStoryAndStage(int $storyId, int $workflowStageId): self
     {
         $this->setStoryId($storyId);
         $this->setWorkflowStageId($workflowStageId);
+        return $this;
     }
 
-    public function setStoryId(int $storyId): void
+    public function setStoryId(int $storyId): self
     {
         $this->set("story_id", $storyId);
+        return $this;
     }
 
-    public function setDueDate(string $dueDate): void
+    public function setDueDate(string $dueDate): self
     {
         $this->set("due_date", $dueDate);
+        return $this;
     }
 
-    public function setWorkflowStageId(int $workflowStageId): void
+    public function setWorkflowStageId(int $workflowStageId): self
     {
         $this->set("workflow_stage_id", $workflowStageId);
+        return $this;
     }
 
     public function id(): ?int

@@ -23,9 +23,10 @@ class WorkflowData extends StoryblokData
         return new self($data);
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->set('name', $name);
+        return $this;
     }
 
     public function name(): string

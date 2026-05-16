@@ -40,9 +40,10 @@ class SpaceEnvironment extends BaseData
         );
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->set("name", $name);
+        return $this;
     }
 
     /**
@@ -53,9 +54,10 @@ class SpaceEnvironment extends BaseData
         return $this->getString("name");
     }
 
-    public function setLocation(string $location): void
+    public function setLocation(string $location): self
     {
         $this->set("location", $location);
+        return $this;
     }
 
     /**

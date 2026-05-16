@@ -23,14 +23,16 @@ class WorkflowStageData extends StoryblokData
         return new self($data);
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->set('name', $name);
+        return $this;
     }
 
-    public function setWorkflowId(string|int $workflowId): void
+    public function setWorkflowId(string|int $workflowId): self
     {
         $this->set('workflow_id', $workflowId);
+        return $this;
     }
 
     public function name(): string

@@ -2,6 +2,7 @@
 
 ## 1.5.1 - WIP
 - Adding `OptionValue`, `addOption()`, and `addOptionValue()` for building `FieldOption` and `FieldOptions` choices without manual array shapes
+- Making data mutators fluent, including `Component::setSchema()`, `Component::setField()`, and existing setters that previously returned `void`
 
 ## 1.5.0 - 2026-05-16
 - Adding specialized component schema field classes in `Data/Fields/Schema/`: `FieldTextarea`, `FieldMarkdown`, `FieldDatetime`, `FieldOption`, `FieldOptions`, `FieldMultilink`, `FieldTable`, `FieldPlugin`, and `FieldSection`
