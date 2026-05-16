@@ -7,6 +7,7 @@ namespace Storyblok\ManagementApi\Data\Fields\Schema;
 class FieldOptions extends FieldGeneric
 {
     use FieldNamedConstructor;
+    use HasOptions;
 
     public const TYPE = "options";
 
@@ -17,23 +18,6 @@ class FieldOptions extends FieldGeneric
     {
         $data["type"] = self::TYPE;
         parent::__construct($key, $data);
-    }
-
-    /**
-     * @return array<mixed>
-     */
-    public function options(): array
-    {
-        return $this->getArray("options");
-    }
-
-    /**
-     * @param array<mixed> $options
-     */
-    public function setOptions(array $options): static
-    {
-        $this->set("options", $options);
-        return $this;
     }
 
     public function source(): string

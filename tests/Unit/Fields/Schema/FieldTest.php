@@ -21,6 +21,7 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldSection;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldTable;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldTextarea;
+use Storyblok\ManagementApi\Data\Fields\Schema\OptionValue;
 use Tests\TestCase;
 
 final class FieldTest extends TestCase
@@ -479,6 +480,108 @@ final class FieldTest extends TestCase
         $this->assertSame($options, $field->options());
         $this->assertSame("internal", $field->source());
         $this->assertSame("categories", $field->datasourceSlug());
+    }
+
+    public function testOptionFieldsKeepRawArrayOptions(): void
+    {
+        $options = [
+            ["name" => "Developers", "value" => "developers"],
+            ["name" => "Editors", "value" => "editors"],
+        ];
+
+        $this->assertSame(
+            $options,
+            FieldOption::make("category")->setOptions($options)->options(),
+        );
+        $this->assertSame(
+            $options,
+            FieldOptions::make("categories")->setOptions($options)->options(),
+        );
+    }
+
+    public function testOptionValue(): void
+    {
+        $option = OptionValue::make("Developers", "developers");
+
+        $this->assertSame("Developers", $option->name());
+        $this->assertSame("developers", $option->value());
+        $this->assertSame(
+            ["name" => "Developers", "value" => "developers"],
+            $option->toArray(),
+        );
+    }
+
+    public function testOptionFieldsAcceptOptionValueObjects(): void
+    {
+        $options = [
+            ["name" => "Developers", "value" => "developers"],
+            ["name" => "Editors", "value" => "editors"],
+        ];
+
+        $this->assertSame(
+            $options,
+            FieldOption::make("category")
+                ->setOptions([
+                    OptionValue::make("Developers", "developers"),
+                    OptionValue::make("Editors", "editors"),
+                ])
+                ->options(),
+        );
+        $this->assertSame(
+            $options,
+            FieldOptions::make("categories")
+                ->setOptions([
+                    OptionValue::make("Developers", "developers"),
+                    OptionValue::make("Editors", "editors"),
+                ])
+                ->options(),
+        );
+    }
+
+    public function testOptionFieldsAddOption(): void
+    {
+        $options = [
+            ["name" => "Developers", "value" => "developers"],
+            ["name" => "Editors", "value" => "editors"],
+        ];
+
+        $this->assertSame(
+            $options,
+            FieldOption::make("category")
+                ->addOption("Developers", "developers")
+                ->addOption("Editors", "editors")
+                ->options(),
+        );
+        $this->assertSame(
+            $options,
+            FieldOptions::make("categories")
+                ->addOption("Developers", "developers")
+                ->addOption("Editors", "editors")
+                ->options(),
+        );
+    }
+
+    public function testOptionFieldsAddOptionValue(): void
+    {
+        $options = [
+            ["name" => "Developers", "value" => "developers"],
+            ["name" => "Editors", "value" => "editors"],
+        ];
+
+        $this->assertSame(
+            $options,
+            FieldOption::make("category")
+                ->addOptionValue(OptionValue::make("Developers", "developers"))
+                ->addOptionValue(OptionValue::make("Editors", "editors"))
+                ->options(),
+        );
+        $this->assertSame(
+            $options,
+            FieldOptions::make("categories")
+                ->addOptionValue(OptionValue::make("Developers", "developers"))
+                ->addOptionValue(OptionValue::make("Editors", "editors"))
+                ->options(),
+        );
     }
 
     public function testFluentBuilderFieldNumber(): void

@@ -1011,6 +1011,7 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldBoolean;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldNumber;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBloks;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldOption;
+use Storyblok\ManagementApi\Data\Fields\Schema\OptionValue;
 
 $component = (new Component("my-component"))
     ->setDisplayName("My Component")
@@ -1030,8 +1031,8 @@ $component = (new Component("my-component"))
         FieldOption::make("category")
             ->setDisplayName("Category")
             ->setOptions([
-                ["name" => "News", "value" => "news"],
-                ["name" => "Product", "value" => "product"],
+                OptionValue::make("News", "news"),
+                OptionValue::make("Product", "product"),
             ]),
     ]);
 
@@ -1070,8 +1071,8 @@ Each specialized class adds its own setters:
 | `FieldDatetime` | `setDefaultValue()` |
 | `FieldNumber` | `setDefaultValue()`, `setMinValue()`, `setMaxValue()` |
 | `FieldBoolean` | `setDefaultValue()`, `setInlineLabel()`, `setCheckboxLabel()` |
-| `FieldOption` | `setOptions()`, `setSource()`, `setDatasourceSlug()`, `setDefaultValue()` |
-| `FieldOptions` | `setOptions()`, `setSource()`, `setDatasourceSlug()` |
+| `FieldOption` | `setOptions()`, `addOption()`, `addOptionValue()`, `setSource()`, `setDatasourceSlug()`, `setDefaultValue()` |
+| `FieldOptions` | `setOptions()`, `addOption()`, `addOptionValue()`, `setSource()`, `setDatasourceSlug()` |
 | `FieldRichtext` | `setToolbar()`, `setRestrictComponents()`, `setComponentWhitelist()` |
 | `FieldBloks` | `setMinimum()`, `setMaximum()`, `setComponentWhitelist()` |
 | `FieldAsset` | `setFiletypes()` |
@@ -1083,6 +1084,32 @@ Each specialized class adds its own setters:
 
 Unknown field types and future Storyblok schema attributes are still supported through `FieldGeneric`, `get()`, and `toArray()`.
 For plugin/custom fields, `FieldPlugin` creates the component schema shape expected by Storyblok: `type: custom` and `field_type: your-plugin-name`.
+
+For option fields, `OptionValue` avoids having to remember the raw array shape:
+
+```php
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldOption;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldOptions;
+use Storyblok\ManagementApi\Data\Fields\Schema\OptionValue;
+
+FieldOption::make("category")
+    ->addOption("Developers", "developers")
+    ->addOption("Editors", "editors");
+
+FieldOptions::make("audiences")
+    ->setOptions([
+        OptionValue::make("Developers", "developers"),
+        OptionValue::make("Editors", "editors"),
+    ]);
+```
+
+Raw option arrays are still supported:
+
+```php
+FieldOption::make("category")->setOptions([
+    ["name" => "Developers", "value" => "developers"],
+]);
+```
 
 If you prefer passing raw arrays, the existing `setField()` method still works:
 
