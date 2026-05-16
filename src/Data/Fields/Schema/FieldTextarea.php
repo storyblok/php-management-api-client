@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Data\Fields\Schema;
 
-class FieldText extends FieldGeneric
+class FieldTextarea extends FieldGeneric
 {
     use FieldNamedConstructor;
 
-    public const TYPE = "text";
+    public const TYPE = "textarea";
 
     /**
      * @param mixed[] $data

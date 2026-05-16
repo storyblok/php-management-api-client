@@ -6,6 +6,8 @@ namespace Storyblok\ManagementApi\Data\Fields\Schema;
 
 class FieldRichtext extends FieldGeneric
 {
+    use FieldNamedConstructor;
+
     public const TYPE = "richtext";
 
     /**
@@ -42,6 +44,23 @@ class FieldRichtext extends FieldGeneric
     public function setRestrictComponents(bool $restrict = true): static
     {
         $this->set("restrict_components", $restrict);
+        return $this;
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    public function componentWhitelist(): array
+    {
+        return $this->getArray("component_whitelist");
+    }
+
+    /**
+     * @param string[] $whitelist
+     */
+    public function setComponentWhitelist(array $whitelist): static
+    {
+        $this->set("component_whitelist", $whitelist);
         return $this;
     }
 }

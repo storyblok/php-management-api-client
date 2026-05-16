@@ -6,6 +6,10 @@ namespace Storyblok\ManagementApi\Data;
 
 use Storyblok\ManagementApi\Data\BaseData;
 use Storyblok\ManagementApi\Data\Fields\AssetField;
+use Storyblok\ManagementApi\Data\Fields\MultilinkField;
+use Storyblok\ManagementApi\Data\Fields\PluginField;
+use Storyblok\ManagementApi\Data\Fields\RichtextField;
+use Storyblok\ManagementApi\Data\Fields\TableField;
 use Storyblok\ManagementApi\Exceptions\StoryblokFormatException;
 
 /**
@@ -109,6 +113,30 @@ class StoryComponent extends BaseData
     public function setAssetField(string $field, AssetField $assetField): self
     {
         $this->set($field, $assetField->toArray());
+        return $this;
+    }
+
+    public function setMultilink(string $field, MultilinkField $multilink): self
+    {
+        $this->set($field, $multilink->toArray());
+        return $this;
+    }
+
+    public function setRichtext(string $field, RichtextField $richtext): self
+    {
+        $this->set($field, $richtext->toArray());
+        return $this;
+    }
+
+    public function setTable(string $field, TableField $table): self
+    {
+        $this->set($field, $table->toArray());
+        return $this;
+    }
+
+    public function setPlugin(string $field, PluginField $plugin): self
+    {
+        $this->set($field, $plugin->toArray());
         return $this;
     }
 

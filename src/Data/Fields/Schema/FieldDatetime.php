@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Storyblok\ManagementApi\Data\Fields\Schema;
 
-class FieldAsset extends FieldGeneric
+class FieldDatetime extends FieldGeneric
 {
     use FieldNamedConstructor;
 
-    public const TYPE = "asset";
+    public const TYPE = "datetime";
 
     /**
      * @param mixed[] $data
@@ -19,20 +19,14 @@ class FieldAsset extends FieldGeneric
         parent::__construct($key, $data);
     }
 
-    /**
-     * @return array<mixed>
-     */
-    public function filetypes(): array
+    public function defaultValue(): string
     {
-        return $this->getArray("filetypes");
+        return $this->getString("default_value");
     }
 
-    /**
-     * @param string[] $filetypes
-     */
-    public function setFiletypes(array $filetypes): static
+    public function setDefaultValue(string $value): static
     {
-        $this->set("filetypes", $filetypes);
+        $this->set("default_value", $value);
         return $this;
     }
 }

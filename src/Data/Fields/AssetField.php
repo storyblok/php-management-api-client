@@ -8,7 +8,7 @@ use Storyblok\ManagementApi\Data\Asset;
 use Storyblok\ManagementApi\Data\BaseData;
 use Storyblok\ManagementApi\Data\Traits\AssetMethods;
 
-class AssetField extends BaseData
+class AssetField extends BaseData implements FieldValueInterface
 {
     use AssetMethods;
 

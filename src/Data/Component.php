@@ -54,9 +54,10 @@ class Component extends BaseData
         return $component;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->set("name", $name);
+        return $this;
     }
 
     /**
@@ -86,9 +87,10 @@ class Component extends BaseData
     /**
      * Name that will be used in the editor interface
      */
-    public function setDisplayName(string $displayName): void
+    public function setDisplayName(string $displayName): self
     {
         $this->set("display_name", $displayName);
+        return $this;
     }
 
     /**
@@ -102,9 +104,10 @@ class Component extends BaseData
     /**
      * URL to the preview image, if uploaded
      */
-    public function setImage(string $url): void
+    public function setImage(string $url): self
     {
         $this->set("image", $url);
+        return $this;
     }
 
     /**
@@ -118,9 +121,10 @@ class Component extends BaseData
     /**
      * The field that is for preview in the interface (Preview Field)
      */
-    public function setPreviewField(string $value): void
+    public function setPreviewField(string $value): self
     {
         $this->set("preview_field", $value);
+        return $this;
     }
 
     /**
@@ -161,9 +165,10 @@ class Component extends BaseData
     /**
      * If the component can be used as a Content Type
      */
-    public function setRoot(bool $isRoot = true): void
+    public function setRoot(bool $isRoot = true): self
     {
         $this->set("is_root", $isRoot);
+        return $this;
     }
 
     /**
@@ -177,9 +182,10 @@ class Component extends BaseData
     /**
      * If the component can be nested inside other components
      */
-    public function setNestable(bool $isNestable = true): void
+    public function setNestable(bool $isNestable = true): self
     {
         $this->set("is_nestable", $isNestable);
+        return $this;
     }
 
     /**
@@ -255,6 +261,20 @@ class Component extends BaseData
     }
 
     /**
+     * Adds multiple typed fields to the component schema without changing pos.
+     *
+     * @param FieldInterface[] $fields
+     */
+    public function addFields(array $fields): self
+    {
+        foreach ($fields as $field) {
+            $this->addField($field);
+        }
+
+        return $this;
+    }
+
+    /**
      * Appends a typed field at the end of the schema (pos = maxPos() + 1).
      * Does not shift any existing entry. Use insertField() to place a field
      * at a specific position in the middle of the schema.
@@ -263,6 +283,20 @@ class Component extends BaseData
     {
         $pos = $this->maxPos() + 1;
         $this->setField($field->key(), array_merge($field->toArray(), ["pos" => $pos]));
+        return $this;
+    }
+
+    /**
+     * Appends multiple typed fields at the end of the schema in the given order.
+     *
+     * @param FieldInterface[] $fields
+     */
+    public function appendFields(array $fields): self
+    {
+        foreach ($fields as $field) {
+            $this->appendField($field);
+        }
+
         return $this;
     }
 

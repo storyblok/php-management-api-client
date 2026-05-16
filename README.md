@@ -568,6 +568,88 @@ If you want to create a story in a specific release, you can set the third param
 $storyCreated = $storyApi->create($story, releaseId: $releaseId)->data();
 ```
 
+#### Setting structured story content values
+
+For simple fields, you can keep using `StoryComponent::set()` with scalar values or raw arrays.
+For structured field values, the client also provides small value objects that produce the array shape expected by Storyblok.
+
+```php
+use Storyblok\ManagementApi\Data\Fields\MultilinkField;
+use Storyblok\ManagementApi\Data\Fields\PluginField;
+use Storyblok\ManagementApi\Data\Fields\RichtextField;
+use Storyblok\ManagementApi\Data\Fields\TableField;
+use Storyblok\ManagementApi\Data\StoryComponent;
+
+$content = new StoryComponent("article-page");
+$content->set("title", "My New Article");
+
+$content
+    ->setMultilink(
+        "cta_link",
+        MultilinkField::url("https://example.com")->openInNewTab()
+    )
+    ->setRichtext(
+        "body",
+        RichtextField::paragraph("This is the content")
+    )
+    ->setTable(
+        "comparison",
+        TableField::fromRows(
+            ["Name", "Role"],
+            [
+                ["Ada", "Engineer"],
+                ["Grace", "Scientist"],
+            ],
+        )
+    )
+    ->setPlugin(
+        "custom_field",
+        new PluginField("my-plugin", ["value" => "custom value"])
+    );
+```
+
+The specialized setters are the recommended path for common structured fields,
+but they are additive. Existing raw payloads still work, and every content/value
+object exposes `get()`, `set()`, `setData()`, and `toArray()` so you can keep
+full access to the underlying JSON shape when Storyblok adds new attributes or
+when your project needs a payload the typed helpers do not model yet:
+
+```php
+$content->set("cta_link", [
+    "fieldtype" => "multilink",
+    "linktype" => "url",
+    "url" => "https://example.com",
+    "id" => "",
+    "cached_url" => "",
+]);
+
+$content->set("comparison", [
+    "fieldtype" => "table",
+    "thead" => [
+        [
+            "_uid" => "0affd164-6514-4622-9bd4-67ae69b7ecb8",
+            "component" => "_table_head",
+            "value" => "Name",
+        ],
+    ],
+    "tbody" => [
+        [
+            "_uid" => "1bc7d573-a5fe-44aa-8321-d0ef25ce11d4",
+            "component" => "_table_row",
+            "body" => [
+                [
+                    "_uid" => "5a7ee79a-94ac-4410-b8a0-7fed9bb07bb7",
+                    "component" => "_table_col",
+                    "value" => "Ada",
+                ],
+            ],
+        ],
+    ],
+]);
+
+$rawContent = $content->toArray();
+```
+
 ### Creating a Folder
 
 Stories in Storyblok can be organized into folders. A folder is a story with `is_folder` set to `true`. You can also set a default content type and restrict which content types are allowed inside the folder.
@@ -928,32 +1010,30 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldAsset;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBoolean;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldNumber;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBloks;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldOption;
 
-$component = new Component("my-component");
-$component->setDisplayName("My Component");
-$component->setRoot();
-$component->setPreviewField("headline");
-
-$component
-    ->addField(
-        (new FieldText("headline"))
-            ->setPos(0)
+$component = (new Component("my-component"))
+    ->setDisplayName("My Component")
+    ->setRoot()
+    ->setPreviewField("headline")
+    ->appendFields([
+        FieldText::make("headline")
             ->setDisplayName("Headline")
             ->setRequired()
-            ->setTranslatable()
-    )
-    ->addField(
-        (new FieldRichtext("description"))
-            ->setPos(1)
+            ->setTranslatable(),
+        FieldRichtext::make("description")
             ->setDisplayName("Description")
             ->setTranslatable()
-            ->setToolbar(["bold", "italic", "link"])
-    )
-    ->addField(
-        (new FieldAsset("image"))
-            ->setPos(2)
-            ->setDisplayName("Image")
-    );
+            ->setToolbar(["bold", "italic", "link"]),
+        FieldAsset::make("image")
+            ->setDisplayName("Image"),
+        FieldOption::make("category")
+            ->setDisplayName("Category")
+            ->setOptions([
+                ["name" => "News", "value" => "news"],
+                ["name" => "Product", "value" => "product"],
+            ]),
+    ]);
 
 try {
     $componentResponse = $componentApi->create($component);
@@ -963,6 +1043,10 @@ try {
     echo "Error creating component: " . $e->getMessage();
 }
 ```
+
+You can still use `new FieldText("headline")` if you prefer constructors. The
+`FieldText::make("headline")` form is a named constructor that returns the same
+specialized field object and is convenient for fluent chains.
 
 All shared field properties are available on every field type via `FieldGeneric`:
 
@@ -981,12 +1065,24 @@ Each specialized class adds its own setters:
 | Class | Setters |
 |---|---|
 | `FieldText` | `setDefaultValue()`, `setRegex()` |
+| `FieldTextarea` | `setDefaultValue()`, `setRegex()` |
+| `FieldMarkdown` | `setDefaultValue()` |
+| `FieldDatetime` | `setDefaultValue()` |
 | `FieldNumber` | `setDefaultValue()`, `setMinValue()`, `setMaxValue()` |
 | `FieldBoolean` | `setDefaultValue()`, `setInlineLabel()`, `setCheckboxLabel()` |
-| `FieldRichtext` | `setToolbar()`, `setRestrictComponents()` |
+| `FieldOption` | `setOptions()`, `setSource()`, `setDatasourceSlug()`, `setDefaultValue()` |
+| `FieldOptions` | `setOptions()`, `setSource()`, `setDatasourceSlug()` |
+| `FieldRichtext` | `setToolbar()`, `setRestrictComponents()`, `setComponentWhitelist()` |
 | `FieldBloks` | `setMinimum()`, `setMaximum()`, `setComponentWhitelist()` |
 | `FieldAsset` | `setFiletypes()` |
 | `FieldMultiasset` | `setFiletypes()` |
+| `FieldMultilink` | `setLinkTypes()`, `setAllowTargetBlank()` |
+| `FieldPlugin` | `setPlugin()` / `setFieldType()` |
+| `FieldTable` | shared setters only |
+| `FieldSection` | shared setters only |
+
+Unknown field types and future Storyblok schema attributes are still supported through `FieldGeneric`, `get()`, and `toArray()`.
+For plugin/custom fields, `FieldPlugin` creates the component schema shape expected by Storyblok: `type: custom` and `field_type: your-plugin-name`.
 
 If you prefer passing raw arrays, the existing `setField()` method still works:
 
@@ -996,7 +1092,21 @@ $component->setField("title", ["type" => "text", "pos" => 0]);
 
 ### Adding a field to an existing component
 
-Use `addField()` when position does not matter. Fetch the component, add the field, save it back. Storyblok assigns the position automatically.
+There are four helpers for adding schema fields. The difference is how much they
+manage `pos` for you:
+
+- `addField()` adds one field and does not touch `pos`.
+- `addFields()` adds multiple fields and does not touch `pos`.
+- `appendField()` adds one field at the end by setting `pos` to `maxPos() + 1`.
+- `appendFields()` adds multiple fields at the end, preserving the array order.
+
+The `append*` methods do not make additional API calls. They calculate the next
+position from the schema already loaded in the `Component` object. This means
+they do a local scan of the current schema entries. Use `addField()` or
+`addFields()` when you want to let Storyblok assign positions, or when you
+already set explicit positions yourself.
+
+Use `addField()` when position does not matter. Fetch the component, add the field, save it back. Storyblok assigns the position automatically if no `pos` is present.
 
 ```php
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
@@ -1004,12 +1114,37 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
 $component = $componentApi->get($componentId)->data();
 
 $component->addField(
-    (new FieldText("summary"))
+    FieldText::make("summary")
         ->setDisplayName("Summary")
         ->setTranslatable()
 );
 
 $componentApi->update($componentId, $component);
+```
+
+Use `addFields()` for the same behavior with multiple fields. It does not set,
+calculate, or shift `pos`; if a field already has `setPos()`, that explicit
+value is preserved.
+
+```php
+$component->addFields([
+    FieldText::make("summary")->setDisplayName("Summary"),
+    FieldText::make("subtitle")->setDisplayName("Subtitle")->setPos(10),
+]);
+```
+
+If you already know the exact positions, set them on each field. `addFields()`
+will keep those values as-is and will not move existing fields out of the way:
+
+```php
+$component->addFields([
+    FieldText::make("summary")
+        ->setDisplayName("Summary")
+        ->setPos(3),
+    FieldText::make("subtitle")
+        ->setDisplayName("Subtitle")
+        ->setPos(4),
+]);
 ```
 
 Use `insertField()` when position matters. It shifts every existing schema entry (fields and tabs alike) at `pos >= $atPos` up by one before inserting the new field. This keeps all `pos` values consistent without you having to manage the shift manually.
@@ -1020,7 +1155,7 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
 $component = $componentApi->get($componentId)->data();
 
 $component->insertField(
-    (new FieldText("summary"))->setDisplayName("Summary"),
+    FieldText::make("summary")->setDisplayName("Summary"),
     atPos: 0,
 );
 
@@ -1045,26 +1180,43 @@ $component->addField(
 
 Without `maxPos()` you would have to iterate the schema yourself to find the current ceiling before adding a field with an explicit position. This matters when you call `addField()` with `setPos()` set explicitly, as opposed to letting Storyblok assign the position server-side.
 
-For the common case of appending at the end, `appendField()` handles this automatically, so you do not need to call `maxPos()` directly.
+For the common case of appending at the end, `appendField()` and `appendFields()` handle this automatically, so you do not need to call `maxPos()` directly.
 
 | Method | When to use |
 |---|---|
-| `appendField($field)` | Add a field after all existing entries |
+| `appendField($field)` | Add one field after all existing entries by calculating the next `pos` locally |
+| `appendFields([$fieldA, $fieldB])` | Add multiple fields after all existing entries, preserving array order and calculating each next `pos` locally |
 | `insertField($field, atPos: $n)` | Insert a field at a specific position, shifting everything else |
 | `addField($field)` | Add a field without touching `pos` (let Storyblok assign it server-side) |
+| `addFields([$fieldA, $fieldB])` | Add multiple fields without touching `pos` |
 
 ### Appending a field at the end
 
-`appendField()` computes `maxPos() + 1` and assigns that as the field's `pos` before adding it. No existing entries are shifted.
+`appendField()` computes `maxPos() + 1` from the current in-memory schema and assigns that as the field's `pos` before adding it. `appendFields()` repeats that process for each field in the array order. No existing entries are shifted, and no extra API request is made.
+
+If the field already has a `pos` from `setPos()`, the `append*` methods
+override it with the calculated append position. Use `addField()` or
+`addFields()` when you want to preserve explicit `setPos()` values.
 
 ```php
 $component = $componentApi->get($componentId)->data();
 
-$component
-    ->appendField((new FieldText("summary"))->setDisplayName("Summary"))
-    ->appendField((new FieldRichtext("body"))->setDisplayName("Body"));
+$component->appendFields([
+    FieldText::make("summary")->setDisplayName("Summary"),
+    FieldRichtext::make("body")->setDisplayName("Body"),
+]);
 
 $componentApi->update($componentId, $component);
+```
+
+For example, if the current highest `pos` is `2`, the first field passed to
+`appendFields()` gets `pos: 3`, the second gets `pos: 4`, and so on:
+
+```php
+$component->appendFields([
+    FieldText::make("summary")->setDisplayName("Summary"), // pos: 3
+    FieldRichtext::make("body")->setDisplayName("Body"),   // pos: 4
+]);
 ```
 
 `maxPos()` and `insertField()` are complementary. Use `appendField()` (or `maxPos() + 1` directly) to add at the end; use `insertField($field, atPos: $n)` to insert in the middle.
@@ -1118,17 +1270,33 @@ Specialized field types expose additional accessors. The factory in `FieldGeneri
 
 ```php
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldTextarea;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldMarkdown;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldDatetime;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldNumber;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBoolean;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldOption;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldOptions;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldRichtext;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBloks;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldAsset;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldMultilink;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldMultiasset;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldPlugin;
 
 foreach ($component->getFields() as $field) {
     if ($field instanceof FieldText) {
         echo $field->defaultValue() . PHP_EOL;
         echo $field->regex() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldTextarea) {
+        echo $field->defaultValue() . PHP_EOL;
+        echo $field->regex() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldMarkdown || $field instanceof FieldDatetime) {
+        echo $field->defaultValue() . PHP_EOL;
     }
 
     if ($field instanceof FieldNumber) {
@@ -1141,9 +1309,16 @@ foreach ($component->getFields() as $field) {
         echo $field->checkboxLabel() . PHP_EOL;
     }
 
+    if ($field instanceof FieldOption || $field instanceof FieldOptions) {
+        echo $field->source() . PHP_EOL;
+        echo $field->datasourceSlug() . PHP_EOL;
+        print_r($field->options());
+    }
+
     if ($field instanceof FieldRichtext) {
         echo implode(', ', $field->toolbar()) . PHP_EOL;
         echo $field->restrictComponents() . PHP_EOL;
+        echo implode(', ', $field->componentWhitelist()) . PHP_EOL;
     }
 
     if ($field instanceof FieldBloks) {
@@ -1155,10 +1330,19 @@ foreach ($component->getFields() as $field) {
     if ($field instanceof FieldAsset || $field instanceof FieldMultiasset) {
         echo implode(', ', $field->filetypes()) . PHP_EOL;
     }
+
+    if ($field instanceof FieldMultilink) {
+        echo implode(', ', $field->linkTypes()) . PHP_EOL;
+        echo $field->allowTargetBlank() . PHP_EOL;
+    }
+
+    if ($field instanceof FieldPlugin) {
+        echo $field->plugin() . PHP_EOL;
+    }
 }
 ```
 
-For field types not covered by a specialized class (`textarea`, `datetime`, `option`, etc.), `getFields()` returns a `FieldGeneric` instance, which still provides the shared accessors from `FieldInterface`.
+For field types not covered by a specialized class, `getFields()` returns a `FieldGeneric` instance, which still provides the shared accessors from `FieldInterface`.
 
 #### Accessing attributes not covered by typed methods
 

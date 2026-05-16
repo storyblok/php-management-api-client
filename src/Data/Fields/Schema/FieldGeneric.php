@@ -23,12 +23,22 @@ class FieldGeneric extends BaseData implements FieldInterface
     {
         return match ($data["type"] ?? "") {
             "text"       => new FieldText($key, $data),
+            "textarea"   => new FieldTextarea($key, $data),
+            "markdown"   => new FieldMarkdown($key, $data),
+            "datetime"   => new FieldDatetime($key, $data),
+            "option"     => new FieldOption($key, $data),
+            "options"    => new FieldOptions($key, $data),
             "bloks"      => new FieldBloks($key, $data),
             "number"     => new FieldNumber($key, $data),
             "boolean"    => new FieldBoolean($key, $data),
             "asset"      => new FieldAsset($key, $data),
             "multiasset" => new FieldMultiasset($key, $data),
+            "multilink"  => new FieldMultilink($key, $data),
             "richtext"   => new FieldRichtext($key, $data),
+            "table"      => new FieldTable($key, $data),
+            "custom"     => new FieldPlugin($key, $data),
+            "plugin"     => new FieldPlugin($key, $data),
+            "section"    => new FieldSection($key, $data),
             default      => new self($key, $data),
         };
     }
