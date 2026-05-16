@@ -6,6 +6,7 @@ namespace Storyblok\ManagementApi\Data;
 
 use Storyblok\ManagementApi\Data\BaseData;
 use Storyblok\ManagementApi\Data\Fields\AssetField;
+use Storyblok\ManagementApi\Data\Fields\FieldValueInterface;
 use Storyblok\ManagementApi\Data\Fields\MultilinkField;
 use Storyblok\ManagementApi\Data\Fields\PluginField;
 use Storyblok\ManagementApi\Data\Fields\RichtextField;
@@ -40,6 +41,33 @@ class StoryComponent extends BaseData
     {
         $this->data = [];
         $this->data["component"] = $contentType;
+    }
+
+    /**
+     * Creates a new content block with optional field values.
+     *
+     * The component name argument is authoritative. If the fields array contains
+     * a `component` key, it is ignored so it cannot override the content type.
+     * FieldValueInterface instances are converted to their Storyblok array shape.
+     *
+     * @param array<string, mixed> $fields
+     */
+    public static function makeComponent(string $component, array $fields = []): self
+    {
+        $storyContent = new self($component);
+
+        foreach ($fields as $field => $value) {
+            if ($field === "component") {
+                continue;
+            }
+
+            $storyContent->set(
+                $field,
+                $value instanceof FieldValueInterface ? $value->toArray() : $value,
+            );
+        }
+
+        return $storyContent;
     }
 
     /**

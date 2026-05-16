@@ -176,6 +176,54 @@ final class FieldValueTest extends TestCase
         $this->assertSame("ok", $content->get("custom.value"));
     }
 
+    public function testStoryComponentMakeComponentCreatesContentBlockWithOptionalFields(): void
+    {
+        $content = StoryComponent::makeComponent("hero", [
+            "headline" => "Hello",
+            "component" => "ignored",
+        ]);
+
+        $this->assertSame("hero", $content->component());
+        $this->assertSame("Hello", $content->get("headline"));
+        $this->assertSame([
+            "component" => "hero",
+            "headline" => "Hello",
+        ], $content->toArray());
+    }
+
+    public function testStoryComponentMakeComponentConvertsFieldValueObjects(): void
+    {
+        $content = StoryComponent::makeComponent("article-page", [
+            "body" => RichtextField::paragraph("Intro"),
+            "comparison" => TableField::fromRows(["Name"], [["Ada"]]),
+            "custom" => new PluginField("custom-plugin", ["value" => "ok"]),
+        ]);
+
+        $this->assertSame("doc", $content->get("body.type"));
+        $this->assertSame("Intro", $content->get("body.content.0.content.0.text"));
+        $this->assertSame("_table_head", $content->get("comparison.thead.0.component"));
+        $this->assertSame("custom-plugin", $content->get("custom.plugin"));
+        $this->assertSame("ok", $content->get("custom.value"));
+    }
+
+    public function testStoryComponentMakeComponentKeepsNestedBlocksLessVerbose(): void
+    {
+        $content = StoryComponent::makeComponent("page")
+            ->addBlock("sections", StoryComponent::makeComponent("hero", [
+                "headline" => "Hello",
+            ]));
+
+        $this->assertSame([
+            "component" => "page",
+            "sections" => [
+                [
+                    "component" => "hero",
+                    "headline" => "Hello",
+                ],
+            ],
+        ], $content->toArray());
+    }
+
     public function testStoryComponentRawSetStillWorks(): void
     {
         $content = new StoryComponent("article-page");

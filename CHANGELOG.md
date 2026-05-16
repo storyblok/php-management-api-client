@@ -4,6 +4,7 @@
 - Adding `OptionValue`, `addOption()`, and `addOptionValue()` for building `FieldOption` and `FieldOptions` choices without manual array shapes
 - Making data mutators fluent, including `Component::setSchema()`, `Component::setField()`, and existing setters that previously returned `void`
 - Adding `Component::contentType()`, `Component::nestable()`, and `Component::universal()` named constructors for common component flag combinations
+- Adding `StoryComponent::makeComponent()` for creating content blocks with optional field values while keeping `StoryComponent::make()` unchanged for raw payload hydration
 
 ## 1.5.0 - 2026-05-16
 - Adding specialized component schema field classes in `Data/Fields/Schema/`: `FieldTextarea`, `FieldMarkdown`, `FieldDatetime`, `FieldOption`, `FieldOptions`, `FieldMultilink`, `FieldTable`, `FieldPlugin`, and `FieldSection`

@@ -534,9 +534,10 @@ To create a story, you can call the `create()` method provided by `StoryApi` and
 And because a story stores also the content, you can use the StoryComponent class to handle the fields in the content.
 
 ```php
-$content = new StoryComponent("article-page");
-$content->set("title", "My New Article");
-$content->set("body", "This is the content");
+$content = StoryComponent::makeComponent("article-page", [
+    "title" => "My New Article",
+    "body" => "This is the content",
+]);
 // $content->setAsset("image", $assetCreated);
 
 $story = new Story(
@@ -572,6 +573,12 @@ $storyCreated = $storyApi->create($story, releaseId: $releaseId)->data();
 
 For simple fields, you can keep using `StoryComponent::set()` with scalar values or raw arrays.
 For structured field values, the client also provides small value objects that produce the array shape expected by Storyblok.
+Use `StoryComponent::makeComponent()` to create new content blocks. `StoryComponent::make()`
+is still reserved for hydrating raw Storyblok payloads that already contain a
+`component` key.
+Both methods return a `StoryComponent`; the difference is intent: `make()` starts
+from an existing payload, while `makeComponent()` starts from a component name
+for programmatic creation and fluent setter chains.
 
 ```php
 use Storyblok\ManagementApi\Data\Fields\MultilinkField;
@@ -580,17 +587,15 @@ use Storyblok\ManagementApi\Data\Fields\RichtextField;
 use Storyblok\ManagementApi\Data\Fields\TableField;
 use Storyblok\ManagementApi\Data\StoryComponent;
 
-$content = new StoryComponent("article-page");
-$content->set("title", "My New Article");
+$content = StoryComponent::makeComponent("article-page", [
+    "title" => "My New Article",
+    "body" => RichtextField::paragraph("This is the content"),
+]);
 
 $content
     ->setMultilink(
         "cta_link",
         MultilinkField::url("https://example.com")->openInNewTab()
-    )
-    ->setRichtext(
-        "body",
-        RichtextField::paragraph("This is the content")
     )
     ->setTable(
         "comparison",
@@ -606,6 +611,15 @@ $content
         "custom_field",
         new PluginField("my-plugin", ["value" => "custom value"])
     );
+```
+
+You can also start with only the component name and chain the existing setters:
+
+```php
+$hero = StoryComponent::makeComponent("hero")
+    ->set("headline", "Hello")
+    ->setAssetField("image", $assetField)
+    ->setRichtext("body", RichtextField::paragraph("Intro"));
 ```
 
 The specialized setters are the recommended path for common structured fields,
@@ -1895,34 +1909,37 @@ $spaceId = "yourspaceid";
 $storyApi = new StoryApi($client, $spaceId);
 
 // Setting up the hero-section
-$heroSection = new StoryComponent("hero-section");
-$heroSection->set("headline", "Hello World");
+$heroSection = StoryComponent::makeComponent("hero-section", [
+    "headline" => "Hello World",
+    "text_color" => "light",
+    "vertical_alignment" => "center",
+    "horizontal_alignment" => "center",
+]);
 // We are going to setup an external image as background
 $heroSection->setAsset("background_image", Asset::emptyAsset()->setExternalUrl("https://images.pexels.com/photos/18853169/pexels-photo-18853169/free-photo-of-tower-old-north-church-mirroring-in-puddle.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"));
 $heroSection->setAsset("background_video", Asset::emptyAsset());
-$heroSection->set("text_color", "light");
-$heroSection->set("vertical_alignment", "center");
-$heroSection->set("horizontal_alignment", "center");
 
 // Setting up the Button
-$button = new StoryComponent("button");
-$button->set("label", "Click here");
-$button->set("style", "default");
-$button->set("background_color", "primary");
-$button->set("text_color", "light");
-$button->set("size", "small");
-$button->set("border_radius", "small");
+$button = StoryComponent::makeComponent("button", [
+    "label" => "Click here",
+    "style" => "default",
+    "background_color" => "primary",
+    "text_color" => "light",
+    "size" => "small",
+    "border_radius" => "small",
+]);
 
 
 // Setting up the Image Text Section
-$imageTextSection = new StoryComponent("image-text-section");
-$imageTextSection->set("headline", "Hello World");
+$imageTextSection = StoryComponent::makeComponent("image-text-section", [
+    "headline" => "Hello World",
+]);
 $imageTextSection->setAsset("image", Asset::emptyAsset());
 // Adding the Button to the Image Text Section (field name `button`)
 $imageTextSection->addBlock("button", $button);
 
 // Let's create the content type `default-page`
-$page = new StoryComponent("default-page");
+$page = StoryComponent::makeComponent("default-page");
 // Adding the Hero Section and the Image Text Section to the `body` field
 $page->addBlock("body", $heroSection);
 $page->addBlock("body", $imageTextSection);
