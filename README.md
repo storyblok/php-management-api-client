@@ -608,7 +608,11 @@ $content
     );
 ```
 
-The specialized setters are additive. Existing raw payloads still work:
+The specialized setters are the recommended path for common structured fields,
+but they are additive. Existing raw payloads still work, and every content/value
+object exposes `get()`, `set()`, `setData()`, and `toArray()` so you can keep
+full access to the underlying JSON shape when Storyblok adds new attributes or
+when your project needs a payload the typed helpers do not model yet:
 
 ```php
 $content->set("cta_link", [
@@ -618,6 +622,32 @@ $content->set("cta_link", [
     "id" => "",
     "cached_url" => "",
 ]);
+
+$content->set("comparison", [
+    "fieldtype" => "table",
+    "thead" => [
+        [
+            "_uid" => "0affd164-6514-4622-9bd4-67ae69b7ecb8",
+            "component" => "_table_head",
+            "value" => "Name",
+        ],
+    ],
+    "tbody" => [
+        [
+            "_uid" => "1bc7d573-a5fe-44aa-8321-d0ef25ce11d4",
+            "component" => "_table_row",
+            "body" => [
+                [
+                    "_uid" => "5a7ee79a-94ac-4410-b8a0-7fed9bb07bb7",
+                    "component" => "_table_col",
+                    "value" => "Ada",
+                ],
+            ],
+        ],
+    ],
+]);
+
+$rawContent = $content->toArray();
 ```
 
 ### Creating a Folder
