@@ -22,6 +22,42 @@ class Component extends BaseData
     }
 
     /**
+     * Creates a component that can be used as a content type block.
+     *
+     * Sets is_root=true and is_nestable=false.
+     */
+    public static function contentType(string $name): self
+    {
+        return (new self($name))
+            ->setRoot(true)
+            ->setNestable(false);
+    }
+
+    /**
+     * Creates a component that can be used as a nestable block.
+     *
+     * Sets is_root=false and is_nestable=true.
+     */
+    public static function nestable(string $name): self
+    {
+        return (new self($name))
+            ->setRoot(false)
+            ->setNestable(true);
+    }
+
+    /**
+     * Creates a component that can be used both as a content type block and as a nestable block.
+     *
+     * Sets is_root=true and is_nestable=true.
+     */
+    public static function universal(string $name): self
+    {
+        return (new self($name))
+            ->setRoot(true)
+            ->setNestable(true);
+    }
+
+    /**
      * @param mixed[] $data
      * @throws StoryblokFormatException
      */

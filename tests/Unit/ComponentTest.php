@@ -26,6 +26,22 @@ final class ComponentTest extends TestCase
         $this->assertFalse($component->isUniversal());
     }
 
+    public function testContentTypeNamedConstructorSetsRootOnlyFlags(): void
+    {
+        $component = Component::contentType("article");
+
+        $this->assertSame("article", $component->name());
+        $this->assertTrue($component->isRoot());
+        $this->assertTrue($component->isContentType());
+        $this->assertFalse($component->isNestable());
+        $this->assertFalse($component->isUniversal());
+        $this->assertSame([
+            "name" => "article",
+            "is_root" => true,
+            "is_nestable" => false,
+        ], $component->toArray());
+    }
+
     public function testIsNestable(): void
     {
         $component = Component::make([
@@ -37,6 +53,22 @@ final class ComponentTest extends TestCase
         $this->assertTrue($component->isNestable());
         $this->assertFalse($component->isContentType());
         $this->assertFalse($component->isUniversal());
+    }
+
+    public function testNestableNamedConstructorSetsNestableOnlyFlags(): void
+    {
+        $component = Component::nestable("teaser");
+
+        $this->assertSame("teaser", $component->name());
+        $this->assertFalse($component->isRoot());
+        $this->assertFalse($component->isContentType());
+        $this->assertTrue($component->isNestable());
+        $this->assertFalse($component->isUniversal());
+        $this->assertSame([
+            "name" => "teaser",
+            "is_root" => false,
+            "is_nestable" => true,
+        ], $component->toArray());
     }
 
     public function testIsUniversal(): void
@@ -51,6 +83,22 @@ final class ComponentTest extends TestCase
         $this->assertTrue($component->isRoot());
         $this->assertTrue($component->isNestable());
         $this->assertFalse($component->isContentType());
+    }
+
+    public function testUniversalNamedConstructorSetsRootAndNestableFlags(): void
+    {
+        $component = Component::universal("section");
+
+        $this->assertSame("section", $component->name());
+        $this->assertTrue($component->isRoot());
+        $this->assertFalse($component->isContentType());
+        $this->assertTrue($component->isNestable());
+        $this->assertTrue($component->isUniversal());
+        $this->assertSame([
+            "name" => "section",
+            "is_root" => true,
+            "is_nestable" => true,
+        ], $component->toArray());
     }
 
     public function testNeitherRootNorNestable(): void

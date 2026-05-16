@@ -989,6 +989,15 @@ foreach ($components as $component) {
 }
 ```
 
+When creating components, you can use named constructors for the common flag
+combinations:
+
+| Constructor | Flags |
+|---|---|
+| `Component::contentType("article")` | `is_root: true`, `is_nestable: false` |
+| `Component::nestable("teaser")` | `is_root: false`, `is_nestable: true` |
+| `Component::universal("section")` | `is_root: true`, `is_nestable: true` |
+
 With the same response you can retrieve the component folders.
 You can use the `dataFolders()` method:
 
@@ -1005,6 +1014,7 @@ Mutating methods return the same instance, so existing one-call usage and chaine
 Each field class sets its own type automatically, so you only need to provide the field key and any attributes you want to configure via chained setters:
 
 ```php
+use Storyblok\ManagementApi\Data\Component;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldRichtext;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldAsset;
@@ -1014,9 +1024,8 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldBloks;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldOption;
 use Storyblok\ManagementApi\Data\Fields\Schema\OptionValue;
 
-$component = (new Component("my-component"))
+$component = Component::contentType("my-component")
     ->setDisplayName("My Component")
-    ->setRoot()
     ->setPreviewField("headline")
     ->appendFields([
         FieldText::make("headline")
