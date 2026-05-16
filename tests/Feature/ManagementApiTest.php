@@ -169,6 +169,46 @@ final class ManagementApiTest extends TestCase
         $this->assertSame("some", $tag->getString("name"));
     }
 
+    public function testPatchResourceStoryblokData(): void
+    {
+        $responses = [
+            $this->mockResponse("one-experiment", 200),
+        ];
+
+        $client = new MockHttpClient(
+            $responses,
+            baseUri: "https://mapi.storyblok.com",
+        );
+        $mapiClient = ManagementApiClient::initTest($client);
+        $managementApi = new ManagementApi($mapiClient);
+
+        $spaceId = "321388";
+        $experimentId = "123";
+        $variantId = 456;
+
+        $response = $managementApi->patch(
+            sprintf("spaces/%s/experiments/%s/select_winner", $spaceId, $experimentId),
+            [
+                "experiment" => [
+                    "winning_variant_id" => $variantId,
+                ],
+            ],
+        );
+
+        $this->assertSame(
+            "https://mapi.storyblok.com/v1/spaces/321388/experiments/123/select_winner",
+            $response->getLastCalledUrl(),
+        );
+        $this->assertTrue($response->isOk());
+
+        $experiment = $response->data()->get("experiment");
+        $this->assertInstanceOf(StoryblokDataInterface::class, $experiment);
+        $this->assertSame("homepage_hero_test", $experiment->getString("name"));
+        $this->assertSame("Homepage Hero Test", $experiment->getString("display_name"));
+        $this->assertSame("control", $experiment->getString("experiment_variants.0.name"));
+        $this->assertSame("purchase_rate", $experiment->getString("experiment_assigned_metrics.0.metric_definition.name"));
+    }
+
     public function testStoryblokDataToArray(): void
     {
         $responses = [

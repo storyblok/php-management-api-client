@@ -2442,6 +2442,28 @@ if ($response->isOk()) {
 }
 ```
 
+### Partially updating a resource with the Storyblok Management API
+
+When an endpoint supports partial updates, use the `patch` method of the `ManagementApi` class.
+It works like `put`, but sends a PATCH HTTP request.
+
+```php
+$response = $managementApi()->patch(
+    "spaces/{$spaceId}/something/{$id}/somethingelse",
+    [
+        "values" => [
+            "enabled" => true,
+        ],
+    ]
+);
+
+if ($response->isOk()) {
+    echo "Experiment patched via id: " . $experimentId . PHP_EOL;
+} else {
+    echo $response->getErrorMessage() . PHP_EOL;
+}
+```
+
 ### Deleting a resource with the Storyblok Management API
 
 This example explains how to delete a resource, such as an internal tag, using the Storyblok Management API.
@@ -2467,7 +2489,7 @@ if ($response->isOk()) {
 
 ### Quick recap: using the `ManagementApi` Class
 
-The `ManagementApi` class is used for performing generic administrative tasks in Storyblok, including creating, updating, retrieving, and deleting resources.
+The `ManagementApi` class is used for performing generic administrative tasks in Storyblok, including creating, updating, partially updating, retrieving, and deleting resources.
 
 
 ## Documentation

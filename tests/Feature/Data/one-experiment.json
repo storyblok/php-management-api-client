@@ -1,0 +1,56 @@
+{
+  "experiment": {
+    "id": 123,
+    "name": "homepage_hero_test",
+    "display_name": "Homepage Hero Test",
+    "description": "Testing hero banner variants on the homepage",
+    "status": "draft",
+    "started_at": "2026-01-15T10:00:00.000Z",
+    "ended_at": null,
+    "created_at": "2026-01-10T09:00:00.000Z",
+    "updated_at": "2026-01-10T09:00:00.000Z",
+    "story_ids": [
+      101,
+      202
+    ],
+    "winning_variant_id": null,
+    "experiment_variants": [
+      {
+        "id": 456,
+        "name": "control",
+        "display_name": "Control",
+        "public_id": "var_abc123def456",
+        "weight": 50,
+        "is_control": true,
+        "story_mappings": [
+          {
+            "experiment_variant_id": 0,
+            "original_story_id": 0,
+            "variant_story_id": 0,
+            "original_slug": "string",
+            "variant_slug": "string",
+            "variant_story": {}
+          }
+        ]
+      }
+    ],
+    "experiment_assigned_metrics": [
+      {
+        "metric_definition_id": 456,
+        "role": "primary",
+        "position": 0,
+        "metric_definition": {
+          "id": 123,
+          "name": "purchase_rate",
+          "description": "Percentage of visitors who complete a purchase",
+          "event_name": "purchase",
+          "metric_type": "proportion",
+          "inverse": false,
+          "unit": "USD",
+          "created_at": "2026-01-10T09:00:00.000Z",
+          "updated_at": "2026-01-10T09:00:00.000Z"
+        }
+      }
+    ]
+  }
+}
