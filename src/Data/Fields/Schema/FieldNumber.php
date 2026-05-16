@@ -6,6 +6,8 @@ namespace Storyblok\ManagementApi\Data\Fields\Schema;
 
 class FieldNumber extends FieldGeneric
 {
+    use FieldNamedConstructor;
+
     public const TYPE = "number";
 
     /**

@@ -354,6 +354,39 @@ final class FieldTest extends TestCase
         $this->assertSame("section", (new FieldSection("f"))->type());
     }
 
+    public function testNamedConstructorsBuildSpecializedFields(): void
+    {
+        $this->assertSame("text", FieldText::make("f")->type());
+        $this->assertSame("textarea", FieldTextarea::make("f")->type());
+        $this->assertSame("markdown", FieldMarkdown::make("f")->type());
+        $this->assertSame("datetime", FieldDatetime::make("f")->type());
+        $this->assertSame("option", FieldOption::make("f")->type());
+        $this->assertSame("options", FieldOptions::make("f")->type());
+        $this->assertSame("number", FieldNumber::make("f")->type());
+        $this->assertSame("boolean", FieldBoolean::make("f")->type());
+        $this->assertSame("richtext", FieldRichtext::make("f")->type());
+        $this->assertSame("bloks", FieldBloks::make("f")->type());
+        $this->assertSame("asset", FieldAsset::make("f")->type());
+        $this->assertSame("multiasset", FieldMultiasset::make("f")->type());
+        $this->assertSame("multilink", FieldMultilink::make("f")->type());
+        $this->assertSame("table", FieldTable::make("f")->type());
+        $this->assertSame("custom", FieldPlugin::make("f")->type());
+        $this->assertSame("section", FieldSection::make("f")->type());
+        $this->assertSame("f", FieldText::make("f")->key());
+    }
+
+    public function testNamedConstructorsSupportFluentSpecializedSetters(): void
+    {
+        $field = FieldAsset::make("hero_image")
+            ->setDisplayName("Hero Image")
+            ->setFiletypes(["images"]);
+
+        $this->assertSame("hero_image", $field->key());
+        $this->assertSame("asset", $field->type());
+        $this->assertSame("Hero Image", $field->displayName());
+        $this->assertSame(["images"], $field->filetypes());
+    }
+
     public function testFluentBuilderSharedSetters(): void
     {
         $field = (new FieldText("headline"))

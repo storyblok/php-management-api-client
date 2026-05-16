@@ -6,6 +6,8 @@ namespace Storyblok\ManagementApi\Data\Fields\Schema;
 
 class FieldRichtext extends FieldGeneric
 {
+    use FieldNamedConstructor;
+
     public const TYPE = "richtext";
 
     /**

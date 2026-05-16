@@ -7,6 +7,7 @@ namespace Tests\Unit;
 use Storyblok\ManagementApi\Data\Component;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldInterface;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldRichtext;
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldTable;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
 use Tests\TestCase;
 
@@ -121,6 +122,27 @@ final class ComponentTest extends TestCase
 
         $component->setNestable(true);
         $this->assertTrue($component->isNestable());
+    }
+
+    public function testMetadataSettersAreFluent(): void
+    {
+        $component = new Component("page");
+
+        $result = $component
+            ->setName("article-page")
+            ->setDisplayName("Article Page")
+            ->setImage("https://example.com/preview.png")
+            ->setPreviewField("title")
+            ->setRoot()
+            ->setNestable(false);
+
+        $this->assertSame($component, $result);
+        $this->assertSame("article-page", $component->name());
+        $this->assertSame("Article Page", $component->displayName());
+        $this->assertSame("https://example.com/preview.png", $component->image());
+        $this->assertSame("title", $component->previewField());
+        $this->assertTrue($component->isRoot());
+        $this->assertFalse($component->isNestable());
     }
 
     private function makeComponentWithSchema(): Component
@@ -352,6 +374,47 @@ final class ComponentTest extends TestCase
         $this->assertSame($component, $result);
     }
 
+    public function testAppendFieldsAddsFieldsInOrder(): void
+    {
+        $component = new Component("my-component");
+
+        $result = $component->appendFields([
+            (new FieldText("title"))->setDisplayName("Title"),
+            (new FieldRichtext("body"))->setDisplayName("Body"),
+            (new FieldTable("comparison"))->setDisplayName("Comparison"),
+        ]);
+
+        $schema = $component->getSchema();
+
+        $this->assertSame($component, $result);
+        $this->assertSame(0, $schema["title"]["pos"]);
+        $this->assertSame(1, $schema["body"]["pos"]);
+        $this->assertSame(2, $schema["comparison"]["pos"]);
+        $this->assertSame("text", $schema["title"]["type"]);
+        $this->assertSame("richtext", $schema["body"]["type"]);
+        $this->assertSame("table", $schema["comparison"]["type"]);
+    }
+
+    public function testAppendFieldsContinuesAfterExistingSchemaEntries(): void
+    {
+        $component = Component::make([
+            "name" => "page",
+            "schema" => [
+                "title" => ["type" => "text", "pos" => 3],
+            ],
+        ]);
+
+        $component->appendFields([
+            new FieldRichtext("body"),
+            new FieldTable("comparison"),
+        ]);
+
+        $schema = $component->getSchema();
+
+        $this->assertSame(4, $schema["body"]["pos"]);
+        $this->assertSame(5, $schema["comparison"]["pos"]);
+    }
+
     public function testAddFieldWithFluentBuilder(): void
     {
         $component = new Component("my-component");
@@ -367,6 +430,42 @@ final class ComponentTest extends TestCase
         $this->assertSame("richtext", $fields["description"]->type());
         $this->assertTrue($fields["headline"]->required());
         $this->assertTrue($fields["description"]->translatable());
+    }
+
+    public function testAddFieldsAddsFieldsWithoutChangingPos(): void
+    {
+        $component = new Component("my-component");
+
+        $result = $component->addFields([
+            FieldText::make("title")->setDisplayName("Title"),
+            FieldRichtext::make("body")->setDisplayName("Body"),
+            FieldTable::make("comparison")->setDisplayName("Comparison"),
+        ]);
+
+        $schema = $component->getSchema();
+
+        $this->assertSame($component, $result);
+        $this->assertArrayNotHasKey("pos", $schema["title"]);
+        $this->assertArrayNotHasKey("pos", $schema["body"]);
+        $this->assertArrayNotHasKey("pos", $schema["comparison"]);
+        $this->assertSame("text", $schema["title"]["type"]);
+        $this->assertSame("richtext", $schema["body"]["type"]);
+        $this->assertSame("table", $schema["comparison"]["type"]);
+    }
+
+    public function testAddFieldsPreservesExplicitPos(): void
+    {
+        $component = new Component("my-component");
+
+        $component->addFields([
+            FieldText::make("title")->setPos(10),
+            FieldRichtext::make("body")->setPos(20),
+        ]);
+
+        $schema = $component->getSchema();
+
+        $this->assertSame(10, $schema["title"]["pos"]);
+        $this->assertSame(20, $schema["body"]["pos"]);
     }
 
     public function testGetTabsIsSortedByPos(): void

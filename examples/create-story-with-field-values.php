@@ -61,37 +61,25 @@ function createContentType(
     ComponentApi $componentApi,
     string $contentType,
 ): Component {
-    $component = new Component($contentType);
-    $component->setDisplayName(
-        ucwords(str_replace(["-", "_"], " ", $contentType)),
-    );
-    $component->setRoot(true);
-    $component->setPreviewField("title");
-
-    $component
-        ->appendField(
-            new FieldText("title")->setDisplayName("Title")->setRequired(),
-        )
-        ->appendField(new FieldTextarea("summary")->setDisplayName("Summary"))
-        ->appendField(
-            new FieldMultilink("cta_link")
+    $component = (new Component($contentType))
+        ->setDisplayName(ucwords(str_replace(["-", "_"], " ", $contentType)))
+        ->setRoot()
+        ->setPreviewField("title")
+        ->appendFields([
+            FieldText::make("title")->setDisplayName("Title")->setRequired(),
+            FieldTextarea::make("summary")->setDisplayName("Summary"),
+            FieldMultilink::make("cta_link")
                 ->setDisplayName("CTA Link")
                 ->setLinkTypes(["url", "story"])
                 ->setAllowTargetBlank(),
-        )
-        ->appendField(
-            new FieldRichtext("body")
+            FieldRichtext::make("body")
                 ->setDisplayName("Body")
                 ->setToolbar(["bold", "italic", "link"]),
-        )
-        ->appendField(
-            new FieldTable("comparison")->setDisplayName("Comparison"),
-        )
-        ->appendField(
-            new FieldPlugin("custom_field")
+            FieldTable::make("comparison")->setDisplayName("Comparison"),
+            FieldPlugin::make("custom_field")
                 ->setDisplayName("Custom Field")
                 ->setPlugin("example-plugin"),
-        );
+        ]);
 
     return $componentApi->create($component)->data();
 }

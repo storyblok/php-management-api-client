@@ -1012,40 +1012,28 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldNumber;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldBloks;
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldOption;
 
-$component = new Component("my-component");
-$component->setDisplayName("My Component");
-$component->setRoot();
-$component->setPreviewField("headline");
-
-$component
-    ->addField(
-        (new FieldText("headline"))
-            ->setPos(0)
+$component = (new Component("my-component"))
+    ->setDisplayName("My Component")
+    ->setRoot()
+    ->setPreviewField("headline")
+    ->appendFields([
+        FieldText::make("headline")
             ->setDisplayName("Headline")
             ->setRequired()
-            ->setTranslatable()
-    )
-    ->addField(
-        (new FieldRichtext("description"))
-            ->setPos(1)
+            ->setTranslatable(),
+        FieldRichtext::make("description")
             ->setDisplayName("Description")
             ->setTranslatable()
-            ->setToolbar(["bold", "italic", "link"])
-    )
-    ->addField(
-        (new FieldAsset("image"))
-            ->setPos(2)
-            ->setDisplayName("Image")
-    )
-    ->addField(
-        (new FieldOption("category"))
-            ->setPos(3)
+            ->setToolbar(["bold", "italic", "link"]),
+        FieldAsset::make("image")
+            ->setDisplayName("Image"),
+        FieldOption::make("category")
             ->setDisplayName("Category")
             ->setOptions([
                 ["name" => "News", "value" => "news"],
                 ["name" => "Product", "value" => "product"],
-            ])
-    );
+            ]),
+    ]);
 
 try {
     $componentResponse = $componentApi->create($component);
@@ -1055,6 +1043,10 @@ try {
     echo "Error creating component: " . $e->getMessage();
 }
 ```
+
+You can still use `new FieldText("headline")` if you prefer constructors. The
+`FieldText::make("headline")` form is a named constructor that returns the same
+specialized field object and is convenient for fluent chains.
 
 All shared field properties are available on every field type via `FieldGeneric`:
 
@@ -1100,7 +1092,21 @@ $component->setField("title", ["type" => "text", "pos" => 0]);
 
 ### Adding a field to an existing component
 
-Use `addField()` when position does not matter. Fetch the component, add the field, save it back. Storyblok assigns the position automatically.
+There are four helpers for adding schema fields. The difference is how much they
+manage `pos` for you:
+
+- `addField()` adds one field and does not touch `pos`.
+- `addFields()` adds multiple fields and does not touch `pos`.
+- `appendField()` adds one field at the end by setting `pos` to `maxPos() + 1`.
+- `appendFields()` adds multiple fields at the end, preserving the array order.
+
+The `append*` methods do not make additional API calls. They calculate the next
+position from the schema already loaded in the `Component` object. This means
+they do a local scan of the current schema entries. Use `addField()` or
+`addFields()` when you want to let Storyblok assign positions, or when you
+already set explicit positions yourself.
+
+Use `addField()` when position does not matter. Fetch the component, add the field, save it back. Storyblok assigns the position automatically if no `pos` is present.
 
 ```php
 use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
@@ -1108,12 +1114,37 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
 $component = $componentApi->get($componentId)->data();
 
 $component->addField(
-    (new FieldText("summary"))
+    FieldText::make("summary")
         ->setDisplayName("Summary")
         ->setTranslatable()
 );
 
 $componentApi->update($componentId, $component);
+```
+
+Use `addFields()` for the same behavior with multiple fields. It does not set,
+calculate, or shift `pos`; if a field already has `setPos()`, that explicit
+value is preserved.
+
+```php
+$component->addFields([
+    FieldText::make("summary")->setDisplayName("Summary"),
+    FieldText::make("subtitle")->setDisplayName("Subtitle")->setPos(10),
+]);
+```
+
+If you already know the exact positions, set them on each field. `addFields()`
+will keep those values as-is and will not move existing fields out of the way:
+
+```php
+$component->addFields([
+    FieldText::make("summary")
+        ->setDisplayName("Summary")
+        ->setPos(3),
+    FieldText::make("subtitle")
+        ->setDisplayName("Subtitle")
+        ->setPos(4),
+]);
 ```
 
 Use `insertField()` when position matters. It shifts every existing schema entry (fields and tabs alike) at `pos >= $atPos` up by one before inserting the new field. This keeps all `pos` values consistent without you having to manage the shift manually.
@@ -1124,7 +1155,7 @@ use Storyblok\ManagementApi\Data\Fields\Schema\FieldText;
 $component = $componentApi->get($componentId)->data();
 
 $component->insertField(
-    (new FieldText("summary"))->setDisplayName("Summary"),
+    FieldText::make("summary")->setDisplayName("Summary"),
     atPos: 0,
 );
 
@@ -1149,26 +1180,43 @@ $component->addField(
 
 Without `maxPos()` you would have to iterate the schema yourself to find the current ceiling before adding a field with an explicit position. This matters when you call `addField()` with `setPos()` set explicitly, as opposed to letting Storyblok assign the position server-side.
 
-For the common case of appending at the end, `appendField()` handles this automatically, so you do not need to call `maxPos()` directly.
+For the common case of appending at the end, `appendField()` and `appendFields()` handle this automatically, so you do not need to call `maxPos()` directly.
 
 | Method | When to use |
 |---|---|
-| `appendField($field)` | Add a field after all existing entries |
+| `appendField($field)` | Add one field after all existing entries by calculating the next `pos` locally |
+| `appendFields([$fieldA, $fieldB])` | Add multiple fields after all existing entries, preserving array order and calculating each next `pos` locally |
 | `insertField($field, atPos: $n)` | Insert a field at a specific position, shifting everything else |
 | `addField($field)` | Add a field without touching `pos` (let Storyblok assign it server-side) |
+| `addFields([$fieldA, $fieldB])` | Add multiple fields without touching `pos` |
 
 ### Appending a field at the end
 
-`appendField()` computes `maxPos() + 1` and assigns that as the field's `pos` before adding it. No existing entries are shifted.
+`appendField()` computes `maxPos() + 1` from the current in-memory schema and assigns that as the field's `pos` before adding it. `appendFields()` repeats that process for each field in the array order. No existing entries are shifted, and no extra API request is made.
+
+If the field already has a `pos` from `setPos()`, the `append*` methods
+override it with the calculated append position. Use `addField()` or
+`addFields()` when you want to preserve explicit `setPos()` values.
 
 ```php
 $component = $componentApi->get($componentId)->data();
 
-$component
-    ->appendField((new FieldText("summary"))->setDisplayName("Summary"))
-    ->appendField((new FieldRichtext("body"))->setDisplayName("Body"));
+$component->appendFields([
+    FieldText::make("summary")->setDisplayName("Summary"),
+    FieldRichtext::make("body")->setDisplayName("Body"),
+]);
 
 $componentApi->update($componentId, $component);
+```
+
+For example, if the current highest `pos` is `2`, the first field passed to
+`appendFields()` gets `pos: 3`, the second gets `pos: 4`, and so on:
+
+```php
+$component->appendFields([
+    FieldText::make("summary")->setDisplayName("Summary"), // pos: 3
+    FieldRichtext::make("body")->setDisplayName("Body"),   // pos: 4
+]);
 ```
 
 `maxPos()` and `insertField()` are complementary. Use `appendField()` (or `maxPos() + 1` directly) to add at the end; use `insertField($field, atPos: $n)` to insert in the middle.
