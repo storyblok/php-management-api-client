@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.0 - WIP
+## 1.6.0 - 2026-05-17
 - Adding `OptionValue`, `addOption()`, and `addOptionValue()` for building `FieldOption` and `FieldOptions` choices without manual array shapes
 - Making data mutators fluent, including `Component::setSchema()`, `Component::setField()`, and existing setters that previously returned `void`
 - Adding `Component::contentType()`, `Component::nestable()`, and `Component::universal()` named constructors for common component flag combinations
