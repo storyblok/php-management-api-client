@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0 - 2026-05-31
+- Adding `ExperimentApi` endpoint for creating experiments, retrieving experiments, and pushing experiment results
+- Adding `ExperimentStatus` enum and `byStatus` filter support to `ExperimentApi::page()` for filtering experiments by status
+- Adding fluent payload helpers to `Experiment` for creating experiments, including typed variant helpers
+- Adding `Experiment`, `ExperimentVariant`, `Experiments`, and `ExperimentResult` data classes
+- Adding `ExperimentResponse`, `ExperimentsResponse`, and `ExperimentResultResponse` response classes
+- Adding README documentation for handling experiments
+
 ## 1.6.0 - 2026-05-17
 - Adding `OptionValue`, `addOption()`, and `addOptionValue()` for building `FieldOption` and `FieldOptions` choices without manual array shapes
 - Making data mutators fluent, including `Component::setSchema()`, `Component::setField()`, and existing setters that previously returned `void`

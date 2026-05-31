@@ -129,7 +129,7 @@ $client = new ManagementApiClient($storyblokPersonalAccessToken);
 
 The Storyblok **Management API Client** provides two main approaches for interacting with the API:
 
-- Using specific API classes (like `StoryApi` or `SpaceApi` or `AssetApi` or `AssetFolderApi` or `InternalTagApi` or `TagApi` or `UserApi`)
+- Using specific API classes (like `StoryApi` or `SpaceApi` or `AssetApi` or `AssetFolderApi` or `InternalTagApi` or `TagApi` or `ExperimentApi` or `UserApi`)
 - Using specific API classes for handling bulk data (like `StoryBulkApi`)
 - Using the `ManagementApi` class
 
@@ -139,7 +139,7 @@ Alternatively, you can leverage dedicated classes like `SpaceApi`, which are tai
 
 If a dedicated API class like `SpaceApi` or `StoryApi` does not exist for your desired endpoint, you can always fall back to the more versatile `ManagementApi` class.
 
-In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi`, `InternalTagApi`, `AssetApi` and `AssetFolderApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
+In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi`, `InternalTagApi`, `AssetApi`, `AssetFolderApi`, and `ExperimentApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
 
 - `SpaceApi` focuses on managing space-level operations, such as retrieving space information, performing backup etc.
 - `StoryApi` specializes in handling stories and their content, including creating, updating, retrieving, and deleting stories. This class also provides methods that deal with the structure and fields specific to stories.
@@ -147,6 +147,7 @@ In addition to the general-purpose `ManagementApi` class, the Storyblok Manageme
 - `AssetFolderApi` designed to manage asset folders, including creating, retrieving, updating, and deleting folders for organizing assets.
 - `InternalTagApi` designed to manage internal tags for assets and components, including listing, creating, updating, and deleting.
 - `TagApi` designed to manage tags.
+- `ExperimentApi` designed to retrieve experiments and push experiment results.
 - `UserApi` designed to handle the current user. "Current" means the user related to the access token used for instancing the `ManagementApiClient` object.
 
 These specialized classes extend the functionality of the `ManagementApi` class, offering more precise control and optimized methods for interacting with specific resource types in your Storyblok space.
@@ -1903,6 +1904,139 @@ echo "Story created, ID: " . $storyCreated->id() . PHP_EOL;
 echo "             UUID: " . $storyCreated->uuid() . PHP_EOL;
 echo "             SLUG: " . $storyCreated->slug() . PHP_EOL;
 
+```
+
+## Handling Experiments
+
+For using the `ExperimentApi` class you have to import:
+
+```php
+use Storyblok\ManagementApi\Endpoints\ExperimentApi;
+```
+
+For working with experiment results, you can use the `ExperimentResult` data class:
+
+```php
+use Storyblok\ManagementApi\Data\ExperimentResult;
+```
+
+For filtering experiments by status, use the `ExperimentStatus` enum:
+
+```php
+use Storyblok\ManagementApi\Data\Enum\ExperimentStatus;
+```
+
+The `ExperimentApi` class currently covers creating experiments, retrieving experiments, and pushing experiment results. For other experiment endpoints, you can use the generic `ManagementApi` class and pass the documented Management API path directly.
+
+### Getting the `ExperimentApi` instance
+
+```php
+use Storyblok\ManagementApi\ManagementApiClient;
+use Storyblok\ManagementApi\Endpoints\ExperimentApi;
+
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
+$spaceId = "your-space-id";
+
+$experimentApi = new ExperimentApi($client, $spaceId);
+```
+
+### Retrieving experiments
+
+Use the `page()` method to retrieve experiments from a space.
+
+```php
+$response = $experimentApi->page();
+$experiments = $response->data();
+
+foreach ($experiments as $experiment) {
+    echo $experiment->id() . PHP_EOL;
+    echo $experiment->name() . PHP_EOL;
+    echo $experiment->status() . PHP_EOL;
+    echo "---" . PHP_EOL;
+}
+```
+
+You can pass pagination values:
+
+```php
+$pageNumber = 1;
+$itemsPerPage = 25;
+
+$response = $experimentApi->page($pageNumber, $itemsPerPage);
+echo "Total Experiments: " . $response->total() . PHP_EOL;
+```
+
+You can also filter by experiment status. Allowed values are `draft`, `running`, `paused`, or `completed`.
+
+```php
+$response = $experimentApi->page(
+    page: 1,
+    perPage: 25,
+    byStatus: ExperimentStatus::Running
+);
+```
+
+### Creating an experiment
+
+Use the `create()` method with an `Experiment` data object. Storyblok creates new experiments in `draft` status.
+
+```php
+use Storyblok\ManagementApi\Data\Experiment;
+use Storyblok\ManagementApi\Data\ExperimentVariant;
+
+$experiment = Experiment::make()
+    ->setName("a_simple_test")
+    ->setDisplayName("A simple test")
+    ->setDescription("A short description for a simple test")
+    ->setStoryIds([176024833123843])
+    ->addExperimentVariant(
+        ExperimentVariant::make()
+            ->setName("control")
+            ->setDisplayName("Control")
+            ->setWeight(60)
+            ->setControl(true)
+    )
+    ->addExperimentVariant(
+        ExperimentVariant::make()
+            ->setName("test")
+            ->setDisplayName("Test")
+            ->setWeight(40)
+            ->setControl(false)
+    );
+
+$createdExperiment = $experimentApi->create($experiment)->data();
+
+echo "Experiment ID: " . $createdExperiment->id() . PHP_EOL;
+```
+
+### Pushing experiment results
+
+To push results, create an `ExperimentResult` with the `charts` payload and pass it with the experiment ID.
+
+```php
+$experimentId = "123456";
+
+$experimentResult = ExperimentResult::forCharts([
+    [
+        "kind" => "bar",
+        "title" => "Conversion Rate by Variant",
+        "xLabel" => "Variant",
+        "yLabel" => "Rate",
+        "labels" => ["Control", "Variant A"],
+        "series" => [
+            [
+                "label" => "Conversion rate",
+                "data" => [0.12, 0.15],
+            ],
+        ],
+    ],
+]);
+
+$response = $experimentApi->pushResults($experimentId, $experimentResult);
+$pushedResult = $response->data();
+
+echo "Experiment result ID: " . $pushedResult->id() . PHP_EOL;
+echo "Pushed at: " . $pushedResult->pushedAt() . PHP_EOL;
 ```
 
 ## Another Example with a Nested Component
