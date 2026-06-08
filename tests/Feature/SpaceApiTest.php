@@ -12,6 +12,7 @@ use Storyblok\ManagementApi\ManagementApiClient;
 use Storyblok\ManagementApi\QueryParameters\SpacesParams;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\MockResponse;
 
 final class SpaceApiTest extends TestCase
 {
@@ -318,6 +319,43 @@ final class SpaceApiTest extends TestCase
         $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
         // The API response always includes the full space — name comes from the server
         $this->assertSame("Example Space", $storyblokResponse->data()->name());
+    }
+
+    public function testActivateAi(): void
+    {
+        $lastRequest = [];
+        $responses = [
+            function (string $method, string $url, array $options) use (
+                &$lastRequest,
+            ): MockResponse {
+                $lastRequest = [
+                    "method" => $method,
+                    "url" => $url,
+                    "body" => $options["body"] ?? "",
+                ];
+
+                return $this->mockResponse("one-space", 200);
+            },
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $spaceApi = new SpaceApi($mapiClient);
+
+        $storyblokResponse = $spaceApi->activateAi("111");
+
+        $this->assertSame("PUT", $lastRequest["method"]);
+        $this->assertStringEndsWith("/v1/spaces/111", $lastRequest["url"]);
+        $this->assertSame(
+            [
+                "space" => [
+                    "ai_text_generator_disabled" => false,
+                    "inherit_org_ai_configuration" => false,
+                ],
+            ],
+            json_decode($lastRequest["body"], true, flags: JSON_THROW_ON_ERROR),
+        );
+        $this->assertSame(200, $storyblokResponse->getResponseStatusCode());
     }
 
     public function testPartialUpdatePayloadDoesNotContainName(): void

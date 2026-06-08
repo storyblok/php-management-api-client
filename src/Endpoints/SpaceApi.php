@@ -74,6 +74,20 @@ class SpaceApi extends EndpointBase
         return new SpaceResponse($httpResponse);
     }
 
+    /**
+     * Activates Storyblok AI using configuration specific to the space.
+     */
+    public function activateAi(string $spaceId): SpaceResponse
+    {
+        return $this->update(
+            $spaceId,
+            Space::forUpdate([
+                'ai_text_generator_disabled' => false,
+                'inherit_org_ai_configuration' => false,
+            ]),
+        );
+    }
+
     public function duplicate(string|int $duplicateId, string $name, bool $inOrg = false): SpaceResponse
     {
         $body = [

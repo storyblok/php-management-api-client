@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.1 - WIP
+
+- Adding `SpaceApi::activateAi()` for activating Storyblok AI using configuration specific to the space
+
 ## 1.7.0 - 2026-05-31
 - Adding `ExperimentApi` endpoint for creating experiments, retrieving experiments, and pushing experiment results
 - Adding `ExperimentStatus` enum and `byStatus` filter support to `ExperimentApi::page()` for filtering experiments by status

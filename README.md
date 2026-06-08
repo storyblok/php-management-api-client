@@ -249,6 +249,15 @@ printf(
 );
 ```
 
+### Activate Storyblok AI
+
+Activate Storyblok AI using configuration specific to the space:
+
+```php
+$spaceApi = new SpaceApi($clientEU);
+$response = $spaceApi->activateAi($spaceId);
+```
+
 ### Environments / Preview URLs
 
 Preview URLs allow you to define multiple environments (domains or locations) for quickly switching between different preview targets inside the story editor—such as local development, staging, or production.
