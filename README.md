@@ -1623,9 +1623,13 @@ echo "Updated asset, ID: " . $updatedAsset->id() . PHP_EOL;
 ### Converting an Asset to the Global Assets Library
 
 To convert a space-local asset into the global assets library, use the `convert()` method.
-This operation is one-way: it moves the asset from the space assets library to the organization/global assets library.
+This operation moves the asset from the space assets library into the organization global assets library.
+It is one-way: the asset is converted from a space asset into a shared/global asset.
 The target folder ID must be a folder in the global assets library.
-The source space must also be added to the allowed spaces list in the shared library settings; otherwise the API can return a permission error even if your account can upload assets through the UI.
+
+> **Note**
+> The source space must be added to the allowed spaces list in the shared library settings.
+> Otherwise the API can return a permission error, even if your account can upload assets through the UI.
 
 ```php
 $assetId = "111";
