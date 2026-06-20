@@ -1,6 +1,10 @@
 # Changelog
 
-## 1.7.1 - WIP
+## 1.8.0 - WIP
+
+- Adding `AssetApi::convert()` for converting a space-local asset into the global assets library
+
+## 1.7.1 - 2026-06-08
 
 - Adding `SpaceApi::activateAi()` for activating Storyblok AI using configuration specific to the space
 

@@ -406,6 +406,47 @@ final class AssetApiTest extends TestCase
         );
     }
 
+    public function testConvertAssetSuccess(): void
+    {
+        $responses = [
+            $this->mockResponse("converted-asset", 200),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $assetApi = new AssetApi($mapiClient, "222");
+
+        $response = $assetApi->convert("111", "777");
+
+        $this->assertSame(200, $response->getResponseStatusCode());
+        $this->assertSame(
+            "https://example.com/v1/spaces/222/assets/111/convert?target_asset_folder_id=777",
+            $response->getLastCalledUrl(),
+        );
+
+        $data = $response->data();
+        $this->assertSame("111", $data->id());
+        $this->assertNull($data->get("space_id"));
+    }
+
+    public function testConvertAssetWithIntegerIds(): void
+    {
+        $responses = [
+            $this->mockResponse("converted-asset", 200),
+        ];
+
+        $client = new MockHttpClient($responses);
+        $mapiClient = ManagementApiClient::initTest($client);
+        $assetApi = new AssetApi($mapiClient, "999");
+
+        $response = $assetApi->convert(555, 888);
+
+        $this->assertSame(
+            "https://example.com/v1/spaces/999/assets/555/convert?target_asset_folder_id=888",
+            $response->getLastCalledUrl(),
+        );
+    }
+
     public function testFullUploadFlowWithSeparateMethods(): void
     {
         $responses = [

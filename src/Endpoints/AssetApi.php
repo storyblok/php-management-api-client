@@ -222,6 +222,31 @@ class AssetApi extends EndpointSpace
     }
 
     /**
+     * Convert a space-local asset into a shared asset in the global assets library.
+     *
+     * This is a one-way operation from a space asset to the organization/global
+     * library. The target folder must exist in the global assets library.
+     *
+     * @link https://www.storyblok.com/docs/api/management
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function convert(
+        string|int $assetId,
+        string|int $targetAssetFolderId,
+    ): AssetResponse {
+        $httpResponse = $this->makeHttpRequest(
+            "POST",
+            "/v1/spaces/" . $this->spaceId . "/assets/" . $assetId . "/convert",
+            [
+                "query" => [
+                    "target_asset_folder_id" => $targetAssetFolderId,
+                ],
+            ],
+        );
+        return new AssetResponse($httpResponse);
+    }
+
+    /**
      * @param $assetId
      */
     public function delete(string $assetId): AssetResponse

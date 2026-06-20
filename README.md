@@ -1620,6 +1620,23 @@ $updatedAsset = $assetApi->update($assetId, $asset)->data();
 echo "Updated asset, ID: " . $updatedAsset->id() . PHP_EOL;
 ```
 
+### Converting an Asset to the Global Assets Library
+
+To convert a space-local asset into the global assets library, use the `convert()` method.
+This operation is one-way: it moves the asset from the space assets library to the organization/global assets library.
+The target folder ID must be a folder in the global assets library.
+The source space must also be added to the allowed spaces list in the shared library settings; otherwise the API can return a permission error even if your account can upload assets through the UI.
+
+```php
+$assetId = "111";
+$targetAssetFolderId = "777";
+
+$convertedAsset = $assetApi->convert($assetId, $targetAssetFolderId)->data();
+
+echo "Converted asset, ID: " . $convertedAsset->id() . PHP_EOL;
+echo "Space ID: " . var_export($convertedAsset->get("space_id"), true) . PHP_EOL;
+```
+
 ### Deleting an Asset
 
 To delete an asset, you can use the `delete()` method. The `delete()` method requires the asset ID (you want to delete) as parameter:
