@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.8.0 - WIP
+## 1.8.0 - 2026-06-20
 
 - Adding `AssetApi::convert()` for converting a space-local asset into the global assets library
 
