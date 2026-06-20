@@ -342,7 +342,6 @@ final class StoryBaseDataTest extends TestCase
     {
         $folder = Story::asFolder(
             name: "Blog",
-            slug: null,
             parentId: 42,
             defaultContentType: "page",
             contentTypes: ["page", "post"],

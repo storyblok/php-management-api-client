@@ -27,7 +27,7 @@ final class StoriesParamsTest extends TestCase
     #[Test]
     public function with_parent_null_is_excluded_from_array(): void
     {
-        $params = new StoriesParams(withParent: null);
+        $params = new StoriesParams();
         $this->assertArrayNotHasKey('with_parent', $params->toArray());
     }
 
@@ -50,7 +50,7 @@ final class StoriesParamsTest extends TestCase
     #[Test]
     public function in_release_null_is_excluded(): void
     {
-        $params = new StoriesParams(inRelease: null);
+        $params = new StoriesParams();
         $this->assertArrayNotHasKey('in_release', $params->toArray());
     }
 

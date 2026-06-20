@@ -66,7 +66,6 @@ final class ManagementApiClientTest extends TestCase
         $client = new ManagementApiClient(
             personalAccessToken: "test-token",
             region: Region::EU,
-            baseUri: null,
             shouldRetry: true,
         );
 
@@ -81,7 +80,6 @@ final class ManagementApiClientTest extends TestCase
         $client = new ManagementApiClient(
             personalAccessToken: "test-token",
             region: Region::EU,
-            baseUri: null,
             shouldRetry: false,
         );
 
