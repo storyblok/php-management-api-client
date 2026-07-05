@@ -974,8 +974,10 @@ $storyApi->update(
   Set to `true` to publish the story immediately after updating it.
 
 - **`lang`** (`string`, optional)
-  Language code to update or publish the story individually.
-  The language must be enabled in **Settings → Internationalization**.                           |
+  Language code to publish the story individually (per the Management API, `lang` controls per-language *publishing*, so it is meaningful together with `publish: true`).
+  The language must be enabled in **Settings → Internationalization**.
+
+  > **Note:** `lang` does not set translated field values. Storyblok stores translations at the field level using the `fieldname__i18n__<lang>` key inside the story content (for example `heading__i18n__de`). To translate content, set those suffixed keys on the story content payload.
 
 #### Examples
 
@@ -1018,12 +1020,13 @@ $storyApi->update(
 );
 ```
 
-Update a specific language:
+Publish a single language (combine `lang` with `publish`):
 
 ```php
 $storyApi->update(
     storyId: '123456',
     storyData: $story,
+    publish: true,
     lang: 'de'
 );
 ```
@@ -3141,5 +3144,5 @@ This SDK is licensed under the MIT License. See the LICENSE file for details.
 
 ## Next implementations
 
-- [ ] define LocalizedPath class to allow to handle the localized path in setting the Story for creating and update the story
-- [ ] add the set method for localized field (for example set("heading", $value, "de")) for setting the `heading__i18n__de` field
+- [ ] add a setter for localized field values (for example `set("heading", $value, "de")`) that writes the field-level translation key `heading__i18n__de` on the story content
+- [ ] define a `LocalizedPath` class to handle translatable slugs (per-language paths) when creating and updating a story
