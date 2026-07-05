@@ -86,7 +86,7 @@ The second optional parameter is for setting the region.
 
 > If you are interested to know more about Storyblok regions, check this FAQ: <https://www.storyblok.com/faq/where-are-your-servers-or-aws-sites-located>
 
-We provide an Enum class to set the region. In this case, you can use the `Region` enum: `Region::US` or `Region::AP` or `Region::CA` or `Region::CN`.
+We provide an Enum class to set the region. In this case, you can use the `Region` enum: `Region::EU` (default) or `Region::US` or `Region::AP` or `Region::CA` or `Region::CN`.
 
 For example, for using the **US** region, you can use:
 ```php
@@ -278,6 +278,8 @@ foreach ($space->environments() as $key => $environment) {
 To add a new preview environment, create a `SpaceEnvironment` instance and attach it to the space:
 
 ```php
+$editSpace = $spaceApi->get($spaceId)->data();
+
 $previewEnvironment = new SpaceEnvironment(
     "Local Development",
     $previewURLlocalhost
@@ -458,7 +460,7 @@ $stories = $response->data();
 echo "Stories found with the page: " . $stories->howManyStories() . PHP_EOL;
 foreach ($stories as $key => $story) {
     echo $story->id() . "  " .
-    $story->getName() . PHP_EOL;
+    $story->name() . PHP_EOL;
 }
 ```
 
@@ -514,7 +516,7 @@ foreach ($stories as $story) {
 For retrieving stories with `article-page` content type:
 
 ```php
-$stories = $storyApi->all(
+$stories = $storyBulkApi->all(
     filters: (new QueryFilters())->add(
         new Filter(
             "component",
@@ -1002,7 +1004,7 @@ You can use the `ComponentApi` class to fetch all components from a specific spa
 
 ```php
 use Storyblok\ManagementApi\ManagementApiClient;
-use Storyblok\ManagementApi\Api\ComponentApi;
+use Storyblok\ManagementApi\Endpoints\ComponentApi;
 use Psr\Log\NullLogger;
 
 $client = new ManagementApiClient($storyblokPersonalAccessToken);
@@ -1501,7 +1503,7 @@ $currentUser = (new UserApi($client))->me()->data();
 // "User ID"
 echo $currentUser->id() . PHP_EOL;
 // "User identifier"
-echo $currentUser->userid() . PHP_EOL;
+echo $currentUser->userId() . PHP_EOL;
 // "User email"
 echo $currentUser->email() . PHP_EOL;
 // "User has Organization"
@@ -1648,7 +1650,7 @@ To delete an asset, you can use the `delete()` method. The `delete()` method req
 ```php
 $assetApi = new AssetApi($client, $spaceId);
 echo "DELETING " . $assetId . PHP_EOL;
-$deletedAsset = $assetApi->delete($assetId)-data();
+$deletedAsset = $assetApi->delete($assetId)->data();
 echo "DELETED ASSET, ID : " . $deletedAsset->id() . PHP_EOL;
 ```
 
@@ -2158,10 +2160,10 @@ For using the `WorkflowApi` class you have to import:
 use Storyblok\ManagementApi\Endpoints\WorkflowApi;
 ```
 
-For using the `Workflow` class you have to import:
+For using the `WorkflowData` class you have to import:
 
 ```php
-use Storyblok\ManagementApi\Data\Workflow;
+use Storyblok\ManagementApi\Data\WorkflowData;
 ```
 
 ### Retrieving workflows
@@ -2198,7 +2200,7 @@ If you need to handle workflow stages (retrieving workflow stages or create new 
 
 ```php
 $response = $workflowStageApi->list();
-/** @var WorkflowsData $workflows */
+/** @var WorkflowStagesData $workflowStages */
 $workflowStages = $response->data();
 foreach ($workflowStages as $key => $workflowStage) {
     echo "Workflow Stage: " . $workflowStage->name() . " - ";
@@ -2287,10 +2289,10 @@ If you need to move a story to a specific workflow stage (using the workflow sta
 ```php
 $storyId = 12345;
 $workflowStageId = 54321;
-$changeDataResponse = $changesApi->create(
+$changeDataResponse = $changeApi->create(
     WorkflowStageChange::makeFromParams(
         $storyId,
-        $workflowStageId
+        $workflowStageId,
         dueDate: date("Y-m-d H:i:s", strtotime("+3 days")),
     ),
     commentMessage: "Comment for stage",
@@ -2550,7 +2552,7 @@ Calling GET HTTP method with `spaces/:spaceid/internal_tags`:
 
 ```php
 $spaceId = "12345";
-$response = new ManagementApi($client)->get(
+$response = (new ManagementApi($client))->get(
     "spaces/{$spaceId}/internal_tags",
     [
         "by_object_type" => "asset",
@@ -2638,7 +2640,7 @@ $tag = [
 ];
 
 // Send the POST request to create the tag
-$response = $managementApi()->post(
+$response = $managementApi->post(
     "spaces/{$spaceId}/internal_tags",
     ["internal_tag" => $tag]
 );
@@ -2670,7 +2672,7 @@ Here is the complete example:
 
 ```php
 $tag["name"] = $tag["name"] . "-UPDATED";
-$response = $managementApi()->put(
+$response = $managementApi->put(
     "spaces/{$spaceId}/internal_tags/{$id}",
     ["internal_tag" => $tag]
 );
@@ -2689,7 +2691,7 @@ When an endpoint supports partial updates, use the `patch` method of the `Manage
 It works like `put`, but sends a PATCH HTTP request.
 
 ```php
-$response = $managementApi()->patch(
+$response = $managementApi->patch(
     "spaces/{$spaceId}/something/{$id}/somethingelse",
     [
         "values" => [
@@ -2716,7 +2718,7 @@ After sending the delete request, check the response to confirm whether the oper
 Here is the complete example:
 
 ```php
-$response = $managementApi()->delete(
+$response = $managementApi->delete(
     "spaces/{$spaceId}/internal_tags/{$id}"
 );
 if ($response->isOk()) {
