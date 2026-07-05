@@ -24,6 +24,46 @@ The *Storyblok Management API PHP Client* library simplifies the integration wit
 
 For the Content API PHP Client, see [storyblok/php-content-api-client](https://github.com/storyblok/php-content-api-client).
 
+## Table of Contents
+
+**Getting started**
+
+- [Installation](#installation)
+- [Quickstart](#quickstart)
+- [Initializing the `ManagementApiClient`](#initializing-the-managementapiclient)
+- [Handling the Personal Access Token](#handling-the-personal-access-token)
+- [Using the Api classes](#using-the-api-classes)
+
+**Resources**
+
+- [Spaces](#handling-spaces)
+- [Stories](#handling-stories)
+- [Components](#handling-components)
+- [Users](#handling-users)
+- [Assets](#handling-assets)
+- [Asset folders](#handling-asset-folders)
+- [Internal tags](#handling-internal-tags)
+- [Tags](#handling-tags)
+- [Experiments](#handling-experiments)
+- [Workflows](#handling-workflows)
+- [Workflow stages](#handling-workflow-stage)
+- [Workflow stage changes](#handling-workflow-stage-changes)
+- [Apps](#handling-apps)
+- [App provisions](#handling-app-provisions)
+- [Collaborators](#handling-collaborators)
+
+**Examples & advanced usage**
+
+- [A practical example](#a-practical-example)
+- [Nested components example](#another-example-with-a-nested-component)
+- [Using the generic `ManagementApi` class](#using-the-managementapi-class)
+
+**Reference**
+
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Installation
 
 Install the package via Composer:
@@ -33,6 +73,42 @@ composer require storyblok/php-management-api-client
 ```
 
 Below is an example showcasing how to use the library to interact with the Management API.
+
+## Quickstart
+
+Every interaction follows the same shape: build the client once, instantiate the resource-specific API class (scoped to a space), call a method, then read the typed result with `->data()`.
+
+```php
+<?php
+require 'vendor/autoload.php';
+
+use Storyblok\ManagementApi\ManagementApiClient;
+use Storyblok\ManagementApi\Endpoints\StoryApi;
+use Storyblok\ManagementApi\Data\Story;
+use Storyblok\ManagementApi\Data\StoryComponent;
+
+// 1. Create the client with your Personal Access Token
+$client = new ManagementApiClient($storyblokPersonalAccessToken);
+
+// 2. Pick the endpoint you need, scoped to a space
+$spaceId = "your-space-id";
+$storyApi = new StoryApi($client, $spaceId);
+
+// 3. Build the content and create a story
+$content = StoryComponent::makeComponent("article-page", [
+    "title" => "My first story",
+]);
+$story = new Story(
+    name: "My first story",
+    slug: "my-first-story",
+    content: $content,
+);
+
+$created = $storyApi->create($story)->data();
+echo "Created story #" . $created->id() . " - " . $created->name() . PHP_EOL;
+```
+
+The sections below cover each resource in detail. If a dedicated API class does not exist for the endpoint you need, fall back to the generic [`ManagementApi` class](#using-the-managementapi-class).
 
 ## Initializing the `ManagementApiClient`
 
