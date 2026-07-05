@@ -180,7 +180,6 @@ class StoryComponent extends BaseData
      * Set the allowed content types for stories inside this folder.
      *
      * @param string[] $contentTypes list of component technical names
-     * @return $this
      */
     public function setContentTypes(array $contentTypes): self
     {
@@ -191,8 +190,6 @@ class StoryComponent extends BaseData
     /**
      * Lock the content type restriction for subfolders.
      * When enabled, subfolders inherit the same content type restriction.
-     *
-     * @return $this
      */
     public function setLockSubfoldersContentTypes(bool $lock = true): self
     {

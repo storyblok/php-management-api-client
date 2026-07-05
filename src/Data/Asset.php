@@ -32,10 +32,7 @@ class Asset extends BaseData
         }
 
         if (
-            !(
-                $dataObject->hasKey("filename") &&
-                $dataObject->hasKey("fieldtype")
-            )
+            !$dataObject->hasKey("filename") || !$dataObject->hasKey("fieldtype")
         ) {
             // is not valid
         }

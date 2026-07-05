@@ -135,7 +135,6 @@ class Story extends StoryBaseData
 
     /**
      * Set tags for Story, from a `Tags` collection
-     * @return $this
      */
     public function setTags(Tags $tags): self
     {
@@ -145,7 +144,6 @@ class Story extends StoryBaseData
     /**
      * Set tags for Story, from a string of arrays like ["tag1", "tag2"]
      * @param string[] $tagsArray
-     * @return $this
      */
     public function setTagsFromArray(array $tagsArray): self
     {
@@ -157,7 +155,6 @@ class Story extends StoryBaseData
      * Set the folder for the Story.
      *
      * @param int|string $folderId identifier of the Folder where to store the story
-     * @return $this
      */
     public function setFolderId(int|string $folderId): self
     {
@@ -167,8 +164,6 @@ class Story extends StoryBaseData
 
     /**
      * Mark this story as a folder.
-     *
-     * @return $this
      */
     public function setIsFolder(bool $isFolder = true): self
     {
@@ -180,7 +175,6 @@ class Story extends StoryBaseData
      * Set the default content type for stories created inside this folder.
      *
      * @param string $componentName the technical name of the component
-     * @return $this
      */
     public function setDefaultRoot(string $componentName): self
     {
@@ -190,8 +184,6 @@ class Story extends StoryBaseData
 
     /**
      * Disable (or enable) the Visual Editor for this story/folder.
-     *
-     * @return $this
      */
     public function setDisableFeEditor(bool $disable = true): self
     {

@@ -33,7 +33,7 @@ class StoryCollectionItem extends StoryBaseData
     public static function make(array $data = []): self
     {
         $dataObject = new StoryblokData($data);
-        if (!($dataObject->hasKey("name") && $dataObject->hasKey("slug"))) {
+        if (!$dataObject->hasKey("name") || !$dataObject->hasKey("slug")) {
             // is not valid
         }
 
@@ -54,7 +54,6 @@ class StoryCollectionItem extends StoryBaseData
 
     /**
      * Set tags for Story, from a `Tags` collection
-     * @return $this
      */
     public function setTags(Tags $tags): self
     {
@@ -64,7 +63,6 @@ class StoryCollectionItem extends StoryBaseData
     /**
      * Set tags for Story, from a string of arrays like ["tag1", "tag2"]
      * @param string[] $tagsArray
-     * @return $this
      */
     public function setTagsFromArray(array $tagsArray): self
     {

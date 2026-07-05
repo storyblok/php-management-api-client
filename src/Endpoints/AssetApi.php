@@ -140,10 +140,7 @@ class AssetApi extends EndpointSpace
             ]);
 
         if (
-            !(
-                $responseUpload->getStatusCode() >= 200 &&
-                $responseUpload->getStatusCode() < 300
-            )
+            $responseUpload->getStatusCode() < 200 || $responseUpload->getStatusCode() >= 300
         ) {
             throw new \Exception(
                 "Upload Asset, Upload call failed (Step 2) , " .

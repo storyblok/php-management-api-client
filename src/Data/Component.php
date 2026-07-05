@@ -473,7 +473,6 @@ class Component extends BaseData
 
     /**
      * Set tags for Component, from a `Tags` collection
-     * @return $this
      */
     public function setTags(Tags $tags): self
     {
@@ -483,7 +482,6 @@ class Component extends BaseData
     /**
      * Set tags for Component, from a string of arrays like ["tag1", "tag2"]
      * @param string[] $tagsArray
-     * @return $this
      */
     public function setTagsFromArray(array $tagsArray): self
     {
