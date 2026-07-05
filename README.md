@@ -183,9 +183,9 @@ To access the Management API and interact with its endpoints, you need to follow
 To obtain a proper token for accessing the Management API you can choose:
 
 - **Personal Access Token**: Navigate to [your Storyblok account settings](https://app.storyblok.com/#/me/account?tab=token) and click on "Generate new token."
-- **OAuth Token**: Follow the steps outlined in [this guide on authentication apps](https://www.storyblok.com/docs/plugins/authentication-apps).
+- **OAuth Token**: Follow the steps outlined in [this guide on authentication apps](https://www.storyblok.com/docs/plugins/oauth-authorization-flow).
 
-> More information about the Storyblok Management API tokens: <https://www.storyblok.com/docs/api/management/getting-started/authentication>
+> More information about the Storyblok Management API tokens: <https://www.storyblok.com/docs/concepts/access-tokens>
 
 Once you have your Token, instead of storing the access token directly in the source code, you should consider handling it via environment variables.
 For example, you can create the `.env` file (if it does not already exist) and set a parameter for storing the Personal Access Token.
@@ -367,6 +367,34 @@ $editSpace->addEnvironment($previewEnvironment);
 You can repeat this for any number of environments—such as staging, QA, production—allowing editors to switch preview contexts seamlessly.
 
 
+### Creating a space
+
+Create a new space with the `create()` method, passing a `Space` object:
+
+```php
+$spaceApi = new SpaceApi($client);
+
+$newSpace = new Space("My New Space");
+$created = $spaceApi->create($newSpace)->data();
+
+echo "Created space ID: " . $created->id() . PHP_EOL;
+echo "Name: " . $created->name() . PHP_EOL;
+```
+
+### Duplicating a space
+
+Create a copy of an existing space with `duplicate()`. Pass the source space ID and the name for the new space. Set the third parameter (`inOrg`) to `true` to create the duplicate inside your organization:
+
+```php
+$spaceApi = new SpaceApi($client);
+
+$duplicated = $spaceApi->duplicate($sourceSpaceId, "Copy of my space")->data();
+// Create the duplicate inside the organization:
+// $duplicated = $spaceApi->duplicate($sourceSpaceId, "Copy of my space", inOrg: true)->data();
+
+echo "Duplicated space ID: " . $duplicated->id() . PHP_EOL;
+```
+
 ### Update Space settings
 
 You can edit space settings using the `update()` method. There are two ways to build the `Space` object to send, depending on how many fields you want to change.
@@ -457,6 +485,15 @@ try {
 }
 ```
 
+### Deleting a space
+
+Delete a space with the `delete()` method, passing the space ID:
+
+```php
+$spaceApi = new SpaceApi($client);
+$spaceApi->delete($spaceId);
+```
+
 ## Handling Stories
 
 For using the `StoryApi` class you have to import:
@@ -522,6 +559,44 @@ foreach ($stories as $story) {
 }
 ```
 
+The full set of typed accessors available on each story item is:
+
+| Accessor | Returns | Description |
+|---|---|---|
+| `id()` | `string` | Story ID |
+| `uuid()` | `string` | Story UUID |
+| `name()` | `string` | Story name |
+| `slug()` | `string` | Story slug |
+| `fullSlug()` | `string` | Full slug including parent folders |
+| `contentType()` | `string` | Content type (component) name |
+| `createdAt($format = "Y-m-d")` | `?string` | Creation date, formatted |
+| `updatedAt($format = "Y-m-d")` | `?string` | Last update date, formatted |
+| `publishedAt($format = "Y-m-d")` | `?string` | Publish date, formatted |
+| `firstPublishedAt($format = "Y-m-d")` | `?string` | First publish date, formatted |
+| `parentId()` | `int` | Parent folder ID (`0` at root) |
+| `groupId()` | `string` | Group ID (UUID) shared between alternates |
+| `releaseId()` | `int` | Release ID (`0` if none) |
+| `workflowStageId()` | `?int` | Workflow stage ID, or `null` |
+| `hasWorkflowStage()` | `bool` | Whether the story is in a workflow stage |
+| `hasUnpublishedChanges()` | `bool` | Whether there are unpublished draft changes |
+| `isStartpage()` | `bool` | Whether the story is the folder start page |
+| `isFolder()` | `bool` | Whether the story is a folder |
+| `hasTags()` | `bool` | Whether the story has tags |
+| `tagListAsArray()` | `array` | Tags as an array |
+| `tagListAsString()` | `string` | Tags joined with `", "` |
+| `isValid()` | `bool` | Whether `name` and `slug` are present and valid |
+
+> `contentType()` is available on story list items (`StoryCollectionItem`). All the other accessors are shared by both list items and the single `Story` object returned by `get()`.
+
+The `Stories` collection itself exposes two helpers: `howManyStories()` returns the number of items in the collection, and `getUuids()` returns an array of every story's UUID:
+
+```php
+$stories = $storyApi->page()->data();
+
+echo $stories->howManyStories() . PHP_EOL; // number of items
+$uuids = $stories->getUuids();             // ["uuid-1", "uuid-2", ...]
+```
+
 In the case you need to retrieve the response to access to some additional information you can obtain a `StoriesResponse` via the `page()` method:
 
 ```php
@@ -543,7 +618,7 @@ foreach ($stories as $key => $story) {
 ### Filtering stories
 You can filter stories using `StoriesParams`.
 
-> The `StoriesParams` attributes are documented in the `Query Parameters` of [Retrieving multiple stories](https://www.storyblok.com/docs/api/management/core-resources/stories/retrieve-multiple-stories)
+> The `StoriesParams` attributes are documented in the `Query Parameters` of [Retrieving multiple stories](https://www.storyblok.com/docs/api/management/stories/retrieve-multiple-stories)
 
 ```php
 use Storyblok\ManagementApi\Endpoints\StoryApi;
@@ -710,6 +785,27 @@ $hero = StoryComponent::makeComponent("hero")
     ->setRichtext("body", RichtextField::paragraph("Intro"));
 ```
 
+`MultilinkField` provides a named constructor for each link type:
+
+```php
+use Storyblok\ManagementApi\Data\Fields\MultilinkField;
+
+MultilinkField::url("https://example.com");   // external URL
+MultilinkField::story($storyUuid);            // link to an internal story (by id/UUID)
+MultilinkField::asset($assetId);              // link to an asset (by id)
+MultilinkField::email("hello@example.com");   // email link
+```
+
+Each of them can be chained with `openInNewTab()` / `openInSameTab()`, and with the `setAnchor()`, `setTarget()`, `setUrl()`, and `setCachedUrl()` mutators.
+
+To build the value passed to `setAssetField()`, use `AssetField::makeFromAsset()` with an `Asset` you retrieved or uploaded:
+
+```php
+use Storyblok\ManagementApi\Data\Fields\AssetField;
+
+$assetField = AssetField::makeFromAsset($assetApi->get($assetId)->data());
+```
+
 The specialized setters are the recommended path for common structured fields,
 but they are additive. Existing raw payloads still work, and every content/value
 object exposes `get()`, `set()`, `setData()`, and `toArray()` so you can keep
@@ -815,6 +911,27 @@ For publishing a story by the story identifier you can use the `publish` method:
 
 ```php
 $storyApi->publish($storyId);
+```
+
+You can optionally publish for a specific release or a specific language:
+
+```php
+$storyApi->publish(
+    $storyId,
+    release_id: $releaseId, // int|string, publish within a release
+    language: "de",          // publish only the given language
+);
+```
+
+### Unpublishing a story
+
+To unpublish a story, use the `unpublish` method. You can optionally target a specific language:
+
+```php
+$storyApi->unpublish($storyId);
+
+// Unpublish only a specific language
+$storyApi->unpublish($storyId, language: "de");
 ```
 
 ### Update a Story
@@ -1038,6 +1155,29 @@ foreach (csvGenerator("stories.csv") as $row) {
 
 This approach is recommended when working with large datasets or when reliability and controlled API usage are critical.
 
+### Creating multiple stories in bulk
+
+`StoryBulkApi::createStories()` accepts an array of `Story` objects and creates them one by one, with built-in retry handling for `429 Too Many Requests` responses (up to 3 retries per story). It returns a `Generator`, so the stories are created as you iterate over the result:
+
+```php
+use Storyblok\ManagementApi\Endpoints\StoryBulkApi;
+use Storyblok\ManagementApi\Data\Story;
+use Storyblok\ManagementApi\Data\StoryComponent;
+
+$storyBulkApi = new StoryBulkApi($client, $spaceId);
+
+$stories = [
+    new Story("First story", "first-story", new StoryComponent("page")),
+    new Story("Second story", "second-story", new StoryComponent("page")),
+];
+
+foreach ($storyBulkApi->createStories($stories) as $created) {
+    echo "Created: " . $created->id() . " - " . $created->name() . PHP_EOL;
+}
+```
+
+Because the method is a generator, nothing is sent until you start iterating. If a story exceeds the maximum number of retries after repeated `429` responses, a `StoryblokApiException` is thrown.
+
 ### Getting story versions
 
 You can retrieve versions of a story using the `versions()` method. The story ID is required as the first parameter:
@@ -1127,6 +1267,46 @@ You can use the `dataFolders()` method:
 $folders = $componentsResponse->dataFolders();
 ```
 
+
+### Filtering components
+
+`ComponentApi::all()` accepts an optional `ComponentsParams` object to filter and sort the returned components:
+
+```php
+use Storyblok\ManagementApi\QueryParameters\ComponentsParams;
+use Storyblok\ManagementApi\QueryParameters\Type\SortBy;
+use Storyblok\ManagementApi\QueryParameters\Type\Direction;
+
+$components = $componentApi->all(
+    new ComponentsParams(
+        isRoot: true,                              // only content-type components (is_root)
+        search: "hero",                            // filter by component name
+        sortBy: new SortBy("name", Direction::Asc), // sort the results
+    )
+)->data();
+```
+
+The available `ComponentsParams` options are:
+
+| Parameter | Type | Description |
+|---|---|---|
+| `byIds` | `array<string>\|string` | Fetch only components with these IDs |
+| `sortBy` | `SortBy` | Sort the results (see `SortBy` below) |
+| `isRoot` | `bool` | When `true`, return only content-type components |
+| `search` | `string` | Filter by component name |
+| `inGroup` | `string` | Filter by component group (folder) UUID |
+
+`SortBy` takes a field name and a `Direction` (`Direction::Asc` by default, or `Direction::Desc`):
+
+```php
+use Storyblok\ManagementApi\QueryParameters\Type\SortBy;
+use Storyblok\ManagementApi\QueryParameters\Type\Direction;
+
+new SortBy("name");                       // ascending by name
+new SortBy("created_at", Direction::Desc); // descending by creation date
+```
+
+The same `SortBy` class is reused by other query-parameter objects, such as `ComponentsParams` and `AssetsParams`.
 
 ### Creating a new component
 
@@ -1657,6 +1837,19 @@ $assets = $assetApi->page(
 In the example above, we are filtering the deleted assets (`inFolder : -1`) and with the filename that contains the term `something`.
 Additional info: using `PaginationParams` you can retrieve a specific page. The example `new PaginationParams(1,1000)` retrieves the page number `1` and `1000` items per page.
 
+The `AssetsParams` constructor supports the following options:
+
+| Parameter | Type | Description |
+|---|---|---|
+| `inFolder` | `int\|string` | Filter by asset folder ID (use `-1` for deleted assets) |
+| `sortBy` | `SortBy` | Sort the results (e.g. `new SortBy("created_at", Direction::Desc)`) |
+| `isPrivate` | `bool` | When `true`, return only private assets |
+| `search` | `string` | Filter by filename |
+| `byAlt` | `string` | Filter by alt text |
+| `byCopyright` | `string` | Filter by copyright |
+| `byTitle` | `string` | Filter by title |
+| `withTags` | `array<string>\|string` | Filter by tags |
+
 ### Getting one asset
 
 To get a specific asset, you can use the `AssetApi` and the `AssetData` classes.
@@ -1970,6 +2163,31 @@ if ($response->isOk()) {
 }
 ```
 
+### Getting a single tag
+
+Tags are identified by their name. To retrieve a single tag, use the `get()` method:
+
+```php
+$tag = $tagApi->get("my-tag")->data();
+echo $tag->name() . PHP_EOL;
+```
+
+### Renaming a tag
+
+To rename a tag, use the `update()` method, passing the current name and the new name:
+
+```php
+$tagApi->update("my-tag", "my-renamed-tag");
+```
+
+### Deleting a tag
+
+To delete a tag, use the `delete()` method, passing the tag name:
+
+```php
+$tagApi->delete("my-tag");
+```
+
 ## A practical example
 
 Now we want to upload a new image, and then create a new simple story that includes the new image.
@@ -2259,6 +2477,16 @@ foreach ($workflows as $key => $workflow) {
 
 ```
 
+You can restrict the list to one or more content types by passing them to `list()`:
+
+```php
+// Single content type
+$response = $workflowApi->list("article-page");
+
+// Multiple content types
+$response = $workflowApi->list(["article-page", "landing-page"]);
+```
+
 ### Creating a new custom workflow
 
 ```php
@@ -2266,6 +2494,33 @@ $workflowApi = new WorkflowApi($client, $spaceId);
 $workflowData = new WorkflowData();
 $workflowData->setName("Name");
 $response = $workflowApi->create($workflowData);
+```
+
+### Getting a single workflow
+
+Retrieve a single workflow by its ID with the `get()` method:
+
+```php
+$workflow = $workflowApi->get($workflowId)->data();
+echo $workflow->name() . PHP_EOL;
+```
+
+### Updating a workflow
+
+Update an existing workflow with the `update()` method, passing the workflow ID and a `WorkflowData` object:
+
+```php
+$workflowData = new WorkflowData();
+$workflowData->setName("Updated name");
+$workflowApi->update($workflowId, $workflowData);
+```
+
+### Deleting a workflow
+
+Delete a workflow with the `delete()` method, passing the workflow ID:
+
+```php
+$workflowApi->delete($workflowId);
 ```
 
 ## Handling Workflow Stage
@@ -2306,6 +2561,51 @@ $workflowStageData = new WorkflowStageData();
 $workflowStageData->setName("Name");
 $workflowStageData->setWorkflowId($workflowId);
 $response = $workflowStageApi->create($workflowStageData);
+```
+
+### Filtering workflow stages
+
+`WorkflowStageApi::list()` accepts optional filters:
+
+```php
+$response = $workflowStageApi->list(
+    inWorkflowId: $workflowId,  // only stages belonging to this workflow
+    search: "review",            // filter by name
+);
+```
+
+| Parameter | Type | Description |
+|---|---|---|
+| `inWorkflowId` | `string\|int` | Return only stages of the given workflow |
+| `search` | `string` | Filter by stage name |
+| `byIds` | `string\|string[]` | Return only stages with these IDs |
+| `excludeId` | `string` | Exclude the stage with this ID |
+
+### Getting a single workflow stage
+
+Retrieve a single stage by its ID with the `get()` method:
+
+```php
+$stage = $workflowStageApi->get($workflowStageId)->data();
+echo $stage->name() . PHP_EOL;
+```
+
+### Updating a workflow stage
+
+Update a stage with the `update()` method, passing the stage ID and a `WorkflowStageData` object:
+
+```php
+$workflowStageData = new WorkflowStageData();
+$workflowStageData->setName("Updated name");
+$workflowStageApi->update($workflowStageId, $workflowStageData);
+```
+
+### Deleting a workflow stage
+
+Delete a stage with the `delete()` method, passing the stage ID:
+
+```php
+$workflowStageApi->delete($workflowStageId);
 ```
 
 ## Handling workflow stage changes
@@ -2380,6 +2680,22 @@ According to the structure of the Management API, when creating a new workflow s
 - `WorkflowStageChange::makeFromParams()`: defines the stage change payload, including the story ID, target workflow stage ID, and optional attributes such as a due date.
 - `commentMessage`: a text message added to the stage change, useful for providing context or reviewer instructions.
 - `notify`: a boolean indicating whether Storyblok should send notifications to users associated with the workflow stage.
+- `releaseId`: the numeric ID of the release the stage change applies to.
+- `assignSpaceRoleIds`: a space role ID (`int`) or an array of role IDs (`int[]`) to assign the stage change to.
+- `assignUserIds`: a user ID (`int`) or an array of user IDs (`int[]`) to assign the stage change to.
+
+For example, to assign the stage change to specific users and a release:
+
+```php
+$changeApi->create(
+    WorkflowStageChange::makeFromParams($storyId, $workflowStageId),
+    releaseId: $releaseId,
+    commentMessage: "Please review",
+    notify: true,
+    assignUserIds: [111, 222],
+    assignSpaceRoleIds: 333,
+);
+```
 
 ## Handling Apps
 
@@ -2597,9 +2913,9 @@ foreach ($collaborators as $key => $collaborator) {
 
 To illustrate how to use the `ManagementApi` class, we will demonstrate its usage with the Internal Tags endpoint.
 
-> **Reference**: [Management API documentation for the Internal Tags endpoint](https://www.storyblok.com/docs/api/management/core-resources/internal-tags/)
+> **Reference**: [Management API documentation for the Internal Tags endpoint](https://www.storyblok.com/docs/api/management/internal-tags)
 
-This approach can be adapted to create other resources by modifying the endpoint and payload, for example, for handling data sources, components, etc. To learn more about the endpoints, the parameters, and the structure of the response payload, you can use the [Storyblok Management API reference](https://www.storyblok.com/docs/api/management/getting-started).
+This approach can be adapted to create other resources by modifying the endpoint and payload, for example, for handling data sources, components, etc. To learn more about the endpoints, the parameters, and the structure of the response payload, you can use the [Storyblok Management API reference](https://www.storyblok.com/docs/api/management).
 
 ### Retrieving content with ManagementApi class
 
@@ -2610,7 +2926,7 @@ To retrieve content using the `ManagementApi` class:
 3. Call the `get` method of the `ManagementApi` class using the appropriate parameters.
 
 For example, to retrieve multiple internal tags, use the Internal Tags endpoint with the GET HTTP method:
-[Retrieve Multiple Internal Tags](https://www.storyblok.com/docs/api/management/core-resources/internal-tags/retrieve-multiple-internal-tags).
+[Retrieve Multiple Internal Tags](https://www.storyblok.com/docs/api/management/internal-tags/retrieve-multiple-internal-tags).
 
 Below is an example of initializing the client for the EU region (default) using a Personal Access Token:
 
@@ -2813,7 +3129,7 @@ The `ManagementApi` class is used for performing generic administrative tasks in
 
 ## Documentation
 
-Refer to the official documentation for detailed API descriptions and additional usage examples: https://www.storyblok.com/docs/api/management/getting-started
+Refer to the official documentation for detailed API descriptions and additional usage examples: https://www.storyblok.com/docs/api/management
 
 ## Contributing
 
