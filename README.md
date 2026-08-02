@@ -1340,7 +1340,10 @@ $component = Component::contentType("my-component")
         FieldRichtext::make("description")
             ->setDisplayName("Description")
             ->setTranslatable()
-            ->setToolbar(["bold", "italic", "link"]),
+            ->setCustomizeToolbar()
+            ->setToolbar(["bold", "italic", "link"])
+            ->setAllowTargetBlank()
+            ->setAllowCustomAttributes(),
         FieldAsset::make("image")
             ->setDisplayName("Image"),
         FieldOption::make("category")
@@ -1388,7 +1391,7 @@ Each specialized class adds its own setters:
 | `FieldBoolean` | `setDefaultValue()`, `setInlineLabel()`, `setCheckboxLabel()` |
 | `FieldOption` | `setOptions()`, `addOption()`, `addOptionValue()`, `setSource()`, `setDatasourceSlug()`, `setDefaultValue()` |
 | `FieldOptions` | `setOptions()`, `addOption()`, `addOptionValue()`, `setSource()`, `setDatasourceSlug()` |
-| `FieldRichtext` | `setToolbar()`, `setRestrictComponents()`, `setComponentWhitelist()` |
+| `FieldRichtext` | `setCustomizeToolbar()`, `setToolbar()`, `setStyleOptions()`, `setAllowTargetBlank()`, `setAllowCustomAttributes()`, `setRestrictComponents()`, `setRestrictType()`, `setComponentWhitelist()`, `setComponentDenylist()`, `setComponentTagWhitelist()`, `setComponentTagDenylist()`, `setComponentGroupWhitelist()`, `setComponentGroupDenylist()` |
 | `FieldBloks` | `setMinimum()`, `setMaximum()`, `setComponentWhitelist()` |
 | `FieldAsset` | `setFiletypes()` |
 | `FieldMultiasset` | `setFiletypes()` |
@@ -1415,6 +1418,28 @@ FieldOptions::make("audiences")
     ->setOptions([
         OptionValue::make("Developers", "developers"),
         OptionValue::make("Editors", "editors"),
+    ]);
+```
+
+Richtext fields expose the documented toolbar, link, style, and component restriction settings:
+
+```php
+use Storyblok\ManagementApi\Data\Fields\Schema\FieldRichtext;
+
+$field = FieldRichtext::make("body")
+    ->setCustomizeToolbar(false)
+    ->setToolbar(["bold", "italic", "link"])
+    ->setAllowTargetBlank()
+    ->setAllowCustomAttributes()
+    ->setRestrictComponents()
+    ->setRestrictType("groups")
+    ->setComponentGroupWhitelist(["group-uuid"])
+    ->setStyleOptions([
+        [
+            "_uid"  => "style-uuid",
+            "name"  => "Highlight",
+            "value" => "highlight",
+        ],
     ]);
 ```
 
@@ -1661,9 +1686,19 @@ foreach ($component->getFields() as $field) {
     }
 
     if ($field instanceof FieldRichtext) {
+        echo $field->customizeToolbar() . PHP_EOL;
         echo implode(', ', $field->toolbar()) . PHP_EOL;
+        print_r($field->styleOptions());
+        echo $field->allowTargetBlank() . PHP_EOL;
+        echo $field->allowCustomAttributes() . PHP_EOL;
         echo $field->restrictComponents() . PHP_EOL;
+        echo $field->restrictType() . PHP_EOL;
         echo implode(', ', $field->componentWhitelist()) . PHP_EOL;
+        echo implode(', ', $field->componentDenylist()) . PHP_EOL;
+        echo implode(', ', $field->componentTagWhitelist()) . PHP_EOL;
+        echo implode(', ', $field->componentTagDenylist()) . PHP_EOL;
+        echo implode(', ', $field->componentGroupWhitelist()) . PHP_EOL;
+        echo implode(', ', $field->componentGroupDenylist()) . PHP_EOL;
     }
 
     if ($field instanceof FieldBloks) {

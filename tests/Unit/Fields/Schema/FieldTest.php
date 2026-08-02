@@ -202,17 +202,52 @@ final class FieldTest extends TestCase
     public function testFieldRichtext(): void
     {
         $field = FieldGeneric::make("body", [
-            "type"                => "richtext",
-            "pos"                 => 0,
-            "toolbar"             => ["bold", "italic", "link"],
-            "restrict_components" => true,
-            "component_whitelist" => ["quote", "cta"],
+            "type"                       => "richtext",
+            "pos"                        => 0,
+            "customize_toolbar"          => true,
+            "toolbar"                    => ["bold", "italic", "link"],
+            "restrict_components"        => true,
+            "restrict_type"              => "groups",
+            "component_whitelist"        => ["quote", "cta"],
+            "component_denylist"         => ["legacy"],
+            "component_tag_whitelist"    => [10, 20],
+            "component_tag_denylist"     => [30],
+            "component_group_whitelist"  => ["group-uuid"],
+            "component_group_denylist"   => ["other-group-uuid"],
+            "allow_target_blank"         => true,
+            "allow_custom_attributes"    => true,
+            "style_options"              => [
+                [
+                    "_uid"  => "style-uuid",
+                    "name"  => "Highlight",
+                    "value" => "highlight",
+                ],
+            ],
         ]);
 
         $this->assertInstanceOf(FieldRichtext::class, $field);
+        $this->assertTrue($field->customizeToolbar());
         $this->assertSame(["bold", "italic", "link"], $field->toolbar());
         $this->assertTrue($field->restrictComponents());
+        $this->assertSame("groups", $field->restrictType());
         $this->assertSame(["quote", "cta"], $field->componentWhitelist());
+        $this->assertSame(["legacy"], $field->componentDenylist());
+        $this->assertSame([10, 20], $field->componentTagWhitelist());
+        $this->assertSame([30], $field->componentTagDenylist());
+        $this->assertSame(["group-uuid"], $field->componentGroupWhitelist());
+        $this->assertSame(["other-group-uuid"], $field->componentGroupDenylist());
+        $this->assertTrue($field->allowTargetBlank());
+        $this->assertTrue($field->allowCustomAttributes());
+        $this->assertSame(
+            [
+                [
+                    "_uid"  => "style-uuid",
+                    "name"  => "Highlight",
+                    "value" => "highlight",
+                ],
+            ],
+            $field->styleOptions(),
+        );
     }
 
     public function testFieldRichtextDefaults(): void
@@ -221,8 +256,18 @@ final class FieldTest extends TestCase
         $this->assertInstanceOf(FieldRichtext::class, $field);
 
         $this->assertSame([], $field->toolbar());
+        $this->assertFalse($field->customizeToolbar());
         $this->assertFalse($field->restrictComponents());
+        $this->assertSame("", $field->restrictType());
         $this->assertSame([], $field->componentWhitelist());
+        $this->assertSame([], $field->componentDenylist());
+        $this->assertSame([], $field->componentTagWhitelist());
+        $this->assertSame([], $field->componentTagDenylist());
+        $this->assertSame([], $field->componentGroupWhitelist());
+        $this->assertSame([], $field->componentGroupDenylist());
+        $this->assertFalse($field->allowTargetBlank());
+        $this->assertFalse($field->allowCustomAttributes());
+        $this->assertSame([], $field->styleOptions());
     }
 
     public function testFieldBloks(): void
@@ -614,13 +659,85 @@ final class FieldTest extends TestCase
     {
         $field = (new FieldRichtext("body"))
             ->setPos(3)
+            ->setCustomizeToolbar()
             ->setToolbar(["bold", "italic"])
             ->setRestrictComponents()
+            ->setRestrictType("components")
             ->setComponentWhitelist(["quote", "cta"]);
 
+        $this->assertTrue($field->customizeToolbar());
         $this->assertSame(["bold", "italic"], $field->toolbar());
         $this->assertTrue($field->restrictComponents());
+        $this->assertSame("components", $field->restrictType());
         $this->assertSame(["quote", "cta"], $field->componentWhitelist());
+    }
+
+    public function testFieldRichtextSetsToolbarCustomization(): void
+    {
+        $field = FieldRichtext::make("body")
+            ->setCustomizeToolbar(false)
+            ->setToolbar(["bold", "italic", "link"]);
+
+        $this->assertFalse($field->customizeToolbar());
+        $this->assertSame(["bold", "italic", "link"], $field->toolbar());
+        $this->assertSame(
+            [
+                "type"              => "richtext",
+                "customize_toolbar" => false,
+                "toolbar"           => ["bold", "italic", "link"],
+            ],
+            $field->toArray(),
+        );
+    }
+
+    public function testFieldRichtextSetsLinkOptions(): void
+    {
+        $field = FieldRichtext::make("body")
+            ->setAllowTargetBlank()
+            ->setAllowCustomAttributes(false);
+
+        $this->assertTrue($field->allowTargetBlank());
+        $this->assertFalse($field->allowCustomAttributes());
+        $this->assertTrue($field->get("allow_target_blank"));
+        $this->assertFalse($field->get("allow_custom_attributes"));
+    }
+
+    public function testFieldRichtextSetsComponentRestrictions(): void
+    {
+        $field = FieldRichtext::make("body")
+            ->setRestrictComponents()
+            ->setRestrictType("groups")
+            ->setComponentWhitelist(["quote"])
+            ->setComponentDenylist(["legacy"])
+            ->setComponentTagWhitelist([10, 20])
+            ->setComponentTagDenylist([30])
+            ->setComponentGroupWhitelist(["group-uuid"])
+            ->setComponentGroupDenylist(["other-group-uuid"]);
+
+        $this->assertTrue($field->restrictComponents());
+        $this->assertSame("groups", $field->restrictType());
+        $this->assertSame(["quote"], $field->componentWhitelist());
+        $this->assertSame(["legacy"], $field->componentDenylist());
+        $this->assertSame([10, 20], $field->componentTagWhitelist());
+        $this->assertSame([30], $field->componentTagDenylist());
+        $this->assertSame(["group-uuid"], $field->componentGroupWhitelist());
+        $this->assertSame(["other-group-uuid"], $field->componentGroupDenylist());
+    }
+
+    public function testFieldRichtextSetsStyleOptions(): void
+    {
+        $styleOptions = [
+            [
+                "_uid"  => "style-uuid",
+                "name"  => "Highlight",
+                "value" => "highlight",
+            ],
+        ];
+
+        $field = FieldRichtext::make("body")->setStyleOptions($styleOptions);
+
+        $this->assertSame($styleOptions, $field->styleOptions());
+        $this->assertSame($styleOptions, $field->get("style_options", raw: true));
     }
 
     public function testFluentBuilderFieldBloks(): void

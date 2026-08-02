@@ -2,6 +2,7 @@
 
 ## 1.9.0 - WIP
 
+- Adding `FieldRichtext` helpers for documented Richtext schema settings, including toolbar customization, link options, style options, and component restrictions
 - Fixing URL construction by encoding dynamic Management API path segments, including tag names and resource IDs
 
 ## 1.8.0 - 2026-06-20
