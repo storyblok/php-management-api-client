@@ -34,7 +34,7 @@ class WorkflowApi extends EndpointSpace
 
         return $this->makeRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/workflows",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/workflows",
             options: $options,
             dataClass: WorkflowsData::class,
         );
@@ -44,7 +44,7 @@ class WorkflowApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/workflows/" . $workflowId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/workflows/" . $this->pathSegment($workflowId),
         );
         return new WorkflowResponse($httpResponse);
     }
@@ -56,7 +56,7 @@ class WorkflowApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            "/v1/spaces/" . $this->spaceId . "/workflows/" . $workflowId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/workflows/" . $this->pathSegment($workflowId),
         );
         return new WorkflowResponse($httpResponse);
     }
@@ -65,7 +65,7 @@ class WorkflowApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/workflows",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/workflows",
             [
                 "body" => [
                     "workflow" => $storyblokData->toArray(),
@@ -81,7 +81,7 @@ class WorkflowApi extends EndpointSpace
     ): WorkflowResponse {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/workflows/" . $workflowId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/workflows/" . $this->pathSegment($workflowId),
             [
                 "body" => $storyblokData->toArray(),
             ],

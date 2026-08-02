@@ -19,7 +19,7 @@ class AssetFolderApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/asset_folders",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/asset_folders",
         );
         return new AssetFoldersResponse($httpResponse);
     }
@@ -33,7 +33,7 @@ class AssetFolderApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/asset_folders/" . $assetFolderId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/asset_folders/" . $this->pathSegment($assetFolderId),
         );
         return new AssetFolderResponse($httpResponse);
     }
@@ -47,7 +47,7 @@ class AssetFolderApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/asset_folders",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/asset_folders",
             [
                 "body" => json_encode(["asset_folder" => $assetFolderData->toArray()]),
             ],
@@ -64,7 +64,7 @@ class AssetFolderApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "PUT",
-            "/v1/spaces/" . $this->spaceId . "/asset_folders/" . $assetFolderId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/asset_folders/" . $this->pathSegment($assetFolderId),
             [
                 "body" => json_encode(["asset_folder" => $assetFolderData->toArray()]),
             ],
@@ -81,7 +81,7 @@ class AssetFolderApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            "/v1/spaces/" . $this->spaceId . "/asset_folders/" . $assetFolderId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/asset_folders/" . $this->pathSegment($assetFolderId),
         );
         return new AssetFolderResponse($httpResponse);
     }

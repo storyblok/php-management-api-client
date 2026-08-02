@@ -25,7 +25,7 @@ class InternalTagApi extends EndpointSpace
 
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/internal_tags",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/internal_tags",
             options: $options,
         );
         return new InternalTagsResponse($httpResponse);
@@ -39,7 +39,7 @@ class InternalTagApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/internal_tags/" . $internalTagId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/internal_tags/" . $this->pathSegment($internalTagId),
         );
         return new InternalTagResponse($httpResponse);
     }
@@ -53,7 +53,7 @@ class InternalTagApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/internal_tags",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/internal_tags",
             [
                 "body" => json_encode(["internal_tag" => $internalTagData->toArray()]),
             ],
@@ -70,7 +70,7 @@ class InternalTagApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "PUT",
-            "/v1/spaces/" . $this->spaceId . "/internal_tags/" . $internalTagId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/internal_tags/" . $this->pathSegment($internalTagId),
             [
                 "body" => json_encode(["internal_tag" => $internalTagData->toArray()]),
             ],
@@ -87,7 +87,7 @@ class InternalTagApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            "/v1/spaces/" . $this->spaceId . "/internal_tags/" . $internalTagId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/internal_tags/" . $this->pathSegment($internalTagId),
         );
         return new InternalTagResponse($httpResponse);
     }

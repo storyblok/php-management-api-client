@@ -29,7 +29,7 @@ class ExperimentApi extends EndpointSpace
 
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/experiments",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/experiments",
             [
                 "query" => $query,
             ],
@@ -42,7 +42,7 @@ class ExperimentApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/experiments",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/experiments",
             [
                 "body" => json_encode(
                     [
@@ -62,7 +62,7 @@ class ExperimentApi extends EndpointSpace
     ): ExperimentResultResponse {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/experiments/" . $experimentId . "/results",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/experiments/" . $this->pathSegment($experimentId) . "/results",
             [
                 "body" => json_encode($experimentResult->toArray(), JSON_THROW_ON_ERROR),
             ],

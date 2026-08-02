@@ -37,7 +37,7 @@ class WorkflowStageApi extends EndpointSpace
 
         return $this->makeRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/workflow_stages",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/workflow_stages",
             options: $options,
             dataClass: WorkflowStagesData::class,
         );
@@ -48,9 +48,9 @@ class WorkflowStageApi extends EndpointSpace
         $httpResponse = $this->makeHttpRequest(
             "GET",
             "/v1/spaces/" .
-                $this->spaceId .
+                $this->pathSegment($this->spaceId) .
                 "/workflow_stages/" .
-                $workflowStageId,
+                $this->pathSegment($workflowStageId),
         );
         return new WorkflowStageResponse($httpResponse);
     }
@@ -63,9 +63,9 @@ class WorkflowStageApi extends EndpointSpace
         $httpResponse = $this->makeHttpRequest(
             "DELETE",
             "/v1/spaces/" .
-                $this->spaceId .
+                $this->pathSegment($this->spaceId) .
                 "/workflow_stages/" .
-                $workflowStageId,
+                $this->pathSegment($workflowStageId),
         );
         return new WorkflowStageResponse($httpResponse);
     }
@@ -74,7 +74,7 @@ class WorkflowStageApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/workflow_stages",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/workflow_stages",
             [
                 "body" => [
                     "workflow_stage" => $storyblokData->toArray(),
@@ -91,9 +91,9 @@ class WorkflowStageApi extends EndpointSpace
         $httpResponse = $this->makeHttpRequest(
             "PUT",
             "/v1/spaces/" .
-                $this->spaceId .
+                $this->pathSegment($this->spaceId) .
                 "/workflow_stages/" .
-                $workflowStageId,
+                $this->pathSegment($workflowStageId),
             [
                 "body" => json_encode([
                     "workflow_stage" => $storyblokData->toArray(),

@@ -46,7 +46,7 @@ class ExperimentResult extends StoryblokData
     {
         $charts = [];
         foreach ($this->getArray('charts', []) as $chart) {
-            if (is_array($chart)) {
+            if ($this->isStringKeyedArray($chart)) {
                 $charts[] = $chart;
             }
         }
@@ -87,5 +87,23 @@ class ExperimentResult extends StoryblokData
     public function updatedAt(): string
     {
         return $this->getString('updated_at', "");
+    }
+
+    /**
+     * @phpstan-assert-if-true array<string, mixed> $value
+     */
+    private function isStringKeyedArray(mixed $value): bool
+    {
+        if (! is_array($value)) {
+            return false;
+        }
+
+        foreach (array_keys($value) as $key) {
+            if (! is_string($key)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

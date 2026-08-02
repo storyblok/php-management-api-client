@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.0 - WIP
+
+- Fixing URL construction by encoding dynamic Management API path segments, including tag names and resource IDs
+
 ## 1.8.0 - 2026-06-20
 
 - Adding `AssetApi::convert()` for converting a space-local asset into the global assets library

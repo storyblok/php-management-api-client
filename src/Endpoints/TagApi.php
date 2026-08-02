@@ -22,7 +22,7 @@ class TagApi extends EndpointSpace
         ];
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            '/v1/spaces/' . $this->spaceId . '/tags',
+            '/v1/spaces/' . $this->pathSegment($this->spaceId) . '/tags',
             options: $options
         );
         return new TagsResponse($httpResponse);
@@ -37,7 +37,7 @@ class TagApi extends EndpointSpace
 
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            '/v1/spaces/' . $this->spaceId . '/tags/' . $name
+            '/v1/spaces/' . $this->pathSegment($this->spaceId) . '/tags/' . $this->pathSegment($name)
         );
 
         return new TagResponse($httpResponse);
@@ -50,7 +50,7 @@ class TagApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            '/v1/spaces/' . $this->spaceId . '/tags/' . $name
+            '/v1/spaces/' . $this->pathSegment($this->spaceId) . '/tags/' . $this->pathSegment($name)
         );
         return new TagResponse($httpResponse);
     }
@@ -59,7 +59,7 @@ class TagApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . '/tags',
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . '/tags',
             [
                 "body" => [
                     "tag" => [
@@ -75,7 +75,7 @@ class TagApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . '/tags/' . $name,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . '/tags/' . $this->pathSegment($name),
             [
                 "body" => [
                     "name" => $newName,

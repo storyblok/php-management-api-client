@@ -178,11 +178,29 @@ class Experiment extends StoryblokData
     {
         $items = [];
         foreach ($this->getArray($key, []) as $item) {
-            if (is_array($item)) {
+            if ($this->isStringKeyedArray($item)) {
                 $items[] = $item;
             }
         }
 
         return $items;
+    }
+
+    /**
+     * @phpstan-assert-if-true array<string, mixed> $value
+     */
+    private function isStringKeyedArray(mixed $value): bool
+    {
+        if (! is_array($value)) {
+            return false;
+        }
+
+        foreach (array_keys($value) as $key) {
+            if (! is_string($key)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

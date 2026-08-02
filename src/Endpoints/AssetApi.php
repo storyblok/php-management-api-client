@@ -47,7 +47,7 @@ class AssetApi extends EndpointSpace
         ];
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/assets",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/assets",
             options: $options,
         );
 
@@ -63,7 +63,7 @@ class AssetApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            "/v1/spaces/" . $this->spaceId . "/assets/" . $assetId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/assets/" . $this->pathSegment($assetId),
         );
         return new AssetResponse($httpResponse);
     }
@@ -102,7 +102,7 @@ class AssetApi extends EndpointSpace
     {
         $signedResponse = $this->makeRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/assets/",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/assets/",
             ["body" => $payload],
         );
 
@@ -162,9 +162,9 @@ class AssetApi extends EndpointSpace
         $httpResponse = $this->makeHttpRequest(
             "GET",
             "/v1/spaces/" .
-                $this->spaceId .
+                $this->pathSegment($this->spaceId) .
                 "/assets/" .
-                $assetId .
+                $this->pathSegment($assetId) .
                 "/finish_upload",
         );
 
@@ -210,7 +210,7 @@ class AssetApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "PUT",
-            "/v1/spaces/" . $this->spaceId . "/assets/" . $assetId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/assets/" . $this->pathSegment($assetId),
             [
                 "body" => json_encode(["asset" => $assetData->toArray()]),
             ],
@@ -233,7 +233,7 @@ class AssetApi extends EndpointSpace
     ): AssetResponse {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/assets/" . $assetId . "/convert",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/assets/" . $this->pathSegment($assetId) . "/convert",
             [
                 "query" => [
                     "target_asset_folder_id" => $targetAssetFolderId,
@@ -250,7 +250,7 @@ class AssetApi extends EndpointSpace
     {
         $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            "/v1/spaces/" . $this->spaceId . "/assets/" . $assetId,
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/assets/" . $this->pathSegment($assetId),
         );
         return new AssetResponse($httpResponse);
     }
@@ -267,7 +267,7 @@ class AssetApi extends EndpointSpace
         ];
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            "/v1/spaces/" . $this->spaceId . "/assets/bulk_destroy",
+            "/v1/spaces/" . $this->pathSegment($this->spaceId) . "/assets/bulk_destroy",
             [
                 "body" => json_encode($payload),
             ],

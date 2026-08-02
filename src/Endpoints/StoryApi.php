@@ -382,7 +382,7 @@ class StoryApi extends EndpointSpace
      */
     private function buildStoriesEndpoint(): string
     {
-        return sprintf("/v1/spaces/%s/stories", $this->spaceId);
+        return sprintf("/v1/spaces/%s/stories", $this->pathSegment($this->spaceId));
     }
 
     /**
@@ -390,7 +390,7 @@ class StoryApi extends EndpointSpace
      */
     private function buildStoryEndpoint(string $storyId): string
     {
-        return sprintf("%s/%s", $this->buildStoriesEndpoint(), $storyId);
+        return sprintf("%s/%s", $this->buildStoriesEndpoint(), $this->pathSegment($storyId));
     }
 
     /**
@@ -398,6 +398,6 @@ class StoryApi extends EndpointSpace
      */
     private function buildStoryVersionsEndpoint(): string
     {
-        return sprintf("/v1/spaces/%s/story_versions", $this->spaceId);
+        return sprintf("/v1/spaces/%s/story_versions", $this->pathSegment($this->spaceId));
     }
 }

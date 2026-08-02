@@ -61,4 +61,12 @@ class EndpointBase
             $options,
         );
     }
+
+    /**
+     * Encode a caller-supplied value that represents exactly one URL path segment.
+     */
+    protected function pathSegment(string|int $value): string
+    {
+        return rawurlencode((string) $value);
+    }
 }

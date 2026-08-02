@@ -39,7 +39,7 @@ class SpaceApi extends EndpointBase
     {
         $httpResponse = $this->makeHttpRequest(
             "GET",
-            self::buildSpacesEndpoint($spaceId),
+            $this->buildSpacesEndpoint($spaceId),
         );
 
         return new SpaceResponse($httpResponse);
@@ -117,7 +117,7 @@ class SpaceApi extends EndpointBase
     {
         $httpResponse = $this->makeHttpRequest(
             "DELETE",
-            self::API_PATH_SPACE_PREFIX_V1 . '/' . $spaceId,
+            self::API_PATH_SPACE_PREFIX_V1 . '/' . $this->pathSegment($spaceId),
         );
         return new SpaceResponse($httpResponse);
     }
@@ -129,7 +129,7 @@ class SpaceApi extends EndpointBase
     {
         $httpResponse = $this->makeHttpRequest(
             "POST",
-            sprintf('%s/%s/backups', self::API_PATH_SPACE_PREFIX_V1, $spaceId),
+            sprintf('%s/%s/backups', self::API_PATH_SPACE_PREFIX_V1, $this->pathSegment($spaceId)),
             [
                 "body" => [
                 ],
@@ -140,7 +140,7 @@ class SpaceApi extends EndpointBase
 
     private function buildSpacesEndpoint(string $spaceId): string
     {
-        return sprintf('%s/%s', self::API_PATH_SPACE_PREFIX_V1, $spaceId);
+        return sprintf('%s/%s', self::API_PATH_SPACE_PREFIX_V1, $this->pathSegment($spaceId));
     }
 
     /**
