@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Storyblok\ManagementApi\Data\LocalizedPathData;
 use Storyblok\ManagementApi\Data\Story;
 use Storyblok\ManagementApi\Data\StoryCollectionItem;
 use Storyblok\ManagementApi\Data\StoryComponent;
+use Storyblok\ManagementApi\Data\TranslatedSlug;
+use Storyblok\ManagementApi\Data\TranslatedSlugData;
 use Tests\TestCase;
 
 final class StoryBaseDataTest extends TestCase
@@ -393,5 +396,189 @@ final class StoryBaseDataTest extends TestCase
         $content = $folder->getArray("content");
         $this->assertArrayNotHasKey("content_types", $content);
         $this->assertArrayNotHasKey("lock_subfolders_content_types", $content);
+    }
+
+    public function testTranslatedSlugCreatePayloadOmitsId(): void
+    {
+        $translatedSlug = TranslatedSlug::create(
+            lang: "de",
+            slug: "mein-artikel",
+            name: "Mein Artikel",
+            published: true,
+        );
+
+        $this->assertSame(
+            [
+                "lang"      => "de",
+                "slug"      => "mein-artikel",
+                "name"      => "Mein Artikel",
+                "published" => true,
+            ],
+            $translatedSlug->toArray(),
+        );
+    }
+
+    public function testTranslatedSlugUpdatePayloadIncludesId(): void
+    {
+        $translatedSlug = TranslatedSlug::update(
+            id: 123,
+            slug: "mein-artikel-neu",
+            name: "Mein Artikel Neu",
+        );
+
+        $this->assertSame(
+            [
+                "id"   => 123,
+                "slug" => "mein-artikel-neu",
+                "name" => "Mein Artikel Neu",
+            ],
+            $translatedSlug->toArray(),
+        );
+    }
+
+    public function testTranslatedSlugDeletePayloadIncludesDestroyFlag(): void
+    {
+        $translatedSlug = TranslatedSlug::delete(123);
+
+        $this->assertSame(
+            [
+                "id"       => 123,
+                "_destroy" => true,
+            ],
+            $translatedSlug->toArray(),
+        );
+    }
+
+    public function testStorySetsTranslatedSlugAttributes(): void
+    {
+        $story = new Story("Article", "article", StoryComponent::makeComponent("article-page"));
+
+        $result = $story->setTranslatedSlugsAttributes([
+            TranslatedSlug::create("de", "mein-artikel", "Mein Artikel"),
+            [
+                "id"       => 123,
+                "_destroy" => true,
+            ],
+        ]);
+
+        $this->assertSame($story, $result);
+        $this->assertSame(
+            [
+                [
+                    "lang" => "de",
+                    "slug" => "mein-artikel",
+                    "name" => "Mein Artikel",
+                ],
+                [
+                    "id"       => 123,
+                    "_destroy" => true,
+                ],
+            ],
+            $story->getArray("translated_slugs_attributes"),
+        );
+    }
+
+    public function testStoryAddsTranslatedSlugAttributes(): void
+    {
+        $story = new Story("Article", "article", StoryComponent::makeComponent("article-page"));
+
+        $result = $story
+            ->addTranslatedSlug(TranslatedSlug::create("de", "mein-artikel"))
+            ->addTranslatedSlug(TranslatedSlug::delete(123));
+
+        $this->assertSame($story, $result);
+        $this->assertSame(
+            [
+                [
+                    "lang" => "de",
+                    "slug" => "mein-artikel",
+                ],
+                [
+                    "id"       => 123,
+                    "_destroy" => true,
+                ],
+            ],
+            $story->getArray("translated_slugs_attributes"),
+        );
+    }
+
+    public function testStoryReadsTranslatedSlugsAndLocalizedPaths(): void
+    {
+        $story = $this->makeStory();
+        $translatedSlugs = $story->translatedSlugs();
+        $localizedPaths = $story->localizedPaths();
+
+        $this->assertCount(2, $translatedSlugs);
+        $this->assertSame(
+            [
+                [
+                    "path"      => "posts/my-third-post",
+                    "name"      => null,
+                    "lang"      => "fr",
+                    "published" => null,
+                ],
+                [
+                    "path"      => "posts/mein-dritter-beitrag",
+                    "name"      => "Mein dritter Beitrag",
+                    "lang"      => "de",
+                    "published" => true,
+                ],
+            ],
+            $translatedSlugs->toArray(),
+        );
+        $this->assertSame([], $localizedPaths->toArray());
+
+        $firstTranslatedSlug = $translatedSlugs[0];
+        $this->assertInstanceOf(TranslatedSlugData::class, $firstTranslatedSlug);
+        $this->assertSame("fr", $firstTranslatedSlug->lang());
+        $this->assertSame("posts/my-third-post", $firstTranslatedSlug->path());
+        $this->assertSame("", $firstTranslatedSlug->slug());
+        $this->assertSame("", $firstTranslatedSlug->name());
+        $this->assertFalse($firstTranslatedSlug->published());
+
+        $secondTranslatedSlug = $translatedSlugs[1];
+        $this->assertInstanceOf(TranslatedSlugData::class, $secondTranslatedSlug);
+        $this->assertSame("de", $secondTranslatedSlug->lang());
+        $this->assertSame("posts/mein-dritter-beitrag", $secondTranslatedSlug->path());
+        $this->assertSame("Mein dritter Beitrag", $secondTranslatedSlug->name());
+        $this->assertTrue($secondTranslatedSlug->published());
+    }
+
+    public function testStoryReadsLocalizedPathData(): void
+    {
+        $story = new Story("Article", "article", StoryComponent::makeComponent("article-page"));
+        $story->setData([
+            "name"            => "Article",
+            "slug"            => "article",
+            "content"         => ["component" => "article-page"],
+            "localized_paths" => [
+                [
+                    "path"      => "artikel/mein-artikel",
+                    "name"      => "Mein Artikel",
+                    "lang"      => "de",
+                    "published" => true,
+                ],
+            ],
+        ]);
+
+        $localizedPaths = $story->localizedPaths();
+        $this->assertSame(
+            [
+                [
+                    "path"      => "artikel/mein-artikel",
+                    "name"      => "Mein Artikel",
+                    "lang"      => "de",
+                    "published" => true,
+                ],
+            ],
+            $localizedPaths->toArray(),
+        );
+
+        $localizedPath = $localizedPaths[0];
+        $this->assertInstanceOf(LocalizedPathData::class, $localizedPath);
+        $this->assertSame("artikel/mein-artikel", $localizedPath->path());
+        $this->assertSame("Mein Artikel", $localizedPath->name());
+        $this->assertSame("de", $localizedPath->lang());
+        $this->assertTrue($localizedPath->published());
     }
 }

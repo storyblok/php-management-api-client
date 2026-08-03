@@ -1014,6 +1014,54 @@ Pass a language code as the third argument to write or read Storyblok's
 field-level translation key, for example `headline__i18n__de`.
 For full story-level updates, you can still use `set()` with dot notation.
 
+If the Translatable Slugs app is installed, use `TranslatedSlug` to manage
+`translated_slugs_attributes` on create/update payloads:
+
+```php
+use Storyblok\ManagementApi\Data\TranslatedSlug;
+
+$story
+    ->addTranslatedSlug(
+        TranslatedSlug::create(
+            lang: "de",
+            slug: "mein-artikel",
+            name: "Mein Artikel",
+        )
+    );
+
+// Later, fetch the story and read translated_slugs[*].id before updating/deleting.
+$story->addTranslatedSlug(
+    TranslatedSlug::delete($translatedSlugId)
+);
+```
+
+`translated_slugs` and `localized_paths` are different response fields.
+Use `$story->translatedSlugs()` for translated slug records: Storyblok returns
+their `id`, `lang`, `slug`, `name`, and `published` values. Use the returned
+`id` with `TranslatedSlug::update()` or `TranslatedSlug::delete()`.
+
+Use `$story->localizedPaths()` for resolved localized paths: Storyblok returns
+the full `path` plus `name`, `lang`, and `published`, but no translated slug
+`id`. `localized_paths` is response-side data and is not used for update/delete
+payloads.
+
+```php
+foreach ($story->translatedSlugs() as $translatedSlug) {
+    echo $translatedSlug->id() . PHP_EOL;
+    echo $translatedSlug->lang() . PHP_EOL;
+    echo $translatedSlug->slug() . PHP_EOL;
+}
+
+foreach ($story->localizedPaths() as $localizedPath) {
+    echo $localizedPath->path() . PHP_EOL;
+    echo $localizedPath->lang() . PHP_EOL;
+}
+
+// Raw response arrays are still available:
+$translatedSlugs = $story->translatedSlugs()->toArray();
+$localizedPaths = $story->localizedPaths()->toArray();
+```
+
 Update and publish immediately:
 
 ```php
@@ -3183,5 +3231,4 @@ This SDK is licensed under the MIT License. See the LICENSE file for details.
 
 ## Next implementations
 
-- [ ] add a setter for localized field values (for example `set("heading", $value, "de")`) that writes the field-level translation key `heading__i18n__de` on the story content
-- [ ] define a `LocalizedPath` class to handle translatable slugs (per-language paths) when creating and updating a story
+- [ ] README TOC is hand-maintained - update it when adding/renaming `##` sections

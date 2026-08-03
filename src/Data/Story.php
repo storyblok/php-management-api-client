@@ -218,6 +218,56 @@ class Story extends StoryBaseData
     }
 
     /**
+     * Set translated slug attributes for create/update/delete payloads.
+     *
+     * @param array<int, TranslatedSlug|array<string, mixed>> $translatedSlugs
+     */
+    public function setTranslatedSlugsAttributes(array $translatedSlugs): self
+    {
+        $this->set(
+            "translated_slugs_attributes",
+            array_map(
+                static fn(TranslatedSlug|array $translatedSlug): array => $translatedSlug instanceof TranslatedSlug
+                    ? $translatedSlug->toArray()
+                    : $translatedSlug,
+                $translatedSlugs,
+            ),
+        );
+
+        return $this;
+    }
+
+    /**
+     * Add translated slug attributes to the create/update/delete payload.
+     */
+    public function addTranslatedSlug(TranslatedSlug $translatedSlug): self
+    {
+        $translatedSlugs = $this->getArray("translated_slugs_attributes");
+        $translatedSlugs[] = $translatedSlug->toArray();
+        $this->set("translated_slugs_attributes", $translatedSlugs);
+        return $this;
+    }
+
+    /**
+     * Return translated slug objects from a story response.
+     */
+    public function translatedSlugs(): TranslatedSlugsData
+    {
+        return TranslatedSlugsData::make($this->getArray("translated_slugs"));
+    }
+
+    /**
+     * Return localized path objects from a story response.
+     *
+     * `localized_paths` is response-side data. Use `translated_slugs_attributes`
+     * to create, update, or delete translated slugs.
+     */
+    public function localizedPaths(): LocalizedPathsData
+    {
+        return LocalizedPathsData::make($this->getArray("localized_paths"));
+    }
+
+    /**
      * Build a Story pre-configured as a folder.
      *
      * Mirrors the Storyblok UI "Create folder" dialog:

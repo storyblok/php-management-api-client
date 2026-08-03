@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.1 - WIP
+
+- Adding `TranslatedSlug` helpers for managing Storyblok `translated_slugs_attributes` on stories
+- Adding typed read helpers for story translated slugs and localized paths
+
 ## 1.9.0 - 2026-08-03
 
 - Adding `FieldRichtext` helpers for documented Richtext schema settings, including toolbar customization, link options, style options, and component restrictions
