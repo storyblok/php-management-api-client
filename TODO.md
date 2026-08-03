@@ -15,3 +15,9 @@ collections via `Story::translatedSlugs()` and `Story::localizedPaths()`.
 ## 2. Housekeeping
 
 - README TOC is hand-maintained — update it when adding/renaming `##` sections.
+
+## 3. 1.10.0 Candidates
+
+- Consider `findByLang(string $language)` helpers on translated slug and
+  localized path collections, if consumers need direct language lookup instead
+  of iterating manually.

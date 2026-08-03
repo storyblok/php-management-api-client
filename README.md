@@ -1045,6 +1045,11 @@ the full `path` plus `name`, `lang`, and `published`, but no translated slug
 `id`. `localized_paths` is response-side data and is not used for update/delete
 payloads.
 
+| Helper | Storyblok response field | Contains ID? | Use for |
+| --- | --- | --- | --- |
+| `$story->translatedSlugs()` | `translated_slugs` | Yes | Reading translated slug records and their update/delete IDs |
+| `$story->localizedPaths()` | `localized_paths` | No | Reading resolved per-language paths |
+
 ```php
 foreach ($story->translatedSlugs() as $translatedSlug) {
     echo $translatedSlug->id() . PHP_EOL;

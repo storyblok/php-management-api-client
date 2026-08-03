@@ -4,6 +4,8 @@
 
 - Adding `TranslatedSlug` helpers for managing Storyblok `translated_slugs_attributes` on stories
 - Adding typed read helpers for story translated slugs and localized paths
+- Documenting the difference between translated slug records and resolved localized paths
+- Improving PHPDoc for translated slug and localized path collections
 
 ## 1.9.0 - 2026-08-03
 
