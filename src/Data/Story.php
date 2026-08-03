@@ -94,10 +94,17 @@ class Story extends StoryBaseData
      *
      * The field path is relative to `content`, so `setContentField("headline", $value)`
      * is equivalent to `set("content.headline", $value)`.
+     *
+     * When `$language` is provided, the value is stored using Storyblok's
+     * field-level translation key, e.g. `headline__i18n__de`.
+     *
+     * @param string $field    Field name or nested content path relative to `content`.
+     * @param mixed  $value    Field value to store.
+     * @param string $language Optional language code for field-level translations.
      */
-    public function setContentField(string $field, mixed $value): self
+    public function setContentField(string $field, mixed $value, string $language = ""): self
     {
-        $this->set("content." . $field, $value);
+        $this->set("content." . $this->contentFieldKey($field, $language), $value);
         return $this;
     }
 
@@ -106,10 +113,29 @@ class Story extends StoryBaseData
      *
      * The field path is relative to `content`, so `getContentField("headline")`
      * is equivalent to `get("content.headline")`.
+     *
+     * When `$language` is provided, the value is read using Storyblok's
+     * field-level translation key, e.g. `headline__i18n__de`.
+     *
+     * @param string $field    Field name or nested content path relative to `content`.
+     * @param mixed  $default  Value returned when the field is missing.
+     * @param string $language Optional language code for field-level translations.
      */
-    public function getContentField(string $field, mixed $default = null): mixed
+    public function getContentField(
+        string $field,
+        mixed $default = null,
+        string $language = "",
+    ): mixed {
+        return $this->get("content." . $this->contentFieldKey($field, $language), $default, raw: true);
+    }
+
+    private function contentFieldKey(string $field, string $language = ""): string
     {
-        return $this->get("content." . $field, $default, raw: true);
+        if ($language === "") {
+            return $field;
+        }
+
+        return sprintf("%s__i18n__%s", $field, $language);
     }
 
     /**

@@ -997,9 +997,11 @@ $story = $storyApi->get('123456')->data();
 
 $story
     ->setContentField("headline", "Updated headline")
+    ->setContentField("headline", "Aktualisierte Uberschrift", "de")
     ->setContentField("categories", [$categoryUuid]);
 
 echo $story->getContentField("headline");
+echo $story->getContentField("headline", language: "de");
 
 $storyApi->update(
     storyId: '123456',
@@ -1008,6 +1010,8 @@ $storyApi->update(
 ```
 
 `setContentField()` and `getContentField()` use paths relative to `content`.
+Pass a language code as the third argument to write or read Storyblok's
+field-level translation key, for example `headline__i18n__de`.
 For full story-level updates, you can still use `set()` with dot notation.
 
 Update and publish immediately:

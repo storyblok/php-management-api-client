@@ -313,6 +313,31 @@ final class StoryBaseDataTest extends TestCase
         $this->assertSame("SEO title", $story->getContentField("seo.title"));
     }
 
+    public function testContentFieldHelpersSupportTranslatedFieldValues(): void
+    {
+        $story = new Story("Article", "article", StoryComponent::makeComponent("article-page"));
+
+        $result = $story
+            ->setContentField("headline", "Default headline")
+            ->setContentField("headline", "Deutsche Uberschrift", "de");
+
+        $this->assertSame($story, $result);
+        $this->assertSame("Default headline", $story->get("content.headline"));
+        $this->assertSame("Deutsche Uberschrift", $story->get("content.headline__i18n__de"));
+        $this->assertSame("Default headline", $story->getContentField("headline"));
+        $this->assertSame("Deutsche Uberschrift", $story->getContentField("headline", language: "de"));
+    }
+
+    public function testTranslatedContentFieldGetterSupportsDefaults(): void
+    {
+        $story = new Story("Article", "article", StoryComponent::makeComponent("article-page"));
+
+        $this->assertSame(
+            "fallback",
+            $story->getContentField("headline", "fallback", "de"),
+        );
+    }
+
     public function testGetContentFieldReturnsDefaultWhenMissing(): void
     {
         $story = new Story("Article", "article", StoryComponent::makeComponent("article-page"));

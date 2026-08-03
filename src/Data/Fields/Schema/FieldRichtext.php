@@ -20,6 +20,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Return the richtext style option definitions.
+     *
      * @return array<mixed>
      */
     public function styleOptions(): array
@@ -28,6 +30,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Set the richtext style option definitions.
+     *
      * @param array<mixed> $styleOptions
      */
     public function setStyleOptions(array $styleOptions): static
@@ -36,11 +40,17 @@ class FieldRichtext extends FieldGeneric
         return $this;
     }
 
+    /**
+     * Whether the richtext toolbar is customized.
+     */
     public function customizeToolbar(): bool
     {
         return $this->getBoolean("customize_toolbar");
     }
 
+    /**
+     * Enable or disable richtext toolbar customization.
+     */
     public function setCustomizeToolbar(bool $customizeToolbar = true): static
     {
         $this->set("customize_toolbar", $customizeToolbar);
@@ -48,6 +58,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Return the enabled richtext toolbar buttons.
+     *
      * @return array<mixed>
      */
     public function toolbar(): array
@@ -56,6 +68,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Set the enabled richtext toolbar buttons.
+     *
      * @param string[] $toolbar
      */
     public function setToolbar(array $toolbar): static
@@ -64,22 +78,34 @@ class FieldRichtext extends FieldGeneric
         return $this;
     }
 
+    /**
+     * Whether richtext component insertion is restricted.
+     */
     public function restrictComponents(): bool
     {
         return $this->getBoolean("restrict_components");
     }
 
+    /**
+     * Enable or disable richtext component insertion restrictions.
+     */
     public function setRestrictComponents(bool $restrict = true): static
     {
         $this->set("restrict_components", $restrict);
         return $this;
     }
 
+    /**
+     * Return the richtext component restriction mode.
+     */
     public function restrictType(): string
     {
         return $this->getString("restrict_type");
     }
 
+    /**
+     * Set the richtext component restriction mode.
+     */
     public function setRestrictType(string $restrictType): static
     {
         $this->set("restrict_type", $restrictType);
@@ -87,6 +113,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Return allowed component names.
+     *
      * @return array<mixed>
      */
     public function componentWhitelist(): array
@@ -95,6 +123,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Set allowed component names.
+     *
      * @param string[] $whitelist
      */
     public function setComponentWhitelist(array $whitelist): static
@@ -104,6 +134,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Return denied component names.
+     *
      * @return array<mixed>
      */
     public function componentDenylist(): array
@@ -112,6 +144,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Set denied component names.
+     *
      * @param string[] $denylist
      */
     public function setComponentDenylist(array $denylist): static
@@ -121,6 +155,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Return allowed component tag IDs.
+     *
      * @return array<mixed>
      */
     public function componentTagWhitelist(): array
@@ -129,6 +165,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Set allowed component tag IDs.
+     *
      * @param int[] $whitelist
      */
     public function setComponentTagWhitelist(array $whitelist): static
@@ -138,6 +176,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Return denied component tag IDs.
+     *
      * @return array<mixed>
      */
     public function componentTagDenylist(): array
@@ -146,6 +186,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Set denied component tag IDs.
+     *
      * @param int[] $denylist
      */
     public function setComponentTagDenylist(array $denylist): static
@@ -155,6 +197,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Return allowed component group UUIDs.
+     *
      * @return array<mixed>
      */
     public function componentGroupWhitelist(): array
@@ -163,6 +207,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Set allowed component group UUIDs.
+     *
      * @param string[] $whitelist
      */
     public function setComponentGroupWhitelist(array $whitelist): static
@@ -172,6 +218,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Return denied component group UUIDs.
+     *
      * @return array<mixed>
      */
     public function componentGroupDenylist(): array
@@ -180,6 +228,8 @@ class FieldRichtext extends FieldGeneric
     }
 
     /**
+     * Set denied component group UUIDs.
+     *
      * @param string[] $denylist
      */
     public function setComponentGroupDenylist(array $denylist): static
@@ -188,22 +238,34 @@ class FieldRichtext extends FieldGeneric
         return $this;
     }
 
+    /**
+     * Whether richtext links allow opening in a new tab.
+     */
     public function allowTargetBlank(): bool
     {
         return $this->getBoolean("allow_target_blank");
     }
 
+    /**
+     * Enable or disable opening richtext links in a new tab.
+     */
     public function setAllowTargetBlank(bool $allow = true): static
     {
         $this->set("allow_target_blank", $allow);
         return $this;
     }
 
+    /**
+     * Whether richtext links allow custom attributes.
+     */
     public function allowCustomAttributes(): bool
     {
         return $this->getBoolean("allow_custom_attributes");
     }
 
+    /**
+     * Enable or disable custom attributes on richtext links.
+     */
     public function setAllowCustomAttributes(bool $allow = true): static
     {
         $this->set("allow_custom_attributes", $allow);
