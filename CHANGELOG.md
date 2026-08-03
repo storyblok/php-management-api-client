@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.9.0 - WIP
+## 1.9.0 - 2026-08-03
 
 - Adding `FieldRichtext` helpers for documented Richtext schema settings, including toolbar customization, link options, style options, and component restrictions
 - Adding optional language support to `Story::setContentField()` and `Story::getContentField()` for field-level translations
