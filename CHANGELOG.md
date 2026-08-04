@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.9.1 - 2026-08-03
+## 1.9.1 - 2026-08-04
 
 - Adding `TranslatedSlug` helpers for managing Storyblok `translated_slugs_attributes` on stories
 - Adding typed read helpers for story translated slugs and localized paths
