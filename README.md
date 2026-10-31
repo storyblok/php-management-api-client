@@ -40,6 +40,7 @@ For the Content API PHP Client, see [storyblok/php-content-api-client](https://g
 - [Stories](#handling-stories)
 - [Components](#handling-components)
 - [Users](#handling-users)
+- [OAuth](#handling-oauth)
 - [Assets](#handling-assets)
 - [Asset folders](#handling-asset-folders)
 - [Internal tags](#handling-internal-tags)
@@ -215,7 +216,7 @@ Alternatively, you can leverage dedicated classes like `SpaceApi`, which are tai
 
 If a dedicated API class like `SpaceApi` or `StoryApi` does not exist for your desired endpoint, you can always fall back to the more versatile `ManagementApi` class.
 
-In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi`, `InternalTagApi`, `AssetApi`, `AssetFolderApi`, and `ExperimentApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
+In addition to the general-purpose `ManagementApi` class, the Storyblok Management PHP client also provides specific classes such as `SpaceApi`, `StoryApi`, `TagApi`, `InternalTagApi`, `AssetApi`, `AssetFolderApi`, `ExperimentApi`, and `OAuthApi`. These classes function similarly to the `ManagementApi` but are tailored for specific scenarios, offering additional methods or data types to work with particular resources.
 
 - `SpaceApi` focuses on managing space-level operations, such as retrieving space information, performing backup etc.
 - `StoryApi` specializes in handling stories and their content, including creating, updating, retrieving, and deleting stories. This class also provides methods that deal with the structure and fields specific to stories.
@@ -225,6 +226,7 @@ In addition to the general-purpose `ManagementApi` class, the Storyblok Manageme
 - `TagApi` designed to manage tags.
 - `ExperimentApi` designed to retrieve experiments and push experiment results.
 - `UserApi` designed to handle the current user. "Current" means the user related to the access token used for instancing the `ManagementApiClient` object.
+- `OAuthApi` designed to handle OAuth-specific endpoints, such as retrieving authenticated OAuth user info for space plugin flows.
 
 These specialized classes extend the functionality of the `ManagementApi` class, offering more precise control and optimized methods for interacting with specific resource types in your Storyblok space.
 
@@ -1868,6 +1870,38 @@ Typically, all the data object provides you some helper methods like:
 - `toArray()` to obtain the data in a PHP array;
 - `toJson()` to obtain a JSON string;
 - `dump()` for debugging purposes, it prints on standard output the indented JSON.
+
+## Handling OAuth
+
+Use `OAuthApi::userInfo()` when you need authenticated OAuth user info, for
+example in Storyblok space plugin OAuth flows. This method calls Storyblok's
+OAuth endpoint `/oauth/user_info` on the regional OAuth host, not
+`/v1/users/me`. For `Region::EU` (default) the URL is
+`https://api.storyblok.com/oauth/user_info`; for other regions the host follows
+the `Region` passed to `ManagementApiClient` (for example
+`https://api-us.storyblok.com/oauth/user_info` for `Region::US`).
+
+The token must be an OAuth access token obtained through the
+[OAuth authorization flow](https://www.storyblok.com/docs/plugins/oauth-authorization-flow),
+not a personal access token. Pass the Authorization header value expected by
+Storyblok, for example `Bearer YOURTOKEN`, to `ManagementApiClient`.
+
+```php
+use Storyblok\ManagementApi\Endpoints\OAuthApi;
+use Storyblok\ManagementApi\ManagementApiClient;
+
+$client = new ManagementApiClient("Bearer " . $oauthAccessToken);
+$userInfo = (new OAuthApi($client))->userInfo()->data();
+
+echo $userInfo->user()->friendlyName() . PHP_EOL;
+
+foreach ($userInfo->roles() as $role) {
+    echo $role->name() . PHP_EOL;
+}
+```
+
+Use `UserApi::me()` for the existing Management API current-user endpoint. Use
+`OAuthApi::userInfo()` for the documented OAuth user info endpoint.
 
 ## Handling assets
 
