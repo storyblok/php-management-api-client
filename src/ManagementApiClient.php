@@ -32,13 +32,13 @@ class ManagementApiClient
 
     public function __construct(
         string $personalAccessToken,
-        Region $region = Region::EU,
+        private readonly Region $region = Region::EU,
         ?string $baseUri = null,
         bool $shouldRetry = false,
     ) {
         $baseUriMapi =
             $baseUri ??
-            StoryblokUtils::baseUriFromRegionForMapi($region->value);
+            StoryblokUtils::baseUriFromRegionForMapi($this->region->value);
         $httpClient = HttpClient::create();
         if ($shouldRetry) {
             $httpClient = new RetryableHttpClient(
@@ -69,12 +69,18 @@ class ManagementApiClient
     public static function initTest(
         HttpClientInterface $httpClient,
         ?HttpClientInterface $httpAssetClient = null,
+        Region $region = Region::EU,
     ): self {
-        $client = new self("");
+        $client = new self("", $region);
         $client->httpClient = $httpClient;
         $client->httpAssetClient = $httpAssetClient ?? new MockHttpClient();
 
         return $client;
+    }
+
+    public function region(): Region
+    {
+        return $this->region;
     }
 
     public function httpClient(): HttpClientInterface

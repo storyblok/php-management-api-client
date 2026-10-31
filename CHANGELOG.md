@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.0 - WIP
+
+- Adding `OAuthApi::userInfo()` for Storyblok OAuth user info, including typed user and role response data
+- Adding `ManagementApiClient::region()`; `OAuthApi` uses it to call the regional OAuth host
+
 ## 1.9.1 - 2026-08-04
 
 - Adding `TranslatedSlug` helpers for managing Storyblok `translated_slugs_attributes` on stories

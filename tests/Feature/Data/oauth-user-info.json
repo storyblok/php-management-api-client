@@ -1,0 +1,14 @@
+{
+    "user": {
+        "friendly_name": "My name",
+        "id": 20
+    },
+    "roles": [
+        {
+            "name": "admin"
+        },
+        {
+            "name": "editor"
+        }
+    ]
+}
